@@ -170,7 +170,11 @@
                             <i class="bi bi-book text-primary me-1"></i> Disciplina (Componente Curricular)
                         </label>
                         <select class="form-select" id="discipline" name="discipline" onchange="updateWeeksDropdown()">
-                            <!-- Pre-filled dynamically -->
+                            <option value="Marketing Estratégico" selected>Marketing Estratégico</option>
+                            <option value="Comunicação Empresarial">Comunicação Empresarial</option>
+                            <option value="Gestão Financeira e Contabilidade">Gestão Financeira e Contabilidade</option>
+                            <option value="Gestão de Operações">Gestão de Operações</option>
+                            <option value="Empreendedorismo e Desenvolvimento de Negócios">Empreendedorismo e Desenvolvimento de Negócios</option>
                         </select>
                     </div>
 
@@ -180,7 +184,34 @@
                             <i class="bi bi-calendar3-week text-primary me-1"></i> Semana do Curso
                         </label>
                         <select class="form-select" id="week" name="week" required>
-                            <!-- Pre-filled dynamically -->
+                            <option value="1" selected>Semana 1</option>
+                            <option value="2">Semana 2</option>
+                            <option value="3">Semana 3</option>
+                            <option value="4">Semana 4</option>
+                            <option value="5">Semana 5</option>
+                            <option value="6">Semana 6</option>
+                            <option value="7">Semana 7</option>
+                            <option value="8">Semana 8</option>
+                            <option value="9">Semana 9</option>
+                            <option value="10">Semana 10</option>
+                            <option value="11">Semana 11</option>
+                            <option value="12">Semana 12</option>
+                            <option value="13">Semana 13</option>
+                            <option value="14">Semana 14</option>
+                            <option value="15">Semana 15</option>
+                            <option value="16">Semana 16</option>
+                            <option value="17">Semana 17</option>
+                            <option value="18">Semana 18</option>
+                            <option value="19">Semana 19</option>
+                            <option value="20">Semana 20</option>
+                            <option value="21">Semana 21</option>
+                            <option value="22">Semana 22</option>
+                            <option value="23">Semana 23</option>
+                            <option value="24">Semana 24</option>
+                            <option value="25">Semana 25</option>
+                            <option value="26">Semana 26</option>
+                            <option value="27">Semana 27</option>
+                            <option value="28">Semana 28</option>
                         </select>
                     </div>
                 </div>
@@ -287,48 +318,58 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        let courseData = {};
+        const DEFAULT_DISCIPLINES = [
+            "Marketing Estratégico",
+            "Comunicação Empresarial",
+            "Gestão Financeira e Contabilidade",
+            "Gestão de Operações",
+            "Empreendedorismo e Desenvolvimento de Negócios"
+        ];
 
+        let courseData = {
+            disciplines: DEFAULT_DISCIPLINES,
+            all_weeks: Array.from({length: 28}, (_, i) => String(i+1))
+        };
+
+        // Load pre-configured disciplines and weeks on page load
         async function loadInitialData() {
             try {
                 const res = await fetch('/api/initial-data');
-                const data = await res.json();
-                if (data.success) {
-                    courseData = data;
-                    const discSelect = document.getElementById('discipline');
-                    discSelect.innerHTML = '';
-                    
-                    data.disciplines.forEach(d => {
-                        const opt = document.createElement('option');
-                        opt.value = d;
-                        opt.textContent = d;
-                        discSelect.appendChild(opt);
-                    });
-
-                    updateWeeksDropdown();
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.disciplines && data.disciplines.length > 0) {
+                        courseData = data;
+                    }
                 }
             } catch (err) {
-                console.error("Erro ao carregar dados iniciais:", err);
+                console.log("Usando dados padrões integrados.");
             }
+            updateWeeksDropdown();
         }
 
         function updateWeeksDropdown() {
             const discipline = document.getElementById('discipline').value;
             const weekSelect = document.getElementById('week');
-            weekSelect.innerHTML = '';
+            const currentWeek = weekSelect.value || "1";
 
             const weeks = (courseData.discipline_weeks && courseData.discipline_weeks[discipline]) 
                 ? courseData.discipline_weeks[discipline] 
                 : (courseData.all_weeks || Array.from({length: 28}, (_, i) => String(i+1)));
 
+            weekSelect.innerHTML = '';
             weeks.forEach(w => {
                 const opt = document.createElement('option');
                 opt.value = w;
                 opt.textContent = `Semana ${w}`;
+                if (w === currentWeek) opt.selected = true;
                 weekSelect.appendChild(opt);
             });
+            if (!weekSelect.value && weeks.length > 0) {
+                weekSelect.value = weeks[0];
+            }
         }
 
+        // Preview button handler
         document.getElementById('btnPreview').addEventListener('click', async function() {
             const teacher = document.getElementById('teacher').value.trim();
             const period = document.getElementById('period').value.trim();

@@ -3,171 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Plano de Aula</title>
+    <title>Plano de Aula &bull; Gerador Automático</title>
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.07), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --primary: #4338ca;
+            --primary-light: #e0e7ff;
+            --primary-hover: #3730a3;
+            --bg-body: #f8fafc;
+            --surface: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
         }
+
         body {
-            background-color: #f1f5f9;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: #1e293b;
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-primary);
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
-        .navbar-custom {
-            background: var(--primary-gradient);
-            padding: 1rem 0;
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.25);
+
+        /* Top Header */
+        .app-header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .main-card {
-            background: white;
-            border-radius: 1.25rem;
-            box-shadow: var(--card-shadow);
-            padding: 2.2rem;
-            border: 1px solid #e2e8f0;
-        }
-        .btn-gradient {
-            background: var(--primary-gradient);
-            border: none;
+
+        .brand-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
             color: white;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            border-radius: 0.75rem;
-            transition: all 0.2s ease;
+            border-radius: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
         }
-        .btn-gradient:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
-            color: white;
+
+        /* Main Form Container */
+        .card-container {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-card);
+            padding: 2.25rem;
         }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 0.3rem 0.75rem;
+            border-radius: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
         .form-label {
             font-weight: 600;
+            font-size: 0.88rem;
             color: #334155;
-            font-size: 0.92rem;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.35rem;
         }
+
         .form-control, .form-select {
-            border-radius: 0.65rem;
-            border: 1.5px solid #cbd5e1;
-            padding: 0.65rem 0.9rem;
-            font-size: 0.95rem;
+            font-family: var(--font-family);
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-color);
+            padding: 0.65rem 0.95rem;
+            font-size: 0.92rem;
+            color: var(--text-primary);
+            background-color: #ffffff;
+            transition: all 0.2s ease;
         }
+
         .form-control:focus, .form-select:focus {
             border-color: #6366f1;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            box-shadow: 0 0 0 3.5px rgba(99, 102, 241, 0.12);
+            outline: none;
         }
-        .preview-box {
-            background: #ffffff;
-            border-radius: 1rem;
-            border: 1px solid #e2e8f0;
-            padding: 2rem;
-            box-shadow: var(--card-shadow);
+
+        .form-control::placeholder {
+            color: #94a3b8;
+            font-size: 0.88rem;
         }
-        .field-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-left: 4px solid #4f46e5;
-            border-radius: 0.5rem;
-            padding: 1rem 1.2rem;
-            margin-bottom: 1rem;
-        }
-        .field-title {
-            font-weight: 700;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #64748b;
-            margin-bottom: 0.3rem;
-        }
-        .field-text {
-            color: #0f172a;
+
+        /* Buttons */
+        .btn-main {
+            background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
             font-size: 0.95rem;
-            white-space: pre-line;
-            line-height: 1.5;
+            padding: 0.75rem 1.6rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
-        .school-header {
+
+        .btn-main:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px -3px rgba(79, 70, 229, 0.35);
+            color: #ffffff;
+        }
+
+        .btn-main:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline-clean {
+            background: var(--surface);
+            color: #334155;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.75rem 1.4rem;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline-clean:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+
+        /* Sheet integration pill */
+        .integration-pill {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.35rem 0.85rem;
+            border-radius: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Preview Paper Style */
+        .preview-paper {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-card);
+            padding: 2.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .preview-header-school {
             text-align: center;
             border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
+            padding-bottom: 1.25rem;
+            margin-bottom: 1.75rem;
         }
-        .school-header h6 {
+
+        .preview-header-school h6 {
             font-weight: 700;
-            margin-bottom: 0.2rem;
             font-size: 0.85rem;
             color: #475569;
+            margin-bottom: 0.2rem;
+            letter-spacing: 0.02em;
         }
+
+        .preview-header-school p {
+            color: #64748b;
+            font-size: 0.78rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-header-school h4 {
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 0.75rem;
+            font-size: 1.2rem;
+            letter-spacing: 0.03em;
+        }
+
+        .info-pill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-pill-item {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1rem;
+        }
+
+        .info-pill-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            margin-bottom: 0.15rem;
+        }
+
+        .info-pill-val {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .content-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-left: 3.5px solid var(--primary);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .content-card-title {
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #475569;
+            margin-bottom: 0.4rem;
+        }
+
+        .content-card-body {
+            font-size: 0.92rem;
+            color: #1e293b;
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card-container { padding: 1.5rem; }
+            .preview-paper { padding: 1.5rem; }
+        }
+
         @media print {
             .no-print { display: none !important; }
-            body { background: white !important; padding: 0 !important; }
-            .preview-box { border: none !important; box-shadow: none !important; padding: 0 !important; }
-            .field-card { border: 1px solid #ddd !important; border-left: 4px solid #333 !important; }
+            body { background: white !important; }
+            .preview-paper { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+            .content-card { border: 1px solid #cbd5e1 !important; border-left: 3px solid #000 !important; page-break-inside: avoid; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Top Navigation -->
-    <nav class="navbar navbar-dark navbar-custom no-print">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-4" href="#">
-                <i class="bi bi-journal-text fs-3"></i>
-                Gerador de Plano de Aula
-            </a>
-            <span class="navbar-text text-white-50 d-none d-md-inline">
-                EE. Prof. Dinora Marcondes Gomes &bull; Cursos Técnicos
-            </span>
-        </div>
-    </nav>
-
-    <div class="container my-4">
-        <!-- Main Configuration Card -->
-        <div class="main-card mb-4 no-print">
-            <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
-                <div>
-                    <h3 class="fw-bold mb-1 text-dark">Informações do Plano de Aula</h3>
-                    <p class="text-muted mb-0 small">Preencha os dados da aula. O conteúdo curricular e as habilidades já estão integrados.</p>
+    <!-- Header Navbar -->
+    <header class="app-header no-print">
+        <div class="container d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <div class="brand-icon shadow-sm">
+                    <i class="bi bi-file-earmark-check"></i>
                 </div>
-                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
-                    <i class="bi bi-check-circle-fill me-1"></i> Conteúdo Carregado
-                </span>
+                <div>
+                    <h1 class="h6 fw-bold mb-0 text-dark">Gerador de Plano de Aula</h1>
+                    <small class="text-secondary">Cursos Técnicos &bull; EE. Prof. Dinora Marcondes Gomes</small>
+                </div>
+            </div>
+            <div class="integration-pill d-none d-sm-inline-flex">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Currículo & Modelo Ativos</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container my-4 my-md-5" style="max-width: 920px;">
+        <!-- Configuration Card -->
+        <section class="card-container no-print">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4 pb-3 border-bottom">
+                <div>
+                    <span class="section-tag"><i class="bi bi-lightning-charge-fill"></i> Preenchimento Rápido</span>
+                    <h2 class="h4 fw-bold text-dark mb-1">Criar Novo Plano de Aula</h2>
+                    <p class="text-muted small mb-0">Preencha os dados da aula. As habilidades e temas já são extraídos automaticamente.</p>
+                </div>
             </div>
 
             <form id="planForm" action="/api/generate" method="POST" enctype="multipart/form-data">
                 <div class="row g-3">
-                    <!-- Nome do Professor -->
+                    <!-- 1. Professor -->
                     <div class="col-md-6">
                         <label for="teacher" class="form-label">
-                            <i class="bi bi-person-badge text-primary me-1"></i> Nome do(a) Professor(a)
+                            <i class="bi bi-person me-1 text-primary"></i> Nome do(a) Professor(a)
                         </label>
                         <input type="text" class="form-control" id="teacher" name="teacher" placeholder="Ex: Prof. Thamy Oliveira" required>
                     </div>
 
-                    <!-- Data / Período -->
+                    <!-- 2. Período / Data -->
                     <div class="col-md-6">
                         <label for="period" class="form-label">
-                            <i class="bi bi-calendar-range text-primary me-1"></i> Período de Realização / Data
+                            <i class="bi bi-calendar3 me-1 text-primary"></i> Período de Realização / Data
                         </label>
                         <input type="text" class="form-control" id="period" name="period" placeholder="Ex: Semana de 24 a 28 de Fevereiro" required>
                     </div>
 
-                    <!-- Turma / Ano / Série -->
+                    <!-- 3. Turma -->
                     <div class="col-md-4">
                         <label for="classroom" class="form-label">
-                            <i class="bi bi-people text-primary me-1"></i> Ano / Série / Turma
+                            <i class="bi bi-mortarboard me-1 text-primary"></i> Ano / Série / Turma
                         </label>
                         <input type="text" class="form-control" id="classroom" name="classroom" placeholder="Ex: 1º MTEC - Administração" required>
                     </div>
 
-                    <!-- Disciplina / Componente Curricular -->
+                    <!-- 4. Disciplina -->
                     <div class="col-md-5">
                         <label for="discipline" class="form-label">
-                            <i class="bi bi-book text-primary me-1"></i> Disciplina (Componente Curricular)
+                            <i class="bi bi-book me-1 text-primary"></i> Disciplina
                         </label>
                         <select class="form-select" id="discipline" name="discipline" onchange="updateWeeksDropdown()">
                             <option value="Marketing Estratégico" selected>Marketing Estratégico</option>
@@ -178,10 +352,10 @@
                         </select>
                     </div>
 
-                    <!-- Semana do Curso -->
+                    <!-- 5. Semana -->
                     <div class="col-md-3">
                         <label for="week" class="form-label">
-                            <i class="bi bi-calendar3-week text-primary me-1"></i> Semana do Curso
+                            <i class="bi bi-calendar-week me-1 text-primary"></i> Semana do Curso
                         </label>
                         <select class="form-select" id="week" name="week" required>
                             <option value="1" selected>Semana 1</option>
@@ -216,25 +390,21 @@
                     </div>
                 </div>
 
-                <!-- Custom Template & Spreadsheet Accordion (Optional) -->
-                <div class="accordion accordion-flush mt-3" id="advancedAccordion">
-                    <div class="accordion-item border-0">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed px-0 py-2 text-secondary small bg-transparent shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#advancedFiles">
-                                <i class="bi bi-sliders me-1"></i> Opções Avançadas: Usar outra planilha ou modelo personalizado
-                            </button>
-                        </h2>
-                        <div id="advancedFiles" class="accordion-collapse collapse">
-                            <div class="p-3 bg-light rounded-3 mt-2 border">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold">Substituir Planilha (.xlsx ou .csv)</label>
-                                        <input type="file" class="form-control form-control-sm" id="customSpreadsheet" name="custom_spreadsheet" accept=".xlsx, .xls, .csv">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold">Substituir Modelo Word (.docx)</label>
-                                        <input type="file" class="form-control form-control-sm" id="customTemplate" name="custom_template" accept=".docx">
-                                    </div>
+                <!-- Custom Files Collapse (Minimalist) -->
+                <div class="mt-3">
+                    <button class="btn btn-link text-decoration-none text-muted p-0 small" type="button" data-bs-toggle="collapse" data-bs-target="#advancedFiles">
+                        <i class="bi bi-gear me-1"></i> Deseja usar outra planilha ou modelo Word? (Opcional)
+                    </button>
+                    <div id="advancedFiles" class="collapse mt-2">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small">Enviar outra Planilha (.xlsx ou .csv)</label>
+                                    <input type="file" class="form-control form-control-sm" id="customSpreadsheet" name="custom_spreadsheet" accept=".xlsx, .xls, .csv">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small">Enviar outro Modelo Word (.docx)</label>
+                                    <input type="file" class="form-control form-control-sm" id="customTemplate" name="custom_template" accept=".docx">
                                 </div>
                             </div>
                         </div>
@@ -242,75 +412,68 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="d-flex flex-wrap gap-2 mt-4 pt-2 border-top">
-                    <button type="submit" class="btn btn-gradient px-4 py-2" id="btnDownload">
-                        <i class="bi bi-file-earmark-word me-1 fs-5 align-middle"></i> Baixar Word (.docx)
+                <div class="d-flex flex-wrap gap-2 mt-4 pt-3 border-top">
+                    <button type="submit" class="btn-main" id="btnDownload">
+                        <i class="bi bi-download"></i> Baixar Word (.docx)
                     </button>
-                    <button type="button" class="btn btn-outline-primary px-4 py-2" id="btnPreview">
-                        <i class="bi bi-eye me-1 align-middle"></i> Pré-visualizar na Tela
+                    <button type="button" class="btn-outline-clean" id="btnPreview">
+                        <i class="bi bi-eye"></i> Pré-visualizar na Tela
                     </button>
                 </div>
             </form>
-        </div>
+        </section>
 
         <!-- Alert messages -->
-        <div id="alertBox" class="alert d-none no-print" role="alert"></div>
+        <div id="alertBox" class="alert d-none no-print my-3" role="alert"></div>
 
         <!-- Preview Document Area -->
-        <div id="previewArea" class="preview-box d-none">
-            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom no-print">
-                <h5 class="fw-bold mb-0 text-primary">
-                    <i class="bi bi-file-earmark-check me-1"></i> Visualização do Plano de Aula
-                </h5>
-                <button class="btn btn-sm btn-dark" onclick="window.print()">
+        <section id="previewArea" class="preview-paper d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom no-print">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary px-3 py-2 rounded-pill"><i class="bi bi-check2-circle me-1"></i> Pré-visualização Pronta</span>
+                </div>
+                <button class="btn btn-sm btn-dark px-3 py-2 rounded-3" onclick="window.print()">
                     <i class="bi bi-printer me-1"></i> Imprimir / Salvar em PDF
                 </button>
             </div>
 
             <!-- School Header -->
-            <div class="school-header">
+            <div class="preview-header-school">
                 <h6>GOVERNO DO ESTADO DE SÃO PAULO – SECRETARIA DA EDUCAÇÃO</h6>
                 <h6>DIRETORIA DE ENSINO - REGIÃO DE ARARAQUARA</h6>
                 <h6>EE. PROF. DINORA MARCONDES GOMES</h6>
-                <p class="text-muted small mb-0">RUA EMILIA GALLI, 549 - CENTRO - AMÉRICO BRASILIENSE - SP | TEL: (16) 3392-1335</p>
-                <h5 class="fw-bold mt-2 text-dark">PLANO DE AULA - 2026</h5>
+                <p>RUA EMILIA GALLI, 549 - CENTRO - AMÉRICO BRASILIENSE - SP | TEL: (16) 3392-1335</p>
+                <h4>PLANO DE AULA - 2026</h4>
             </div>
 
-            <!-- Header Info Grid -->
-            <div class="row g-2 mb-3">
-                <div class="col-md-6">
-                    <div class="p-2 border rounded bg-light">
-                        <strong>Professor(a):</strong> <span id="prevTeacher">-</span>
-                    </div>
+            <!-- Header Info Pills Grid -->
+            <div class="info-pill-grid">
+                <div class="info-pill-item">
+                    <div class="info-pill-label">Professor(a)</div>
+                    <div class="info-pill-val" id="prevTeacher">-</div>
                 </div>
-                <div class="col-md-6">
-                    <div class="p-2 border rounded bg-light">
-                        <strong>Componente Curricular:</strong> <span id="prevDiscipline">-</span>
-                    </div>
+                <div class="info-pill-item">
+                    <div class="info-pill-label">Componente Curricular</div>
+                    <div class="info-pill-val" id="prevDiscipline">-</div>
                 </div>
-                <div class="col-md-6">
-                    <div class="p-2 border rounded bg-light">
-                        <strong>Ano / Série / Turma:</strong> <span id="prevClassroom">-</span>
-                    </div>
+                <div class="info-pill-item">
+                    <div class="info-pill-label">Ano / Série / Turma</div>
+                    <div class="info-pill-val" id="prevClassroom">-</div>
                 </div>
-                <div class="col-md-6">
-                    <div class="p-2 border rounded bg-light">
-                        <strong>Período de Realização:</strong> <span id="prevPeriod">-</span>
-                    </div>
+                <div class="info-pill-item">
+                    <div class="info-pill-label">Período de Realização</div>
+                    <div class="info-pill-val" id="prevPeriod">-</div>
                 </div>
             </div>
 
-            <!-- Content Fields -->
-            <div id="previewFields">
-                <!-- Dynamically populated fields -->
-            </div>
-        </div>
-    </div>
+            <!-- Content Sections -->
+            <div id="previewFields"></div>
+        </section>
+    </main>
 
-    <!-- Footer -->
-    <footer class="text-center text-muted py-4 mt-5 no-print border-top">
+    <footer class="text-center text-muted py-4 no-print border-top mt-5">
         <div class="container">
-            <small>Gerador de Plano de Aula &bull; Desenvolvido para Cursos Técnicos</small>
+            <small>Plano de Aula Automático &bull; Design Clean & Intuitivo</small>
         </div>
     </footer>
 
@@ -331,7 +494,6 @@
             all_weeks: Array.from({length: 28}, (_, i) => String(i+1))
         };
 
-        // Load pre-configured disciplines and weeks on page load
         async function loadInitialData() {
             try {
                 const res = await fetch('/api/initial-data');
@@ -342,7 +504,7 @@
                     }
                 }
             } catch (err) {
-                console.log("Usando dados padrões integrados.");
+                console.log("Usando base de dados integrada.");
             }
             updateWeeksDropdown();
         }
@@ -369,7 +531,6 @@
             }
         }
 
-        // Preview button handler
         document.getElementById('btnPreview').addEventListener('click', async function() {
             const teacher = document.getElementById('teacher').value.trim();
             const period = document.getElementById('period').value.trim();
@@ -418,10 +579,10 @@
 
                     sections.forEach(sec => {
                         const card = document.createElement('div');
-                        card.className = 'field-card';
+                        card.className = 'content-card';
                         card.innerHTML = `
-                            <div class="field-title">${sec.label}</div>
-                            <div class="field-text">${sec.value || 'Não informado'}</div>
+                            <div class="content-card-title">${sec.label}</div>
+                            <div class="content-card-body">${sec.value || 'Não informado'}</div>
                         `;
                         fieldsDiv.appendChild(card);
                     });
@@ -434,7 +595,7 @@
                 showAlert("Erro ao conectar com o servidor.");
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="bi bi-eye me-1 align-middle"></i> Pré-visualizar na Tela`;
+                btn.innerHTML = `<i class="bi bi-eye"></i> Pré-visualizar na Tela`;
             }
         });
 

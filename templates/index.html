@@ -10,26 +10,26 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root {
+            --primary: #4f46e5;
             --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.07), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
         }
         body {
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             color: #1e293b;
             min-height: 100vh;
         }
         .navbar-custom {
             background: var(--primary-gradient);
-            padding: 1.2rem 0;
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);
+            padding: 1rem 0;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.25);
         }
-        .hero-section {
+        .main-card {
             background: white;
             border-radius: 1.25rem;
             box-shadow: var(--card-shadow);
-            padding: 2.5rem;
-            margin-top: -2rem;
+            padding: 2.2rem;
             border: 1px solid #e2e8f0;
         }
         .btn-gradient {
@@ -46,123 +46,179 @@
             box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
             color: white;
         }
-        .card-custom {
-            border: 1px solid #e2e8f0;
-            border-radius: 1rem;
-            box-shadow: var(--card-shadow);
-            background: white;
-            overflow: hidden;
+        .form-label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.92rem;
+            margin-bottom: 0.4rem;
         }
-        .upload-box {
-            border: 2px dashed #cbd5e1;
-            border-radius: 0.85rem;
-            padding: 1.5rem;
-            text-align: center;
-            background: #f8fafc;
-            cursor: pointer;
-            transition: border-color 0.2s ease;
+        .form-control, .form-select {
+            border-radius: 0.65rem;
+            border: 1.5px solid #cbd5e1;
+            padding: 0.65rem 0.9rem;
+            font-size: 0.95rem;
         }
-        .upload-box:hover {
+        .form-control:focus, .form-select:focus {
             border-color: #6366f1;
-            background: #f1f5f9;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
         }
-        .preview-card {
+        .preview-box {
             background: #ffffff;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+        .field-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-left: 4px solid #4f46e5;
             border-radius: 0.5rem;
-            padding: 1rem 1.25rem;
-            margin-bottom: 0.75rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
         }
-        .preview-label {
+        .field-title {
             font-weight: 700;
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: #64748b;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.3rem;
         }
-        .preview-value {
-            font-size: 0.95rem;
+        .field-text {
             color: #0f172a;
-            white-space: pre-wrap;
+            font-size: 0.95rem;
+            white-space: pre-line;
+            line-height: 1.5;
+        }
+        .school-header {
+            text-align: center;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .school-header h6 {
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            font-size: 0.85rem;
+            color: #475569;
         }
         @media print {
             .no-print { display: none !important; }
-            .hero-section { box-shadow: none; border: none; margin: 0; padding: 0; }
-            body { background: white; }
+            body { background: white !important; padding: 0 !important; }
+            .preview-box { border: none !important; box-shadow: none !important; padding: 0 !important; }
+            .field-card { border: 1px solid #ddd !important; border-left: 4px solid #333 !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header Navbar -->
+    <!-- Top Navigation -->
     <nav class="navbar navbar-dark navbar-custom no-print">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-4" href="#">
-                <i class="bi bi-journal-bookmark-fill fs-3"></i>
+                <i class="bi bi-journal-text fs-3"></i>
                 Gerador de Plano de Aula
             </a>
-            <span class="navbar-text text-white-50 d-none d-sm-inline">
-                Crie planos de aula automaticamente
+            <span class="navbar-text text-white-50 d-none d-md-inline">
+                EE. Prof. Dinora Marcondes Gomes &bull; Cursos Técnicos
             </span>
         </div>
     </nav>
 
     <div class="container my-4">
-        <!-- Main Form Card -->
-        <div class="hero-section mb-4 no-print">
-            <h2 class="fw-bold mb-2 text-dark">Gerar Plano de Aula Semanal</h2>
-            <p class="text-muted mb-4">
-                Envie a planilha do curso técnico (Excel ou CSV), selecione a semana desejada e gere o plano de aula formatado.
-            </p>
+        <!-- Main Configuration Card -->
+        <div class="main-card mb-4 no-print">
+            <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                <div>
+                    <h3 class="fw-bold mb-1 text-dark">Informações do Plano de Aula</h3>
+                    <p class="text-muted mb-0 small">Preencha os dados da aula. O conteúdo curricular e as habilidades já estão integrados.</p>
+                </div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
+                    <i class="bi bi-check-circle-fill me-1"></i> Planilha e Modelo Carregados
+                </span>
+            </div>
 
             <form id="planForm" action="/generate" method="POST" enctype="multipart/form-data">
-                <div class="row g-4">
-                    <!-- Spreadsheet File Input -->
+                <div class="row g-3">
+                    <!-- Nome do Professor -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold"><i class="bi bi-file-earmark-spreadsheet text-success me-1"></i> Planilha do Curso (.xlsx ou .csv)</label>
-                        <div class="upload-box" onclick="document.getElementById('spreadsheet').click()">
-                            <i class="bi bi-cloud-arrow-up text-primary fs-2 d-block mb-1"></i>
-                            <span id="spreadsheetName" class="fw-semibold text-secondary">Clique para selecionar a planilha</span>
-                            <input type="file" class="d-none" id="spreadsheet" name="spreadsheet" accept=".xlsx, .xls, .csv" required>
-                        </div>
-                        <small class="text-muted mt-1 d-block">Planilha contendo a coluna <code>Semana</code>, <code>Título da aula</code>, etc.</small>
+                        <label for="teacher" class="form-label">
+                            <i class="bi bi-person-badge text-primary me-1"></i> Nome do(a) Professor(a)
+                        </label>
+                        <input type="text" class="form-control" id="teacher" name="teacher" placeholder="Ex: Prof. Thamy Oliveira" required>
                     </div>
 
-                    <!-- Template File Input (Optional) -->
+                    <!-- Data / Período -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold"><i class="bi bi-file-earmark-word text-primary me-1"></i> Modelo Word (.docx) <span class="badge bg-light text-secondary border">Opcional</span></label>
-                        <div class="upload-box" onclick="document.getElementById('template').click()">
-                            <i class="bi bi-file-earmark-richtext text-indigo fs-2 d-block mb-1"></i>
-                            <span id="templateName" class="fw-semibold text-secondary">Usar modelo padrão do curso</span>
-                            <input type="file" class="d-none" id="template" name="template" accept=".docx">
-                        </div>
-                        <small class="text-muted mt-1 d-block">Deixe em branco para usar o modelo padrão com placeholders.</small>
+                        <label for="period" class="form-label">
+                            <i class="bi bi-calendar-range text-primary me-1"></i> Período de Realização / Data
+                        </label>
+                        <input type="text" class="form-control" id="period" name="period" placeholder="Ex: Semana de 24 a 28 de Fevereiro" required>
                     </div>
 
-                    <!-- Week Selector -->
-                    <div class="col-md-6">
-                        <label for="weekSelect" class="form-label fw-bold"><i class="bi bi-calendar3 me-1"></i> Semana da Aula</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white"><i class="bi bi-calendar-event"></i></span>
-                            <input type="text" class="form-control form-control-lg" id="weekInput" name="week" placeholder="Ex: 1, 2, 3..." required>
-                            <select class="form-select form-control-lg d-none" id="weekSelect" onchange="document.getElementById('weekInput').value = this.value">
-                                <option value="">Selecione a semana...</option>
-                            </select>
-                        </div>
-                        <small class="text-muted mt-1 d-block" id="weekHint">Informe o número ou identificador da semana.</small>
+                    <!-- Turma / Ano / Série -->
+                    <div class="col-md-4">
+                        <label for="classroom" class="form-label">
+                            <i class="bi bi-people text-primary me-1"></i> Ano / Série / Turma
+                        </label>
+                        <input type="text" class="form-control" id="classroom" name="classroom" placeholder="Ex: 1º MTEC - Administração" required>
                     </div>
 
-                    <!-- Action Buttons -->
-                    <div class="col-md-6 d-flex align-items-end gap-2">
-                        <button type="submit" class="btn btn-gradient flex-grow-1 py-3" id="btnDownload">
-                            <i class="bi bi-file-earmark-arrow-down me-1 fs-5"></i> Baixar Word (.docx)
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary py-3 px-3" id="btnPreview" title="Visualizar antes de baixar">
-                            <i class="bi bi-eye me-1"></i> Pré-visualizar
-                        </button>
+                    <!-- Disciplina / Componente Curricular -->
+                    <div class="col-md-5">
+                        <label for="discipline" class="form-label">
+                            <i class="bi bi-book text-primary me-1"></i> Disciplina (Componente Curricular)
+                        </label>
+                        <select class="form-select" id="discipline" name="discipline" onchange="updateWeeksDropdown()">
+                            <!-- Pre-filled dynamically -->
+                        </select>
                     </div>
+
+                    <!-- Semana do Curso -->
+                    <div class="col-md-3">
+                        <label for="week" class="form-label">
+                            <i class="bi bi-calendar3-week text-primary me-1"></i> Semana do Curso
+                        </label>
+                        <select class="form-select" id="week" name="week" required>
+                            <!-- Pre-filled dynamically -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Custom Template & Spreadsheet Accordion (Optional) -->
+                <div class="accordion accordion-flush mt-3" id="advancedAccordion">
+                    <div class="accordion-item border-0">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed px-0 py-2 text-secondary small bg-transparent shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#advancedFiles">
+                                <i class="bi bi-sliders me-1"></i> Opções Avançadas: Usar outra planilha ou modelo personalizado
+                            </button>
+                        </h2>
+                        <div id="advancedFiles" class="accordion-collapse collapse">
+                            <div class="p-3 bg-light rounded-3 mt-2 border">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Substituir Planilha (.xlsx ou .csv)</label>
+                                        <input type="file" class="form-control form-control-sm" id="customSpreadsheet" name="custom_spreadsheet" accept=".xlsx, .xls, .csv">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Substituir Modelo Word (.docx)</label>
+                                        <input type="file" class="form-control form-control-sm" id="customTemplate" name="custom_template" accept=".docx">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex flex-wrap gap-2 mt-4 pt-2 border-top">
+                    <button type="submit" class="btn btn-gradient px-4 py-2" id="btnDownload">
+                        <i class="bi bi-file-earmark-word me-1 fs-5 align-middle"></i> Baixar Word (.docx)
+                    </button>
+                    <button type="button" class="btn btn-outline-primary px-4 py-2" id="btnPreview">
+                        <i class="bi bi-eye me-1 align-middle"></i> Pré-visualizar na Tela
+                    </button>
                 </div>
             </form>
         </div>
@@ -170,21 +226,53 @@
         <!-- Alert messages -->
         <div id="alertBox" class="alert d-none no-print" role="alert"></div>
 
-        <!-- Preview Section -->
-        <div id="previewSection" class="card-custom p-4 d-none">
-            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-                <h4 class="fw-bold mb-0 text-primary">
-                    <i class="bi bi-card-checklist me-2"></i>Pré-visualização do Plano de Aula
-                </h4>
-                <div class="no-print d-flex gap-2">
-                    <button class="btn btn-sm btn-outline-primary" onclick="window.print()">
-                        <i class="bi bi-printer me-1"></i> Imprimir / Salvar PDF
-                    </button>
+        <!-- Preview Document Area -->
+        <div id="previewArea" class="preview-box d-none">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom no-print">
+                <h5 class="fw-bold mb-0 text-primary">
+                    <i class="bi bi-file-earmark-check me-1"></i> Visualização do Plano de Aula
+                </h5>
+                <button class="btn btn-sm btn-dark" onclick="window.print()">
+                    <i class="bi bi-printer me-1"></i> Imprimir / Salvar em PDF
+                </button>
+            </div>
+
+            <!-- School Header -->
+            <div class="school-header">
+                <h6>GOVERNO DO ESTADO DE SÃO PAULO – SECRETARIA DA EDUCAÇÃO</h6>
+                <h6>DIRETORIA DE ENSINO - REGIÃO DE ARARAQUARA</h6>
+                <h6>EE. PROF. DINORA MARCONDES GOMES</h6>
+                <p class="text-muted small mb-0">RUA EMILIA GALLI, 549 - CENTRO - AMÉRICO BRASILIENSE - SP | TEL: (16) 3392-1335</p>
+                <h5 class="fw-bold mt-2 text-dark">PLANO DE AULA - 2026</h5>
+            </div>
+
+            <!-- Header Info Grid -->
+            <div class="row g-2 mb-3">
+                <div class="col-md-6">
+                    <div class="p-2 border rounded bg-light">
+                        <strong>Professor(a):</strong> <span id="prevTeacher">-</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-2 border rounded bg-light">
+                        <strong>Componente Curricular:</strong> <span id="prevDiscipline">-</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-2 border rounded bg-light">
+                        <strong>Ano / Série / Turma:</strong> <span id="prevClassroom">-</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-2 border rounded bg-light">
+                        <strong>Período de Realização:</strong> <span id="prevPeriod">-</span>
+                    </div>
                 </div>
             </div>
 
-            <div id="previewContent" class="row">
-                <!-- Dynamically populated -->
+            <!-- Content Fields -->
+            <div id="previewFields">
+                <!-- Dynamically populated fields -->
             </div>
         </div>
     </div>
@@ -200,116 +288,127 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // File selection UI feedback
-        const spreadsheetInput = document.getElementById('spreadsheet');
-        const spreadsheetName = document.getElementById('spreadsheetName');
-        const templateInput = document.getElementById('template');
-        const templateName = document.getElementById('templateName');
-        const weekInput = document.getElementById('weekInput');
-        const weekSelect = document.getElementById('weekSelect');
-        const weekHint = document.getElementById('weekHint');
-        const btnPreview = document.getElementById('btnPreview');
-        const previewSection = document.getElementById('previewSection');
-        const previewContent = document.getElementById('previewContent');
-        const alertBox = document.getElementById('alertBox');
+        let courseData = {};
+
+        // Load pre-configured disciplines and weeks on page load
+        async function loadInitialData() {
+            try {
+                const res = await fetch('/api/initial-data');
+                const data = await res.json();
+                if (data.success) {
+                    courseData = data;
+                    const discSelect = document.getElementById('discipline');
+                    discSelect.innerHTML = '';
+                    
+                    data.disciplines.forEach(d => {
+                        const opt = document.createElement('option');
+                        opt.value = d;
+                        opt.textContent = d;
+                        discSelect.appendChild(opt);
+                    });
+
+                    updateWeeksDropdown();
+                }
+            } catch (err) {
+                console.error("Erro ao carregar dados iniciais:", err);
+            }
+        }
+
+        function updateWeeksDropdown() {
+            const discipline = document.getElementById('discipline').value;
+            const weekSelect = document.getElementById('week');
+            weekSelect.innerHTML = '';
+
+            const weeks = (courseData.discipline_weeks && courseData.discipline_weeks[discipline]) 
+                ? courseData.discipline_weeks[discipline] 
+                : (courseData.all_weeks || Array.from({length: 28}, (_, i) => String(i+1)));
+
+            weeks.forEach(w => {
+                const opt = document.createElement('option');
+                opt.value = w;
+                opt.textContent = `Semana ${w}`;
+                weekSelect.appendChild(opt);
+            });
+        }
+
+        // Preview button handler
+        document.getElementById('btnPreview').addEventListener('click', async function() {
+            const teacher = document.getElementById('teacher').value.trim();
+            const period = document.getElementById('period').value.trim();
+            const classroom = document.getElementById('classroom').value.trim();
+            const discipline = document.getElementById('discipline').value;
+            const week = document.getElementById('week').value;
+
+            if (!teacher || !period || !classroom || !week) {
+                showAlert("Por favor, preencha o Nome do Professor, Data/Período, Turma e Semana.");
+                return;
+            }
+
+            const btn = document.getElementById('btnPreview');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Carregando...`;
+
+            const form = document.getElementById('planForm');
+            const formData = new FormData(form);
+
+            try {
+                const res = await fetch('/api/preview-plan', { method: 'POST', body: formData });
+                const result = await res.json();
+
+                if (!result.success) {
+                    showAlert(result.error || "Erro ao gerar pré-visualização.");
+                } else {
+                    document.getElementById('alertBox').classList.add('d-none');
+                    document.getElementById('prevTeacher').textContent = teacher;
+                    document.getElementById('prevDiscipline').textContent = discipline;
+                    document.getElementById('prevClassroom').textContent = classroom;
+                    document.getElementById('prevPeriod').textContent = period;
+
+                    const fieldsDiv = document.getElementById('previewFields');
+                    fieldsDiv.innerHTML = '';
+
+                    const sections = [
+                        { label: '5. Habilidades (Técnicas e Socioemocionais)', value: result.data.habilidades },
+                        { label: '6. Objetos de Conhecimento', value: result.data.objetos },
+                        { label: '7. Conteúdo das Aulas', value: result.data.conteudo },
+                        { label: '8. Objetivos das Aulas', value: result.data.objetivos },
+                        { label: '9. Estratégias Metodológicas', value: result.data.estrategias },
+                        { label: '10. Recursos Didáticos', value: result.data.recursos },
+                        { label: '11. Critérios de Avaliação', value: result.data.avaliacao },
+                        { label: '12. Referências', value: result.data.referencias }
+                    ];
+
+                    sections.forEach(sec => {
+                        const card = document.createElement('div');
+                        card.className = 'field-card';
+                        card.innerHTML = `
+                            <div class="field-title">${sec.label}</div>
+                            <div class="field-text">${sec.value || 'Não informado'}</div>
+                        `;
+                        fieldsDiv.appendChild(card);
+                    });
+
+                    const prevArea = document.getElementById('previewArea');
+                    prevArea.classList.remove('d-none');
+                    prevArea.scrollIntoView({ behavior: 'smooth' });
+                }
+            } catch (err) {
+                showAlert("Erro ao conectar com o servidor.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="bi bi-eye me-1 align-middle"></i> Pré-visualizar na Tela`;
+            }
+        });
 
         function showAlert(msg, type = 'danger') {
+            const alertBox = document.getElementById('alertBox');
             alertBox.className = `alert alert-${type} alert-dismissible fade show no-print`;
             alertBox.innerHTML = `<span>${msg}</span><button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
             alertBox.classList.remove('d-none');
             alertBox.scrollIntoView({ behavior: 'smooth' });
         }
 
-        spreadsheetInput.addEventListener('change', async function() {
-            if (this.files && this.files[0]) {
-                const file = this.files[0];
-                spreadsheetName.innerHTML = `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>${file.name}</span>`;
-
-                // Auto-detect weeks in background
-                const formData = new FormData();
-                formData.append('spreadsheet', file);
-
-                try {
-                    const res = await fetch('/api/weeks', { method: 'POST', body: formData });
-                    const data = await res.json();
-                    if (data.success && data.weeks && data.weeks.length > 0) {
-                        weekSelect.innerHTML = '<option value="">Selecione uma semana detectada...</option>';
-                        data.weeks.forEach(w => {
-                            const opt = document.createElement('option');
-                            opt.value = w;
-                            opt.textContent = `Semana ${w}`;
-                            weekSelect.appendChild(opt);
-                        });
-                        weekSelect.classList.remove('d-none');
-                        weekInput.value = data.weeks[0];
-                        weekSelect.value = data.weeks[0];
-                        weekHint.innerHTML = `<span class="text-success"><i class="bi bi-stars me-1"></i>${data.weeks.length} semanas detectadas automaticamente!</span>`;
-                    }
-                } catch (e) {
-                    console.log('Detect weeks failed:', e);
-                }
-            }
-        });
-
-        templateInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                templateName.innerHTML = `<span class="text-primary"><i class="bi bi-check-circle-fill me-1"></i>${this.files[0].name}</span>`;
-            }
-        });
-
-        // Preview button click handler
-        btnPreview.addEventListener('click', async function() {
-            if (!spreadsheetInput.files || !spreadsheetInput.files[0]) {
-                showAlert('Por favor, selecione primeiro a planilha do curso.');
-                return;
-            }
-            const week = weekInput.value.trim();
-            if (!week) {
-                showAlert('Por favor, informe ou selecione a semana desejada.');
-                return;
-            }
-
-            btnPreview.disabled = true;
-            btnPreview.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Carregando...`;
-
-            const formData = new FormData();
-            formData.append('spreadsheet', spreadsheetInput.files[0]);
-            formData.append('week', week);
-
-            try {
-                const res = await fetch('/api/preview', { method: 'POST', body: formData });
-                const data = await res.json();
-
-                if (!data.success) {
-                    showAlert(data.error || 'Não foi possível carregar os dados.');
-                } else {
-                    alertBox.classList.add('d-none');
-                    previewContent.innerHTML = '';
-                    
-                    for (const [colName, valList] of Object.entries(data.data)) {
-                        const valText = Array.isArray(valList) ? valList.join('\n') : String(valList);
-                        if (!valText.trim()) continue;
-
-                        const colDiv = document.createElement('div');
-                        colDiv.className = 'col-md-6 mb-3';
-                        colDiv.innerHTML = `
-                            <div class="preview-card h-100">
-                                <div class="preview-label">${colName}</div>
-                                <div class="preview-value">${valText}</div>
-                            </div>
-                        `;
-                        previewContent.appendChild(colDiv);
-                    }
-                    previewSection.classList.remove('d-none');
-                    previewSection.scrollIntoView({ behavior: 'smooth' });
-                }
-            } catch (err) {
-                showAlert('Erro ao processar a pré-visualização.');
-            } finally {
-                btnPreview.disabled = false;
-                btnPreview.innerHTML = `<i class="bi bi-eye me-1"></i> Pré-visualizar`;
-            }
-        });
+        window.addEventListener('DOMContentLoaded', loadInitialData);
     </script>
 </body>
 </html>

@@ -280,12 +280,12 @@
                 </div>
                 <div>
                     <h1 class="h6 fw-bold mb-0 text-dark">Gerador de Plano de Aula</h1>
-                    <small class="text-secondary">Cursos Técnicos (1º e 2º Ano) &bull; EE. Prof. Dinora Marcondes Gomes</small>
+                    <small class="text-secondary">Cursos Técnicos (2º e 3º Ano) &bull; EE. Prof. Dinora Marcondes Gomes</small>
                 </div>
             </div>
             <div class="integration-pill d-none d-sm-inline-flex">
                 <i class="bi bi-check-circle-fill"></i>
-                <span>1º e 2º Ano Integrados</span>
+                <span>2º e 3º Ano Integrados</span>
             </div>
         </div>
     </header>
@@ -309,8 +309,8 @@
                             <i class="bi bi-mortarboard-fill me-1"></i> Ano do Curso Técnico
                         </label>
                         <select class="form-select border-primary" id="courseYear" onchange="onYearChange()">
-                            <option value="1º Ano (MTEC)" selected>1º Ano (MTEC - Administração & Vendas)</option>
-                            <option value="2º Ano (MTEC)">2º Ano (MTEC - Administração & Vendas)</option>
+                            <option value="2º Ano (MTEC)" selected>2º Ano (MTEC - Administração & Vendas)</option>
+                            <option value="3º Ano (MTEC)">3º Ano (MTEC - Administração & Vendas)</option>
                         </select>
                     </div>
 
@@ -345,7 +345,7 @@
                         <label for="classroom" class="form-label">
                             <i class="bi bi-people me-1 text-primary"></i> Ano / Série / Turma
                         </label>
-                        <input type="text" class="form-control" id="classroom" name="classroom" placeholder="Ex: 1º MTEC - Administração" value="1º MTEC - Administração" required>
+                        <input type="text" class="form-control" id="classroom" name="classroom" placeholder="Ex: 2º MTEC - Administração" value="2º MTEC - Administração" required>
                     </div>
 
                     <!-- 6. Semana -->
@@ -442,7 +442,7 @@
 
     <footer class="text-center text-muted py-4 no-print border-top mt-5">
         <div class="container">
-            <small>Plano de Aula Automático &bull; 1º e 2º Ano Cursos Técnicos</small>
+            <small>Plano de Aula Automático &bull; 2º e 3º Ano Cursos Técnicos</small>
         </div>
     </footer>
 
@@ -451,16 +451,16 @@
 
     <script>
         const DEFAULT_YEARS = {
-            "1º Ano (MTEC)": [
+            "2º Ano (MTEC)": [
+                "Introdução à Administração, Legislação e Pessoas",
+                "Matemática Aplicada à Administração"
+            ],
+            "3º Ano (MTEC)": [
                 "Marketing Estratégico",
                 "Comunicação Empresarial",
                 "Gestão Financeira e Contabilidade",
                 "Gestão de Operações",
                 "Empreendedorismo e Desenvolvimento de Negócios"
-            ],
-            "2º Ano (MTEC)": [
-                "Introdução à Administração, Legislação e Pessoas",
-                "Matemática Aplicada à Administração"
             ]
         };
 
@@ -502,13 +502,13 @@
                 discSelect.appendChild(opt);
             });
 
-            if (selectedYear.includes("2º")) {
-                if (classroomInput.value === "1º MTEC - Administração" || !classroomInput.value) {
-                    classroomInput.value = "2º MTEC - Administração";
+            if (selectedYear.includes("3º")) {
+                if (classroomInput.value === "2º MTEC - Administração" || !classroomInput.value) {
+                    classroomInput.value = "3º MTEC - Administração";
                 }
             } else {
-                if (classroomInput.value === "2º MTEC - Administração" || !classroomInput.value) {
-                    classroomInput.value = "1º MTEC - Administração";
+                if (classroomInput.value === "3º MTEC - Administração" || !classroomInput.value) {
+                    classroomInput.value = "2º MTEC - Administração";
                 }
             }
 

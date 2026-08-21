@@ -94,17 +94,17 @@ def load_all_schedules() -> List[Dict[str, str]]:
 
 
 def get_organized_metadata(rows: List[Dict[str, str]]) -> Dict[str, Any]:
-    """Organize disciplines and weeks by 1º Ano and 2º Ano."""
-    year_1_disciplines = [
+    """Organize disciplines and weeks by 2º Ano and 3º Ano."""
+    year_2_disciplines = [
+        "Introdução à Administração, Legislação e Pessoas",
+        "Matemática Aplicada à Administração"
+    ]
+    year_3_disciplines = [
         "Marketing Estratégico",
         "Comunicação Empresarial",
         "Gestão Financeira e Contabilidade",
         "Gestão de Operações",
         "Empreendedorismo e Desenvolvimento de Negócios"
-    ]
-    year_2_disciplines = [
-        "Introdução à Administração, Legislação e Pessoas",
-        "Matemática Aplicada à Administração"
     ]
 
     # Dynamically find any extra disciplines
@@ -127,21 +127,20 @@ def get_organized_metadata(rows: List[Dict[str, str]]) -> Dict[str, Any]:
         except Exception:
             return sorted(list(w_list))
 
-    # Build year mapping
-    y1_final = [d for d in year_1_disciplines if d in all_disc_found] or year_1_disciplines
     y2_final = [d for d in year_2_disciplines if d in all_disc_found] or year_2_disciplines
+    y3_final = [d for d in year_3_disciplines if d in all_disc_found] or year_3_disciplines
 
     # Include any remaining
     for d in sorted(list(all_disc_found)):
-        if d not in y1_final and d not in y2_final:
-            y2_final.append(d)
+        if d not in y2_final and d not in y3_final:
+            y3_final.append(d)
 
     sorted_disc_weeks = {d: sort_weeks(discipline_weeks.get(d, [str(i) for i in range(1, 29)])) for d in all_disc_found}
 
     return {
         "years": {
-            "1º Ano (MTEC)": y1_final,
-            "2º Ano (MTEC)": y2_final
+            "2º Ano (MTEC)": y2_final,
+            "3º Ano (MTEC)": y3_final
         },
         "discipline_weeks": sorted_disc_weeks,
         "all_weeks": [str(i) for i in range(1, 29)]
@@ -396,16 +395,16 @@ def initial_data():
         return jsonify({"success": True, **meta})
     except Exception as e:
         return jsonify({"success": True, "years": {
-            "1º Ano (MTEC)": [
+            "2º Ano (MTEC)": [
+                "Introdução à Administração, Legislação e Pessoas",
+                "Matemática Aplicada à Administração"
+            ],
+            "3º Ano (MTEC)": [
                 "Marketing Estratégico",
                 "Comunicação Empresarial",
                 "Gestão Financeira e Contabilidade",
                 "Gestão de Operações",
                 "Empreendedorismo e Desenvolvimento de Negócios"
-            ],
-            "2º Ano (MTEC)": [
-                "Introdução à Administração, Legislação e Pessoas",
-                "Matemática Aplicada à Administração"
             ]
         }, "all_weeks": [str(i) for i in range(1, 29)]})
 

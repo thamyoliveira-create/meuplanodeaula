@@ -58,11 +58,6 @@
             box-shadow: 0 6px 16px -2px rgba(79, 70, 229, 0.3);
         }
 
-        .hero-banner {
-            text-align: center;
-            padding: 2rem 1rem 1.25rem;
-        }
-
         .app-card {
             background: var(--surface);
             border-radius: var(--radius-lg);
@@ -72,46 +67,44 @@
             margin-bottom: 2rem;
         }
 
-        /* Year Selection Big Cards */
-        .year-card {
+        .select-card {
             border: 2px solid #e2e8f0;
             border-radius: var(--radius-md);
-            padding: 1.1rem 1.3rem;
+            padding: 0.9rem 1.2rem;
             cursor: pointer;
             transition: all 0.2s ease;
             background: #f8fafc;
             user-select: none;
         }
 
-        .year-card:hover {
+        .select-card:hover {
             border-color: #cbd5e1;
             background: #ffffff;
         }
 
-        .year-card.active {
+        .select-card.active {
             border-color: #4f46e5;
             background: #f5f3ff;
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
         }
 
-        .year-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 0.6rem;
+        .select-card.active .card-icon {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .card-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 0.55rem;
             background: #e2e8f0;
             color: #475569;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
         }
 
-        .year-card.active .year-icon {
-            background: var(--primary-gradient);
-            color: white;
-        }
-
-        /* Discipline Chips */
         .discipline-chip {
             border: 1.5px solid #e2e8f0;
             background: #ffffff;
@@ -217,7 +210,6 @@
             color: #0f172a;
         }
 
-        /* Paper Document Layout (Exact School Format) */
         .school-paper-preview {
             background: #ffffff;
             border-radius: var(--radius-lg);
@@ -296,48 +288,72 @@
                 </div>
                 <div>
                     <span class="h6 fw-bold mb-0 text-dark d-block">Plano de Aula Oficial</span>
-                    <small class="text-muted">EE. Prof. Dinora Marcondes Gomes &bull; Cursos Técnicos (2º e 3º Ano)</small>
+                    <small class="text-muted">EE. Prof. Dinora Marcondes Gomes &bull; Cursos Técnicos (Adm e Vendas)</small>
                 </div>
             </div>
             <div class="d-none d-md-flex align-items-center gap-2">
-                <span class="badge bg-light text-secondary border px-3 py-2 rounded-pill">
-                    <i class="bi bi-file-earmark-word text-primary me-1"></i> Modelo .DOC Oficial
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill">
+                    <i class="bi bi-check-circle-fill me-1"></i> Adm e Vendas (2º e 3º Ano)
                 </span>
             </div>
         </div>
     </nav>
 
     <!-- Main Container -->
-    <main class="container my-4 mb-5" style="max-width: 920px;">
+    <main class="container my-4 mb-5" style="max-width: 940px;">
         <section class="app-card no-print">
             <div class="mb-4 pb-2 border-bottom">
                 <h2 class="h4 fw-bold text-dark mb-1">Preenchimento do Plano de Aula</h2>
-                <p class="text-muted small mb-0">Selecione o ano e a disciplina. O desenvolvimento pedagógico da aula é gerado de forma estruturada (Início, Desenvolvimento e Fechamento).</p>
+                <p class="text-muted small mb-0">Selecione o ano, o curso técnico e a disciplina. As habilidades e o plano oficial de 50 minutos são estruturados automaticamente.</p>
             </div>
 
-            <!-- 1. Ano do Curso Técnico -->
-            <div class="mb-4">
-                <label class="form-label text-primary mb-2"><i class="bi bi-mortarboard-fill me-1"></i> 1. Ano do Curso Técnico</label>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="year-card active d-flex align-items-center gap-3" id="card2Ano" onclick="selectYear('2º Ano (MTEC)')">
-                            <div class="year-icon">
-                                <i class="bi bi-briefcase-fill"></i>
+            <!-- 1. Ano e Curso Técnico -->
+            <div class="row g-3 mb-4">
+                <!-- Seletor de Ano -->
+                <div class="col-md-6">
+                    <label class="form-label text-primary mb-2"><i class="bi bi-calendar-range me-1"></i> 1. Ano / Série</label>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="select-card active d-flex align-items-center gap-2" id="card2Ano" onclick="selectYear('2º Ano (MTEC)')">
+                                <div class="card-icon"><i class="bi bi-mortarboard-fill"></i></div>
+                                <div>
+                                    <strong class="d-block small text-dark">2º Ano</strong>
+                                    <small class="text-muted" style="font-size: 0.72rem;">3 Disciplinas</small>
+                                </div>
                             </div>
-                            <div>
-                                <h6 class="fw-bold mb-0 text-dark">2º Ano MTEC</h6>
-                                <small class="text-muted">Administração (Legislação, Pessoas e Matemática)</small>
+                        </div>
+                        <div class="col-6">
+                            <div class="select-card d-flex align-items-center gap-2" id="card3Ano" onclick="selectYear('3º Ano (MTEC)')">
+                                <div class="card-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                                <div>
+                                    <strong class="d-block small text-dark">3º Ano</strong>
+                                    <small class="text-muted" style="font-size: 0.72rem;">6 Disciplinas</small>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="year-card d-flex align-items-center gap-3" id="card3Ano" onclick="selectYear('3º Ano (MTEC)')">
-                            <div class="year-icon">
-                                <i class="bi bi-graph-up-arrow"></i>
+                </div>
+
+                <!-- Seletor de Curso -->
+                <div class="col-md-6">
+                    <label class="form-label text-primary mb-2"><i class="bi bi-briefcase-fill me-1"></i> 2. Curso Técnico</label>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="select-card active d-flex align-items-center gap-2" id="cardAdm" onclick="selectCourse('Administração')">
+                                <div class="card-icon"><i class="bi bi-building"></i></div>
+                                <div>
+                                    <strong class="d-block small text-dark">Administração</strong>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Técnico ADM</small>
+                                </div>
                             </div>
-                            <div>
-                                <h6 class="fw-bold mb-0 text-dark">3º Ano MTEC</h6>
-                                <small class="text-muted">Administração & Vendas (Marketing, Finanças, Operações)</small>
+                        </div>
+                        <div class="col-6">
+                            <div class="select-card d-flex align-items-center gap-2" id="cardVendas" onclick="selectCourse('Vendas')">
+                                <div class="card-icon"><i class="bi bi-cart-check-fill"></i></div>
+                                <div>
+                                    <strong class="d-block small text-dark">Vendas</strong>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Técnico Vendas</small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -346,7 +362,10 @@
 
             <!-- 2. Disciplinas (Interactive Chips) -->
             <div class="mb-4">
-                <label class="form-label text-primary mb-2"><i class="bi bi-book-half me-1"></i> 2. Disciplina (Componente Curricular)</label>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label text-primary mb-0"><i class="bi bi-book-half me-1"></i> 3. Disciplina (Componente Curricular)</label>
+                    <span class="badge bg-light text-secondary border small" id="disciplineCountBadge">3 disciplinas disponíveis</span>
+                </div>
                 <div class="d-flex flex-wrap gap-2" id="disciplineChipsContainer">
                     <!-- Populated dynamically -->
                 </div>
@@ -382,7 +401,7 @@
             <!-- Live Week Topic Preview -->
             <div class="live-preview-pill d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div>
-                    <span class="badge bg-success text-white px-2 py-1 rounded-pill small me-1"><i class="bi bi-check2-circle"></i> Conteúdo Oficial</span>
+                    <span class="badge bg-success text-white px-2 py-1 rounded-pill small me-1"><i class="bi bi-check2-circle"></i> Conteúdo Localizado</span>
                     <strong class="text-success-emphasis" id="weekTopicTitle">Carregando tema da semana...</strong>
                     <div class="text-muted small mt-1" id="weekLessonsCount">4 aulas planejadas para esta semana</div>
                 </div>
@@ -500,47 +519,68 @@
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Load Curriculum Dataset -->
+    <!-- Load Complete Curriculum Dataset -->
     <script src="/curriculum_data.js"></script>
 
     <script>
-        const DISCIPLINES_BY_YEAR = {
-            "2º Ano (MTEC)": [
-                { name: "Introdução à Administração, Legislação e Pessoas", icon: "bi-people-fill" },
-                { name: "Matemática Aplicada à Administração", icon: "bi-calculator-fill" }
-            ],
-            "3º Ano (MTEC)": [
-                { name: "Marketing Estratégico", icon: "bi-megaphone-fill" },
-                { name: "Comunicação Empresarial", icon: "bi-chat-dots-fill" },
-                { name: "Gestão Financeira e Contabilidade", icon: "bi-cash-coin" },
-                { name: "Gestão de Operações", icon: "bi-gear-wide-connected" },
-                { name: "Empreendedorismo e Desenvolvimento de Negócios", icon: "bi-rocket-takeoff-fill" }
-            ]
+        // Matrix of Disciplines: 3 in 2º Ano (Adm & Vendas) and 6 in 3º Ano (Adm & Vendas)
+        const CURRICULUM_MATRIX = {
+            "2º Ano (MTEC)": {
+                "Administração": [
+                    { name: "Introdução à Administração, Legislação e Pessoas", icon: "bi-people-fill" },
+                    { name: "Matemática Aplicada à Administração", icon: "bi-calculator-fill" },
+                    { name: "Autoconhecimento e Orientação Profissional", icon: "bi-person-check-fill" }
+                ],
+                "Vendas": [
+                    { name: "Comportamento, Legislação e Direito do Consumidor", icon: "bi-shield-check" },
+                    { name: "Comunicação Empresarial e Introdução a Vendas", icon: "bi-chat-quote-fill" },
+                    { name: "Autoconhecimento e Orientação Profissional", icon: "bi-person-check-fill" }
+                ]
+            },
+            "3º Ano (MTEC)": {
+                "Administração": [
+                    { name: "Marketing Estratégico", icon: "bi-megaphone-fill" },
+                    { name: "Comunicação Empresarial", icon: "bi-chat-dots-fill" },
+                    { name: "Gestão Financeira e Contabilidade", icon: "bi-cash-coin" },
+                    { name: "Gestão de Operações", icon: "bi-gear-wide-connected" },
+                    { name: "Empreendedorismo e Desenvolvimento de Negócios", icon: "bi-rocket-takeoff-fill" },
+                    { name: "Projeto Multidisciplinar", icon: "bi-kanban-fill" }
+                ],
+                "Vendas": [
+                    { name: "Marketing", icon: "bi-megaphone-fill" },
+                    { name: "Matemática Básica e Gestão de Investimentos em Vendas", icon: "bi-calculator-fill" },
+                    { name: "Planejamento de Vendas", icon: "bi-calendar-check-fill" },
+                    { name: "Processo Comercial, Métodos de Prospecção e Qualificação", icon: "bi-funnel-fill" },
+                    { name: "Tecnologias Digitais Aplicadas a Vendas", icon: "bi-laptop-fill" },
+                    { name: "Projeto Multidisciplinar", icon: "bi-kanban-fill" }
+                ]
+            }
         };
 
         let currentYear = "2º Ano (MTEC)";
+        let currentCourse = "Administração";
         let currentDiscipline = "Introdução à Administração, Legislação e Pessoas";
 
-        // Coherent lesson development with 1-2 Lemov techniques
+        // Coherent lesson development for 50-minute periods with 1-2 Lemov techniques
         function buildCoherentDevelopment(discipline, tema) {
             const discLower = (discipline || "").toLowerCase();
             const temaClean = tema || "o conteúdo programático";
 
-            if (discLower.includes("matemática") || discLower.includes("financeira") || discLower.includes("contabilidade")) {
+            if (discLower.includes("matemática") || discLower.includes("financeira") || discLower.includes("contabilidade") || discLower.includes("investimentos")) {
                 return {
                     estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e aplicação da técnica 'Faça Agora' (Do Now), com um exercício rápido de 3 a 5 minutos na lousa envolvendo situações cotidianas para ativar o raciocínio matemático dos alunos.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Apresentação do conceito pelo professor e demonstração prática do cálculo através da 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz). Em seguida, os alunos realizam exercícios dirigidos com apoio do professor.\n\n• Fechamento (5 a 10 min): Correção de dúvidas recorrentes, síntese da fórmula/procedimento utilizado e checagem rápida de retenção da turma.`,
                     recursos: `Lousa, projetor multimídia, folha de atividades dirigidas, calculadoras e material didático.`,
                     avaliacao: `Avaliação formativa e contínua, observando a participação nas atividades, a resolução correta dos cálculos e a capacidade de aplicação em situações-problema.`
                 };
-            } else if (discLower.includes("marketing") || discLower.includes("vendas") || discLower.includes("comunicação") || discLower.includes("negócios")) {
+            } else if (discLower.includes("marketing") || discLower.includes("vendas") || discLower.includes("comunicação") || discLower.includes("negócios") || discLower.includes("prospecção") || discLower.includes("comercial")) {
                 return {
                     estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e apresentação de um 'Gancho Inicial' (Hook) com um exemplo prático ou case de mercado relacionado a ${temaClean}, despertando o interesse da turma.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Explanação dialogada dos conceitos teóricos. Em seguida, aplicação da técnica 'Vire e Converse' (Turn and Talk) em duplas para debaterem rapidamente uma tomada de decisão sobre a situação-problema apresentada.\n\n• Fechamento (5 a 10 min): Compartilhamento das ideias principais das duplas, síntese do professor e alinhamento com a prática profissional.`,
                     recursos: `Projetor multimídia, computadores do laboratório, estudos de casos empresariais e material de apoio impresso/digital.`,
-                    avaliacao: `Avaliação processual baseada na participação ativa nas discussões, na clareza da argumentação técnica durante os debates e na entrega da análise de caso.`
+                    avaliacao: `Avaliação processual baseada na participação ativa nas discussões, na clareza da argumentação técnica durante os debates e no engajamento na aula.`
                 };
             } else {
                 return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e contextualização rápida da temática sobre ${temaClean}. Aplicação da técnica 'Faça Agora' (Do Now) com uma pergunta problematizadora sobre a rotina da empresa.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Mediação teórica pelo professor articulando a legislação e os procedimentos organizacionais. Aplicação da técnica 'Todos Escrevem' (Everybody Writes), com registro individual de 3 minutos para estruturar a solução antes do alinhamento coletivo.\n\n• Fechamento (5 a 10 min): Retomada dos conceitos principais trabalhados, esclarecimento pontual de dúvidas e sistematização da rotina administrativa.`,
+                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e contextualização rápida da temática sobre ${temaClean}. Aplicação da técnica 'Faça Agora' (Do Now) com uma pergunta problematizadora sobre a rotina profissional.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Mediação teórica pelo professor articulando a legislação e os procedimentos organizacionais. Aplicação da técnica 'Todos Escrevem' (Everybody Writes), com registro individual de 3 minutos para estruturar a solução antes do alinhamento coletivo.\n\n• Fechamento (5 a 10 min): Retomada dos conceitos principais trabalhados, esclarecimento pontual de dúvidas e sistematização da rotina desenvolvida.`,
                     recursos: `Quadro, projetor multimídia, cenários simulados de rotinas administrativas, material de apoio e legislação comentada.`,
                     avaliacao: `Avaliação formativa, considerando a pontualidade, a postura profissional, o engajamento nas simulações e a precisão técnica nas produções escritas.`
                 };
@@ -551,22 +591,32 @@
             currentYear = year;
             document.getElementById('card2Ano').classList.toggle('active', year.includes('2º'));
             document.getElementById('card3Ano').classList.toggle('active', year.includes('3º'));
-
-            const classroomInput = document.getElementById('classroom');
-            if (year.includes('3º')) {
-                classroomInput.value = "3º MTEC - Administração";
-            } else {
-                classroomInput.value = "2º MTEC - Administração";
-            }
-
+            updateClassroomValue();
             renderDisciplineChips();
+        }
+
+        function selectCourse(course) {
+            currentCourse = course;
+            document.getElementById('cardAdm').classList.toggle('active', course === 'Administração');
+            document.getElementById('cardVendas').classList.toggle('active', course === 'Vendas');
+            updateClassroomValue();
+            renderDisciplineChips();
+        }
+
+        function updateClassroomValue() {
+            const classroomInput = document.getElementById('classroom');
+            const prefix = currentYear.includes('3º') ? '3º MTEC' : '2º MTEC';
+            classroomInput.value = `${prefix} - ${currentCourse}`;
         }
 
         function renderDisciplineChips() {
             const container = document.getElementById('disciplineChipsContainer');
+            const countBadge = document.getElementById('disciplineCountBadge');
             container.innerHTML = '';
 
-            const list = DISCIPLINES_BY_YEAR[currentYear] || [];
+            const list = (CURRICULUM_MATRIX[currentYear] && CURRICULUM_MATRIX[currentYear][currentCourse]) || [];
+            countBadge.textContent = `${list.length} disciplinas disponíveis`;
+
             if (list.length > 0) {
                 currentDiscipline = list[0].name;
             }
@@ -609,7 +659,7 @@
             topicBox.textContent = `${currentDiscipline} &bull; ${firstLine}`;
             
             const lessonLines = data.conteudo.split('\n').filter(l => l.startsWith('•'));
-            lessonsCount.textContent = `${lessonLines.length || 4} aulas programadas com habilidades oficiais`;
+            lessonsCount.textContent = `${lessonLines.length || 4} aulas programadas com habilidades oficiais (50 min/aula)`;
         }
 
         function getLessonData() {
@@ -625,7 +675,7 @@
 
                 rows = window.CURRICULUM_DATA.filter(r => {
                     const rWeek = String(r.Semana || '').trim();
-                    const rDisc = String(r['Nome do componente'] || '').toLowerCase().trim();
+                    const rDisc = String(r['Nome do componente'] || r['Unidade curricular'] || '').toLowerCase().trim();
                     return rWeek === wTarget && (rDisc.includes(dTarget) || dTarget.includes(rDisc));
                 });
             }
@@ -644,10 +694,10 @@
                 const ht = r['Habilidades técnicas'] || r['Habilidade técnica'];
                 if (ht) habTecnicas.add(`• ${ht.trim()}`);
 
-                const hs = r['Habildades socioemocionais'] || r['Competências Socioemocionais '] || r['Competências Socioemocionais'];
+                const hs = r['Habildades socioemocionais'] || r['Competências Socioemocionais '] || r['Competências Socioemocionais'] || r['Habilidades socioemocionais'];
                 if (hs) habSocio.add(`• ${hs.trim()}`);
 
-                const oc = r['Objeto de conhecimento'];
+                const oc = r['Objeto de conhecimento'] || r['Objeto de conhecimento – macro'];
                 if (oc) objConhecimento.add(`• ${oc.trim()}`);
 
                 const obj = r['Objetivo da aula'] || r['Objetivos da aula'];
@@ -657,7 +707,7 @@
             const temaStr = Array.from(temas).join(' | ') || `Semana ${week}`;
             const conteudoStr = aulasTitles.length ? `Tema: ${temaStr}\n\n` + aulasTitles.join('\n') : `Tema: ${temaStr}`;
             
-            let habStr = habTecnicas.size ? `Habilidades Técnicas:\n${Array.from(habTecnicas).join('\n')}` : `Desenvolver as competências técnicas previstas no currículo.`;
+            let habStr = habTecnicas.size ? `Habilidades Técnicas:\n${Array.from(habTecnicas).join('\n')}` : `Desenvolver as competências técnicas previstas no currículo do curso técnico.`;
             if (habSocio.size) {
                 habStr += `\n\nHabilidades Socioemocionais:\n${Array.from(habSocio).join('\n')}`;
             }
@@ -673,7 +723,7 @@
                 habilidades: habStr,
                 objetos: objConhecimento.size ? Array.from(objConhecimento).join('\n') : "Conceitos fundamentais e aplicados da disciplina.",
                 conteudo: conteudoStr,
-                objetivos: objetivos.length ? objetivos.join('\n') : "Compreender e aplicar os conhecimentos técnicos abordados.",
+                objetivos: objetivos.length ? objetivos.join('\n') : "Compreender e aplicar os conhecimentos técnicos abordados na prática.",
                 estrategias: pedagogy.estrategias,
                 recursos: pedagogy.recursos,
                 avaliacao: pedagogy.avaliacao,

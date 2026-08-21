@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plano de Aula &bull; Gerador com Metodologias de Lemov</title>
-    <!-- Google Fonts Inter -->
+    <!-- Google Fonts Inter / Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -117,11 +117,6 @@
             outline: none;
         }
 
-        .form-control::placeholder {
-            color: #94a3b8;
-            font-size: 0.88rem;
-        }
-
         .btn-main {
             background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
             color: #ffffff;
@@ -135,6 +130,7 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            cursor: pointer;
         }
 
         .btn-main:hover {
@@ -156,6 +152,7 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            cursor: pointer;
         }
 
         .btn-outline-clean:hover {
@@ -315,11 +312,11 @@
                 <div>
                     <span class="section-tag"><i class="bi bi-stars"></i> Metodologias Inteligentes de Lemov</span>
                     <h2 class="h4 fw-bold text-dark mb-1">Criar Novo Plano de Aula</h2>
-                    <p class="text-muted small mb-0">O sistema seleciona automaticamente as <strong>técnicas pedagógicas de Lemov e metodologias ativas</strong> mais adequadas para o conteúdo da aula.</p>
+                    <p class="text-muted small mb-0">Selecione o ano e a disciplina. As habilidades e as <strong>técnicas pedagógicas de Lemov</strong> são estruturadas automaticamente.</p>
                 </div>
             </div>
 
-            <form id="planForm" action="/api/generate" method="POST" enctype="multipart/form-data">
+            <form id="planForm" onsubmit="event.preventDefault(); downloadDocument();">
                 <div class="row g-3">
                     <!-- 1. Ano do Curso Técnico (Seletor Principal) -->
                     <div class="col-md-6">
@@ -347,7 +344,7 @@
                         <label for="teacher" class="form-label">
                             <i class="bi bi-person me-1 text-primary"></i> Nome do(a) Professor(a)
                         </label>
-                        <input type="text" class="form-control" id="teacher" name="teacher" placeholder="Ex: Prof. Thamy Oliveira" required>
+                        <input type="text" class="form-control" id="teacher" name="teacher" placeholder="Ex: Prof. Thamy Oliveira" value="Prof. Thamy Oliveira" required>
                     </div>
 
                     <!-- 4. Período / Data -->
@@ -355,7 +352,7 @@
                         <label for="period" class="form-label">
                             <i class="bi bi-calendar3 me-1 text-primary"></i> Período de Realização / Data
                         </label>
-                        <input type="text" class="form-control" id="period" name="period" placeholder="Ex: Semana de 24 a 28 de Fevereiro" required>
+                        <input type="text" class="form-control" id="period" name="period" placeholder="Ex: Semana de 24 a 28 de Fevereiro" value="Semana de 24 a 28 de Fevereiro" required>
                     </div>
 
                     <!-- 5. Turma -->
@@ -377,33 +374,12 @@
                     </div>
                 </div>
 
-                <!-- Custom Files Collapse (Minimalist) -->
-                <div class="mt-3">
-                    <button class="btn btn-link text-decoration-none text-muted p-0 small" type="button" data-bs-toggle="collapse" data-bs-target="#advancedFiles">
-                        <i class="bi bi-gear me-1"></i> Deseja usar outra planilha ou modelo Word personalizado? (Opcional)
-                    </button>
-                    <div id="advancedFiles" class="collapse mt-2">
-                        <div class="p-3 bg-light rounded-3 border">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label small">Enviar outra Planilha (.xlsx ou .csv)</label>
-                                    <input type="file" class="form-control form-control-sm" id="customSpreadsheet" name="custom_spreadsheet" accept=".xlsx, .xls, .csv">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label small">Enviar outro Modelo Word (.docx)</label>
-                                    <input type="file" class="form-control form-control-sm" id="customTemplate" name="custom_template" accept=".docx">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Action Buttons -->
                 <div class="d-flex flex-wrap gap-2 mt-4 pt-3 border-top">
-                    <button type="submit" class="btn-main" id="btnDownload">
-                        <i class="bi bi-download"></i> Baixar Word (.docx)
+                    <button type="button" class="btn-main" id="btnDownload" onclick="downloadDocument()">
+                        <i class="bi bi-file-earmark-word"></i> Baixar Word (.doc / .docx)
                     </button>
-                    <button type="button" class="btn-outline-clean" id="btnPreview">
+                    <button type="button" class="btn-outline-clean" id="btnPreview" onclick="generatePreview()">
                         <i class="bi bi-eye"></i> Pré-visualizar na Tela
                     </button>
                 </div>
@@ -468,6 +444,9 @@
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Load Curriculum Dataset -->
+    <script src="/curriculum_data.js"></script>
+
     <script>
         const DEFAULT_YEARS = {
             "2º Ano (MTEC)": [
@@ -483,24 +462,30 @@
             ]
         };
 
-        let courseData = {
-            years: DEFAULT_YEARS,
-            all_weeks: Array.from({length: 28}, (_, i) => String(i+1))
-        };
+        // --- Lemov Pedagogical Selection Engine in JS ---
+        function getLemovMethodology(discipline, titles, objectives) {
+            const discLower = (discipline || "").toLowerCase();
+            const textContent = (titles.join(" ") + " " + objectives.join(" ")).toLowerCase();
 
-        async function loadInitialData() {
-            try {
-                const res = await fetch('/api/initial-data');
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.success && data.years) {
-                        courseData = data;
-                    }
-                }
-            } catch (err) {
-                console.log("Usando base de dados integrada.");
+            if (discLower.includes("matemática") || discLower.includes("financeira") || discLower.includes("contabilidade") || textContent.includes("cálculo")) {
+                return {
+                    estrategia: "Metodologia Ativa Central:\nModelagem Gradual (Eu Faço, Nós Fazemos, Você Faz) e Aprendizagem Baseada em Problemas (PBL)\n\nTécnicas de Ensino Estruturadas (Doug Lemov - Aula Nota 10):\n• Faça Agora (Do Now): Exercício rápido de aquecimento de 3 a 5 min para ativar o raciocínio lógico.\n• Modelagem Gradual (I Do, We Do, You Do): Demonstração passo a passo do cálculo na lousa, resolução conjunta e prática autônoma individual.\n• Padronize o Formato: Organização estruturada do raciocínio matemático no caderno.\n• Circule pela Sala: Monitoramento ativo das etapas de cálculo com intervenções pontuais.\n• Bilhete de Saída (Exit Ticket): Mini-desafio final de 3 minutos para checagem imediata de retenção.",
+                    recursos: "Lousa interativa/quadro, folhas de atividades práticas dirigidas, calculadoras e formulários de exercícios estruturados.",
+                    avaliacao: "Avaliação formativa processual com aplicação do 'Certo é Certo' (correção de etapas) e conferência do 'Bilhete de Saída'."
+                };
+            } else if (discLower.includes("marketing") || discLower.includes("vendas") || discLower.includes("comunicação") || discLower.includes("negócios")) {
+                return {
+                    estrategia: "Metodologia Ativa Central:\nEstudo de Casos Empresariais Reais (PBL), Aprendizagem por Pares e Design de Estratégias\n\nTécnicas de Ensino Estruturadas (Doug Lemov - Aula Nota 10):\n• Gancho Inicial (Hook): Apresentação de um case ou campanha de mercado instigante nos primeiros minutos.\n• Vire e Converse (Turn and Talk): Debate rápido em duplas para gerar hipóteses de mercado antes da discussão plenária.\n• Puxe Mais (Stretch It): Perguntas de aprofundamento aos alunos que respondem corretamente para expandir a visão crítica.\n• Mostre e Conte (Show Call): Projeção de soluções e pitches dos alunos para análise construtiva coletiva.\n• Formato Importa: Estímulo à comunicação oral e escrita com vocabulário técnico de marketing e negócios.",
+                    recursos: "Projetor multimídia, computadores do laboratório com acesso a estudos de casos reais, material de apoio e ambiente virtual.",
+                    avaliacao: "Avaliação contínua por rubricas: análise crítica nos estudos de caso, qualidade da argumentação técnica e participação cooperativa."
+                };
+            } else {
+                return {
+                    estrategia: "Metodologia Ativa Central:\nSimulação de Rotinas Organizacionais, Análise Crítica de Cenários e Sala de Aula Invertida\n\nTécnicas de Ensino Estruturadas (Doug Lemov - Aula Nota 10):\n• Faça Agora (Do Now): Situação-problema inicial sobre dilemas da rotina empresarial/jurídica.\n• Todos Escrevem (Everybody Writes): Tempo individual cronometrado para os alunos registrarem soluções antes do debate.\n• Sem Escapatória (No Opt Out): Garantir que todo aluno participe ativamente e reformule a resposta até atingir o rigor técnico.\n• Chamada Fria (Cold Call): Perguntas dirigidas de forma acolhedora para manter o foco e engajamento uniforme de toda a turma.\n• Certo é Certo (Right is Right): Exigência de conformidade às normas legais (ex: CLT, LGPD) e procedimentos organizacionais.",
+                    recursos: "Lousa digital, cenários simulados de departamento de RH e gestão, legislação comentada e formulários administrativos.",
+                    avaliacao: "Acompanhamento formativo diário, verificação das produções escritas individuais e assertividade na aplicação das rotinas administrativas."
+                };
             }
-            onYearChange();
         }
 
         function onYearChange() {
@@ -509,10 +494,7 @@
             const classroomInput = document.getElementById('classroom');
             const selectedYear = yearSelect.value;
 
-            const disciplines = (courseData.years && courseData.years[selectedYear]) 
-                ? courseData.years[selectedYear] 
-                : DEFAULT_YEARS[selectedYear] || [];
-
+            const disciplines = DEFAULT_YEARS[selectedYear] || [];
             discSelect.innerHTML = '';
             disciplines.forEach(d => {
                 const opt = document.createElement('option');
@@ -522,120 +504,213 @@
             });
 
             if (selectedYear.includes("3º")) {
-                if (classroomInput.value === "2º MTEC - Administração" || !classroomInput.value) {
-                    classroomInput.value = "3º MTEC - Administração";
-                }
+                classroomInput.value = "3º MTEC - Administração";
             } else {
-                if (classroomInput.value === "3º MTEC - Administração" || !classroomInput.value) {
-                    classroomInput.value = "2º MTEC - Administração";
-                }
+                classroomInput.value = "2º MTEC - Administração";
             }
 
             updateWeeksDropdown();
         }
 
         function updateWeeksDropdown() {
-            const discipline = document.getElementById('discipline').value;
             const weekSelect = document.getElementById('week');
             const currentWeek = weekSelect.value || "1";
-
-            const weeks = (courseData.discipline_weeks && courseData.discipline_weeks[discipline]) 
-                ? courseData.discipline_weeks[discipline] 
-                : (courseData.all_weeks || Array.from({length: 28}, (_, i) => String(i+1)));
-
             weekSelect.innerHTML = '';
-            weeks.forEach(w => {
+
+            for (let i = 1; i <= 28; i++) {
                 const opt = document.createElement('option');
-                opt.value = w;
-                opt.textContent = `Semana ${w}`;
-                if (w === currentWeek) opt.selected = true;
+                opt.value = String(i);
+                opt.textContent = `Semana ${i}`;
+                if (String(i) === currentWeek) opt.selected = true;
                 weekSelect.appendChild(opt);
-            });
-            if (!weekSelect.value && weeks.length > 0) {
-                weekSelect.value = weeks[0];
             }
         }
 
-        document.getElementById('btnPreview').addEventListener('click', async function() {
-            const teacher = document.getElementById('teacher').value.trim();
-            const period = document.getElementById('period').value.trim();
-            const classroom = document.getElementById('classroom').value.trim();
+        function getLessonDataFromForm() {
+            const teacher = document.getElementById('teacher').value.trim() || "Prof. Thamy Oliveira";
+            const period = document.getElementById('period').value.trim() || "Semana de 24 a 28 de Fevereiro";
+            const classroom = document.getElementById('classroom').value.trim() || "2º MTEC - Administração";
             const discipline = document.getElementById('discipline').value;
             const week = document.getElementById('week').value;
 
-            if (!teacher || !period || !classroom || !week) {
-                showAlert("Por favor, preencha o Nome do Professor, Data/Período, Turma e Semana.");
-                return;
+            let rows = [];
+            if (window.CURRICULUM_DATA && Array.isArray(window.CURRICULUM_DATA)) {
+                const dTarget = discipline.toLowerCase().trim();
+                const wTarget = String(week).trim();
+
+                rows = window.CURRICULUM_DATA.filter(r => {
+                    const rWeek = String(r.Semana || '').trim();
+                    const rDisc = String(r['Nome do componente'] || '').toLowerCase().trim();
+                    return rWeek === wTarget && (rDisc.includes(dTarget) || dTarget.includes(rDisc));
+                });
             }
 
-            const btn = document.getElementById('btnPreview');
-            btn.disabled = true;
-            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Analisando com IA...`;
+            const aulasTitles = [];
+            const temas = new Set();
+            const habTecnicas = new Set();
+            const habSocio = new Set();
+            const objConhecimento = new Set();
+            const objetivos = [];
 
-            const form = document.getElementById('planForm');
-            const formData = new FormData(form);
+            rows.forEach(r => {
+                if (r['Tema da semana']) temas.add(r['Tema da semana'].trim());
+                if (r['Título da aula']) aulasTitles.push(`• ${r['Título da aula'].trim()}`);
+                
+                const ht = r['Habilidades técnicas'] || r['Habilidade técnica'];
+                if (ht) habTecnicas.add(`• ${ht.trim()}`);
 
-            try {
-                const res = await fetch('/api/preview-plan', { method: 'POST', body: formData });
-                const result = await res.json();
+                const hs = r['Habildades socioemocionais'] || r['Competências Socioemocionais '] || r['Competências Socioemocionais'];
+                if (hs) habSocio.add(`• ${hs.trim()}`);
 
-                if (!result.success) {
-                    showAlert(result.error || "Erro ao gerar pré-visualização.");
-                } else {
-                    document.getElementById('alertBox').classList.add('d-none');
-                    document.getElementById('prevTeacher').textContent = teacher;
-                    document.getElementById('prevDiscipline').textContent = discipline;
-                    document.getElementById('prevClassroom').textContent = classroom;
-                    document.getElementById('prevPeriod').textContent = period;
+                const oc = r['Objeto de conhecimento'];
+                if (oc) objConhecimento.add(`• ${oc.trim()}`);
 
-                    const fieldsDiv = document.getElementById('previewFields');
-                    fieldsDiv.innerHTML = '';
+                const obj = r['Objetivo da aula'] || r['Objetivos da aula'];
+                if (obj) objetivos.push(`• ${obj.trim()}`);
+            });
 
-                    const sections = [
-                        { label: '5. Habilidades (Técnicas e Socioemocionais)', value: result.data.habilidades, isLemov: false },
-                        { label: '6. Objetos de Conhecimento', value: result.data.objetos, isLemov: false },
-                        { label: '7. Conteúdo das Aulas', value: result.data.conteudo, isLemov: false },
-                        { label: '8. Objetivos das Aulas', value: result.data.objetivos, isLemov: false },
-                        { label: '9. Estratégias (Metodologias Ativas & Técnicas de Doug Lemov)', value: result.data.estrategias, isLemov: true },
-                        { label: '10. Recursos Didáticos', value: result.data.recursos, isLemov: false },
-                        { label: '11. Critérios de Avaliação Formativa', value: result.data.avaliacao, isLemov: false },
-                        { label: '12. Referências Bibliográficas', value: result.data.referencias, isLemov: false }
-                    ];
-
-                    sections.forEach(sec => {
-                        const card = document.createElement('div');
-                        card.className = `content-card ${sec.isLemov ? 'content-card-lemov' : ''}`;
-                        card.innerHTML = `
-                            <div class="content-card-title ${sec.isLemov ? 'text-warning-emphasis' : ''}">
-                                ${sec.isLemov ? '<i class="bi bi-stars me-1 text-warning"></i>' : ''}
-                                ${sec.label}
-                            </div>
-                            <div class="content-card-body">${sec.value || 'Não informado'}</div>
-                        `;
-                        fieldsDiv.appendChild(card);
-                    });
-
-                    const prevArea = document.getElementById('previewArea');
-                    prevArea.classList.remove('d-none');
-                    prevArea.scrollIntoView({ behavior: 'smooth' });
-                }
-            } catch (err) {
-                showAlert("Erro ao conectar com o servidor.");
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="bi bi-eye"></i> Pré-visualizar na Tela`;
+            const temaStr = Array.from(temas).join(' | ') || `Semana ${week}`;
+            const conteudoStr = aulasTitles.length ? `Tema da Semana: ${temaStr}\n\nAulas Previstas:\n${aulasTitles.join('\n')}` : `Tema: ${temaStr}`;
+            
+            let habStr = habTecnicas.size ? `Habilidades Técnicas:\n${Array.from(habTecnicas).join('\n')}` : `Desenvolver as competências técnicas previstas no currículo do componente.`;
+            if (habSocio.size) {
+                habStr += `\n\nHabilidades Socioemocionais:\n${Array.from(habSocio).join('\n')}`;
             }
-        });
 
-        function showAlert(msg, type = 'danger') {
-            const alertBox = document.getElementById('alertBox');
-            alertBox.className = `alert alert-${type} alert-dismissible fade show no-print`;
-            alertBox.innerHTML = `<span>${msg}</span><button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
-            alertBox.classList.remove('d-none');
-            alertBox.scrollIntoView({ behavior: 'smooth' });
+            const lemov = getLemovMethodology(discipline, aulasTitles, objetivos);
+
+            return {
+                professor: teacher,
+                disciplina: discipline,
+                turma: classroom,
+                periodo: period,
+                semana: week,
+                habilidades: habStr,
+                objetos: objConhecimento.size ? Array.from(objConhecimento).join('\n') : "Conceitos fundamentais e marcos do componente curricular.",
+                conteudo: conteudoStr,
+                objetivos: objetivos.length ? objetivos.join('\n') : "Compreender, analisar e aplicar os conceitos apresentados.",
+                estrategias: lemov.estrategia,
+                recursos: lemov.recursos,
+                avaliacao: lemov.avaliacao,
+                referencias: "Diretrizes Curriculares da Educação Profissional Técnica - SEDUC-SP; LEMOV, Doug. Aula Nota 10 3.0: 63 técnicas para melhorar a gestão da sala de aula."
+            };
         }
 
-        window.addEventListener('DOMContentLoaded', loadInitialData);
+        function generatePreview() {
+            const data = getLessonDataFromForm();
+
+            document.getElementById('prevTeacher').textContent = data.professor;
+            document.getElementById('prevDiscipline').textContent = data.disciplina;
+            document.getElementById('prevClassroom').textContent = data.turma;
+            document.getElementById('prevPeriod').textContent = data.periodo;
+
+            const fieldsDiv = document.getElementById('previewFields');
+            fieldsDiv.innerHTML = '';
+
+            const sections = [
+                { label: '5. Habilidades (Técnicas e Socioemocionais)', value: data.habilidades, isLemov: false },
+                { label: '6. Objetos de Conhecimento', value: data.objetos, isLemov: false },
+                { label: '7. Conteúdo das Aulas', value: data.conteudo, isLemov: false },
+                { label: '8. Objetivos das Aulas', value: data.objetivos, isLemov: false },
+                { label: '9. Estratégias (Metodologias Ativas & Técnicas de Doug Lemov)', value: data.estrategias, isLemov: true },
+                { label: '10. Recursos Didáticos', value: data.recursos, isLemov: false },
+                { label: '11. Critérios de Avaliação Formativa', value: data.avaliacao, isLemov: false },
+                { label: '12. Referências Bibliográficas', value: data.referencias, isLemov: false }
+            ];
+
+            sections.forEach(sec => {
+                const card = document.createElement('div');
+                card.className = `content-card ${sec.isLemov ? 'content-card-lemov' : ''}`;
+                card.innerHTML = `
+                    <div class="content-card-title ${sec.isLemov ? 'text-warning-emphasis' : ''}">
+                        ${sec.isLemov ? '<i class="bi bi-stars me-1 text-warning"></i>' : ''}
+                        ${sec.label}
+                    </div>
+                    <div class="content-card-body">${sec.value}</div>
+                `;
+                fieldsDiv.appendChild(card);
+            });
+
+            const prevArea = document.getElementById('previewArea');
+            prevArea.classList.remove('d-none');
+            prevArea.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Direct Word Document Generator in pure HTML/Office format (Opens in MS Word, Google Docs, Apple Pages)
+        function downloadDocument() {
+            const data = getLessonDataFromForm();
+            const btn = document.getElementById('btnDownload');
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Gerando...`;
+
+            setTimeout(() => {
+                const docHtml = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset='utf-8'>
+                    <title>Plano de Aula - Semana ${data.semana}</title>
+                    <style>
+                        body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #000; }
+                        .header-table { width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 20px; }
+                        .header-table td { padding: 4px; border: none; }
+                        .main-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                        .main-table td { border: 1px solid #000; padding: 8px 10px; vertical-align: top; font-size: 10.5pt; line-height: 1.4; }
+                        .label { font-weight: bold; }
+                        .val { white-space: pre-line; }
+                        h4, h5, h6 { margin: 2px 0; }
+                    </style>
+                </head>
+                <body>
+                    <table class="header-table">
+                        <tr>
+                            <td>
+                                <h5>GOVERNO DO ESTADO DE SÃO PAULO – SECRETARIA DA EDUCAÇÃO</h5>
+                                <h5>DIRETORIA DE ENSINO - REGIÃO DE ARARAQUARA</h5>
+                                <h5>EE. PROF. DINORA MARCONDES GOMES</h5>
+                                <p style="font-size: 9pt; margin: 2px 0;">RUA EMILIA GALLI, 549 - CENTRO - AMÉRICO BRASILIENSE - SP | TEL: (16) 3392-1335</p>
+                                <h4>PLANO DE AULA - 2026 - SEMANA ${data.semana}</h4>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table class="main-table">
+                        <tr><td><span class="label">Professor(a):</span> ${data.professor}</td></tr>
+                        <tr><td><span class="label">Componente curricular:</span> ${data.disciplina}</td></tr>
+                        <tr><td><span class="label">3. Ano/Série/Turma:</span> ${data.turma}</td></tr>
+                        <tr><td><span class="label">4. Período de realização:</span> ${data.periodo}</td></tr>
+                        <tr><td><span class="label">5. Habilidades:</span><div class="val">${data.habilidades}</div></td></tr>
+                        <tr><td><span class="label">6. Objetos de Conhecimento:</span><div class="val">${data.objetos}</div></td></tr>
+                        <tr><td><span class="label">7. Conteúdo:</span><div class="val">${data.conteudo}</div></td></tr>
+                        <tr><td><span class="label">8. Objetivos:</span><div class="val">${data.objetivos}</div></td></tr>
+                        <tr><td><span class="label">9. Estratégias (Metodologias Ativas & Técnicas de Lemov):</span><div class="val">${data.estrategias}</div></td></tr>
+                        <tr><td><span class="label">10. Recursos didáticos:</span><div class="val">${data.recursos}</div></td></tr>
+                        <tr><td><span class="label">11. Critérios de Avaliação:</span><div class="val">${data.avaliacao}</div></td></tr>
+                        <tr><td><span class="label">12. Referências:</span><div class="val">${data.referencias}</div></td></tr>
+                    </table>
+                </body>
+                </html>
+                `;
+
+                const blob = new Blob(['\ufeff', docHtml], {
+                    type: 'application/msword'
+                });
+
+                const cleanDisc = data.disciplina.replace(/[^a-zA-Z0-9]/g, '_');
+                const filename = `Plano_de_Aula_Semana_${data.semana}_${cleanDisc}.doc`;
+
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                btn.innerHTML = `<i class="bi bi-file-earmark-word"></i> Baixar Word (.doc / .docx)`;
+            }, 300);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            onYearChange();
+        });
     </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +19,7 @@
             --primary-gradient: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
             --bg-body: #f8fafc;
             --surface: #ffffff;
+            --surface-secondary: #f8fafc;
             --border-color: #e2e8f0;
             --text-main: #0f172a;
             --text-muted: #64748b;
@@ -27,22 +28,33 @@
             --radius-lg: 1rem;
         }
 
+        [data-bs-theme="dark"] {
+            --bg-body: #090d16;
+            --surface: #131b2e;
+            --surface-secondary: #1a243b;
+            --border-color: #263352;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+        }
+
         body {
             font-family: var(--font-family);
             background-color: var(--bg-body);
             color: var(--text-main);
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .glass-navbar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
+            background: var(--surface);
             border-bottom: 1px solid var(--border-color);
-            padding: 0.9rem 0;
+            padding: 0.85rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .brand-badge {
@@ -58,6 +70,26 @@
             box-shadow: 0 6px 16px -2px rgba(79, 70, 229, 0.3);
         }
 
+        .theme-toggle-btn {
+            background: var(--surface-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 2rem;
+            padding: 0.4rem 0.85rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+        }
+
         .app-card {
             background: var(--surface);
             border-radius: var(--radius-lg);
@@ -65,27 +97,28 @@
             box-shadow: var(--shadow-card);
             padding: 2.25rem;
             margin-bottom: 2rem;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .select-card {
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--border-color);
             border-radius: var(--radius-md);
             padding: 0.9rem 1.2rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            background: #f8fafc;
+            background: var(--surface-secondary);
             user-select: none;
         }
 
         .select-card:hover {
-            border-color: #cbd5e1;
-            background: #ffffff;
+            border-color: #6366f1;
+            transform: translateY(-1px);
         }
 
         .select-card.active {
             border-color: #4f46e5;
-            background: #f5f3ff;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+            background: rgba(79, 70, 229, 0.08);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
         }
 
         .select-card.active .card-icon {
@@ -97,8 +130,8 @@
             width: 38px;
             height: 38px;
             border-radius: 0.55rem;
-            background: #e2e8f0;
-            color: #475569;
+            background: var(--border-color);
+            color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -106,9 +139,9 @@
         }
 
         .discipline-chip {
-            border: 1.5px solid #e2e8f0;
-            background: #ffffff;
-            color: #334155;
+            border: 1.5px solid var(--border-color);
+            background: var(--surface);
+            color: var(--text-main);
             padding: 0.6rem 1rem;
             border-radius: 2rem;
             font-size: 0.88rem;
@@ -122,8 +155,8 @@
         }
 
         .discipline-chip:hover {
-            border-color: #cbd5e1;
-            background: #f8fafc;
+            border-color: #6366f1;
+            background: var(--surface-secondary);
         }
 
         .discipline-chip.active {
@@ -136,30 +169,32 @@
         .form-label {
             font-weight: 700;
             font-size: 0.85rem;
-            color: #334155;
+            color: var(--text-main);
             margin-bottom: 0.35rem;
         }
 
         .form-control, .form-select {
             font-family: var(--font-family);
             border-radius: var(--radius-md);
-            border: 1.5px solid #cbd5e1;
+            border: 1.5px solid var(--border-color);
             padding: 0.7rem 0.95rem;
             font-size: 0.92rem;
             color: var(--text-main);
-            background-color: #ffffff;
+            background-color: var(--surface);
             transition: all 0.2s ease;
         }
 
         .form-control:focus, .form-select:focus {
             border-color: #6366f1;
-            box-shadow: 0 0 0 3.5px rgba(99, 102, 241, 0.12);
+            box-shadow: 0 0 0 3.5px rgba(99, 102, 241, 0.18);
             outline: none;
+            background-color: var(--surface);
+            color: var(--text-main);
         }
 
         .live-preview-pill {
-            background: #ecfdf5;
-            border: 1px solid #a7f3d0;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
             border-radius: var(--radius-md);
             padding: 0.9rem 1.2rem;
             margin-top: 0.75rem;
@@ -189,9 +224,9 @@
         }
 
         .btn-clean {
-            background: #ffffff;
-            color: #334155;
-            border: 1.5px solid #cbd5e1;
+            background: var(--surface);
+            color: var(--text-main);
+            border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
             font-weight: 600;
             font-size: 0.95rem;
@@ -205,34 +240,30 @@
         }
 
         .btn-clean:hover {
-            background: #f8fafc;
+            background: var(--surface-secondary);
             border-color: #94a3b8;
-            color: #0f172a;
+            color: var(--text-main);
         }
 
-        .btn-batch {
-            background: #0f172a;
-            color: white;
-            border: none;
+        /* Recent Plans Cards */
+        .recent-card {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            font-weight: 700;
-            font-size: 0.95rem;
-            padding: 0.85rem 1.4rem;
+            padding: 0.9rem 1.1rem;
             transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
         }
 
-        .btn-batch:hover {
-            background: #1e293b;
-            color: white;
-            transform: translateY(-1px);
+        .recent-card:hover {
+            border-color: #6366f1;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-card);
         }
 
+        /* Official Document Format */
         .school-paper-preview {
             background: #ffffff;
+            color: #000000 !important;
             border-radius: var(--radius-lg);
             border: 1px solid #cbd5e1;
             box-shadow: var(--shadow-card);
@@ -244,6 +275,8 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 1.25rem;
+            background: #ffffff;
+            color: #000000;
         }
 
         .official-table td {
@@ -252,11 +285,12 @@
             vertical-align: top;
             font-size: 0.94rem;
             line-height: 1.55;
+            color: #000000;
         }
 
         .official-table .field-label {
             font-weight: 800;
-            color: #0f172a;
+            color: #000000;
         }
 
         .official-table .field-val {
@@ -300,8 +334,8 @@
         }
 
         .inclusion-box {
-            background: #f0fdfa;
-            border: 1.5px solid #99f6e4;
+            background: rgba(13, 148, 136, 0.08);
+            border: 1.5px solid rgba(13, 148, 136, 0.3);
             border-radius: var(--radius-md);
             padding: 0.9rem 1.2rem;
             margin-top: 1rem;
@@ -309,7 +343,7 @@
 
         @media print {
             .no-print { display: none !important; }
-            body { background: white !important; }
+            body { background: white !important; color: black !important; }
             .school-paper-preview { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
             .official-table td { border: 1px solid #000 !important; page-break-inside: avoid; }
         }
@@ -325,15 +359,17 @@
                     <i class="bi bi-journal-check"></i>
                 </div>
                 <div>
-                    <span class="h6 fw-bold mb-0 text-dark d-block">Plano de Aula Pro</span>
+                    <span class="h6 fw-bold mb-0 d-block">Plano de Aula Pro</span>
                     <small class="text-muted">EE. Prof. Dinora Marcondes Gomes &bull; Cursos Técnicos</small>
                 </div>
             </div>
-            <div class="d-none d-md-flex align-items-center gap-2">
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill">
-                    <i class="bi bi-memory me-1"></i> Memória Ativa
-                </span>
-                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
+            <div class="d-flex align-items-center gap-2">
+                <!-- Theme Toggle Button -->
+                <button type="button" class="theme-toggle-btn" onclick="toggleThemeMode()" id="themeToggleBtn">
+                    <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+                    <span id="themeLabel">Modo Escuro</span>
+                </button>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill d-none d-md-inline-block">
                     <i class="bi bi-check2-circle me-1"></i> Modelo .DOC Oficial
                 </span>
             </div>
@@ -345,8 +381,8 @@
         <section class="app-card no-print">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 pb-2 border-bottom">
                 <div>
-                    <h2 class="h4 fw-bold text-dark mb-1">Preenchimento do Plano de Aula</h2>
-                    <p class="text-muted small mb-0">Selecione o ano, o curso técnico e a disciplina. Seus dados são salvos automaticamente.</p>
+                    <h2 class="h4 fw-bold mb-1">Preenchimento do Plano de Aula</h2>
+                    <p class="text-muted small mb-0">Selecione o ano, o curso técnico e a disciplina. Seus dados e preferências são salvos automaticamente.</p>
                 </div>
                 <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#batchModal">
                     <i class="bi bi-collection-fill me-1"></i> Gerar Bimestre Inteiro
@@ -363,7 +399,7 @@
                             <div class="select-card active d-flex align-items-center gap-2" id="card2Ano" onclick="selectYear('2º Ano (MTEC)')">
                                 <div class="card-icon"><i class="bi bi-mortarboard-fill"></i></div>
                                 <div>
-                                    <strong class="d-block small text-dark">2º Ano</strong>
+                                    <strong class="d-block small">2º Ano</strong>
                                     <small class="text-muted" style="font-size: 0.72rem;">3 Disciplinas</small>
                                 </div>
                             </div>
@@ -372,7 +408,7 @@
                             <div class="select-card d-flex align-items-center gap-2" id="card3Ano" onclick="selectYear('3º Ano (MTEC)')">
                                 <div class="card-icon"><i class="bi bi-graph-up-arrow"></i></div>
                                 <div>
-                                    <strong class="d-block small text-dark">3º Ano</strong>
+                                    <strong class="d-block small">3º Ano</strong>
                                     <small class="text-muted" style="font-size: 0.72rem;">6 Disciplinas</small>
                                 </div>
                             </div>
@@ -388,7 +424,7 @@
                             <div class="select-card active d-flex align-items-center gap-2" id="cardAdm" onclick="selectCourse('Administração')">
                                 <div class="card-icon"><i class="bi bi-building"></i></div>
                                 <div>
-                                    <strong class="d-block small text-dark">Administração</strong>
+                                    <strong class="d-block small">Administração</strong>
                                     <small class="text-muted" style="font-size: 0.72rem;">Técnico ADM</small>
                                 </div>
                             </div>
@@ -397,7 +433,7 @@
                             <div class="select-card d-flex align-items-center gap-2" id="cardVendas" onclick="selectCourse('Vendas')">
                                 <div class="card-icon"><i class="bi bi-cart-check-fill"></i></div>
                                 <div>
-                                    <strong class="d-block small text-dark">Vendas</strong>
+                                    <strong class="d-block small">Vendas</strong>
                                     <small class="text-muted" style="font-size: 0.72rem;">Técnico Vendas</small>
                                 </div>
                             </div>
@@ -439,30 +475,22 @@
                 </div>
 
                 <!-- Calendário Interativo para Escolha dos Dias -->
-                <div class="col-12">
+                <div class="col-md-6">
                     <div class="d-flex justify-content-between align-items-center mb-1">
-                        <label class="form-label text-primary mb-0"><i class="bi bi-calendar3 me-1"></i> Período de Realização (Escolha os Dias no Calendário)</label>
+                        <label class="form-label text-primary mb-0"><i class="bi bi-calendar3 me-1"></i> Período de Realização (Calendário)</label>
                         <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 small" onclick="setCurrentWeekDates()" title="Definir para a semana atual">
                             <i class="bi bi-arrow-clockwise me-1"></i> Data Atual
                         </button>
                     </div>
                     <div class="row g-2 align-items-center">
-                        <div class="col-md-5">
-                            <div class="input-group">
-                                <span class="input-group-text bg-light text-muted small"><i class="bi bi-calendar-event me-1"></i> Data Inicial:</span>
-                                <input type="date" class="form-control" id="startDate" onchange="onDateRangeChange()" title="Data Inicial da Aula">
-                            </div>
+                        <div class="col-6">
+                            <input type="date" class="form-control form-control-sm" id="startDate" onchange="onDateRangeChange()" title="Data Inicial">
                         </div>
-                        <div class="col-md-5">
-                            <div class="input-group">
-                                <span class="input-group-text bg-light text-muted small"><i class="bi bi-calendar-check me-1"></i> Data Final:</span>
-                                <input type="date" class="form-control" id="endDate" onchange="onDateRangeChange()" title="Data Final da Aula">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <input type="text" class="form-control form-control-sm text-center fw-semibold text-secondary bg-light" id="period" name="period" readonly placeholder="Período" title="Período formatado automaticamente">
+                        <div class="col-6">
+                            <input type="date" class="form-control form-control-sm" id="endDate" onchange="onDateRangeChange()" title="Data Final">
                         </div>
                     </div>
+                    <input type="hidden" id="period" name="period" value="">
                 </div>
             </div>
 
@@ -473,19 +501,24 @@
                         <input class="form-check-input" type="checkbox" role="switch" id="toggleInclusion" onchange="updateLiveSummary()">
                     </div>
                     <div>
-                        <strong class="text-teal-900 small d-block"><i class="bi bi-universal-access-circle me-1"></i> Incluir Adaptações Curriculares e Acessibilidade (PEI / Educação Especial)</strong>
+                        <strong class="small d-block"><i class="bi bi-universal-access-circle me-1 text-teal"></i> Incluir Adaptações Curriculares e Acessibilidade (PEI / Educação Especial)</strong>
                         <small class="text-muted" style="font-size: 0.78rem;">Adiciona estratégias de mediação por pares, materiais com fonte ampliada e flexibilização de tempo na sala técnica.</small>
                     </div>
                 </div>
-                <span class="badge bg-teal text-white bg-dark px-2 py-1 rounded-pill small">Opcional</span>
+                <span class="badge bg-dark text-white px-2 py-1 rounded-pill small">Opcional</span>
             </div>
 
-            <!-- Live Week Topic Preview -->
+            <!-- Live Week Topic Preview & Carga Horária -->
             <div class="live-preview-pill d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div>
                     <span class="badge bg-success text-white px-2 py-1 rounded-pill small me-1"><i class="bi bi-check2-circle"></i> Conteúdo Localizado</span>
                     <strong class="text-success-emphasis" id="weekTopicTitle">Carregando tema da semana...</strong>
-                    <div class="text-muted small mt-1" id="weekLessonsCount">4 aulas planejadas (50 min/aula) com infraestrutura da escola</div>
+                    <div class="text-muted small mt-1" id="weekLessonsCount">4 aulas planejadas de 50 min com infraestrutura escolar</div>
+                </div>
+                <div>
+                    <span class="badge bg-primary text-white px-3 py-2 rounded-pill shadow-sm" id="workloadBadge">
+                        <i class="bi bi-clock-history me-1"></i> Carga: 4 aulas (200 min/semana)
+                    </span>
                 </div>
             </div>
 
@@ -506,6 +539,22 @@
                 <button type="button" class="btn-clean" onclick="shareViaEmail()">
                     <i class="bi bi-envelope-fill text-primary"></i> E-mail
                 </button>
+            </div>
+        </section>
+
+        <!-- Meus Planos Recentes Salvos -->
+        <section class="app-card no-print py-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-clock-history text-primary me-2"></i> Meus Planos Recentes Salvos</h3>
+                <button type="button" class="btn btn-sm btn-link text-muted p-0 small text-decoration-none" onclick="clearRecentPlans()">
+                    <i class="bi bi-trash3 me-1"></i> Limpar Histórico
+                </button>
+            </div>
+            <div class="row g-2" id="recentPlansContainer">
+                <div class="col-12 text-center text-muted py-3 small">
+                    <i class="bi bi-folder2-open fs-4 d-block mb-1 opacity-50"></i>
+                    Nenhum plano salvo ainda. Os planos que você gerar aparecerão aqui para acesso rápido!
+                </div>
             </div>
         </section>
 
@@ -604,7 +653,7 @@
     <!-- Modal: Gerador em Lote / Bimestral -->
     <div class="modal fade no-print" id="batchModal" tabindex="-1" aria-labelledby="batchModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg);">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg); background: var(--surface);">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold text-dark" id="batchModalLabel">
                         <i class="bi bi-collection-fill text-primary me-2"></i> Gerar Plano por Bimestre / Lote
@@ -659,46 +708,35 @@
     <script src="/curriculum_data.js"></script>
 
     <script>
-        // Calendar dates SP 2026 for all 28 weeks
-        const WEEK_DATES_2026 = {
-            1: "02/02 a 06/02/2026", 2: "09/02 a 13/02/2026", 3: "16/02 a 20/02/2026", 4: "23/02 a 27/02/2026",
-            5: "02/03 a 06/03/2026", 6: "09/03 a 13/03/2026", 7: "16/03 a 20/03/2026", 8: "23/03 a 27/03/2026",
-            9: "30/03 a 03/04/2026", 10: "06/04 a 10/04/2026", 11: "13/04 a 17/04/2026", 12: "20/04 a 24/04/2026",
-            13: "27/04 a 30/04/2026", 14: "04/05 a 08/05/2026", 15: "11/05 a 15/05/2026", 16: "18/05 a 22/05/2026",
-            17: "25/05 a 29/05/2026", 18: "01/06 a 05/06/2026", 19: "08/06 a 12/06/2026", 20: "15/06 a 19/06/2026",
-            21: "22/06 a 26/06/2026", 22: "03/08 a 07/08/2026", 23: "10/08 a 14/08/2026", 24: "17/08 a 21/08/2026",
-            25: "24/08 a 28/08/2026", 26: "31/08 a 04/09/2026", 27: "08/09 a 11/09/2026", 28: "14/09 a 18/09/2026"
-        };
-
         const CURRICULUM_MATRIX = {
             "2º Ano (MTEC)": {
                 "Administração": [
-                    { name: "Introdução à Administração, Legislação e Pessoas", icon: "bi-people-fill" },
-                    { name: "Matemática Aplicada à Administração", icon: "bi-calculator-fill" },
-                    { name: "Autoconhecimento e Orientação Profissional", icon: "bi-person-check-fill" }
+                    { name: "Introdução à Administração, Legislação e Pessoas", icon: "bi-people-fill", aulas: 4 },
+                    { name: "Matemática Aplicada à Administração", icon: "bi-calculator-fill", aulas: 4 },
+                    { name: "Autoconhecimento e Orientação Profissional", icon: "bi-person-check-fill", aulas: 3 }
                 ],
                 "Vendas": [
-                    { name: "Comportamento, Legislação e Direito do Consumidor", icon: "bi-shield-check" },
-                    { name: "Comunicação Empresarial e Introdução a Vendas", icon: "bi-chat-quote-fill" },
-                    { name: "Autoconhecimento e Orientação Profissional", icon: "bi-person-check-fill" }
+                    { name: "Comportamento, Legislação e Direito do Consumidor", icon: "bi-shield-check", aulas: 4 },
+                    { name: "Comunicação Empresarial e Introdução a Vendas", icon: "bi-chat-quote-fill", aulas: 4 },
+                    { name: "Autoconhecimento e Orientação Profissional", icon: "bi-person-check-fill", aulas: 3 }
                 ]
             },
             "3º Ano (MTEC)": {
                 "Administração": [
-                    { name: "Marketing Estratégico", icon: "bi-megaphone-fill" },
-                    { name: "Comunicação Empresarial", icon: "bi-chat-dots-fill" },
-                    { name: "Gestão Financeira e Contabilidade", icon: "bi-cash-coin" },
-                    { name: "Gestão de Operações", icon: "bi-gear-wide-connected" },
-                    { name: "Empreendedorismo e Desenvolvimento de Negócios", icon: "bi-rocket-takeoff-fill" },
-                    { name: "Projeto Multidisciplinar", icon: "bi-kanban-fill" }
+                    { name: "Marketing Estratégico", icon: "bi-megaphone-fill", aulas: 4 },
+                    { name: "Comunicação Empresarial", icon: "bi-chat-dots-fill", aulas: 3 },
+                    { name: "Gestão Financeira e Contabilidade", icon: "bi-cash-coin", aulas: 4 },
+                    { name: "Gestão de Operações", icon: "bi-gear-wide-connected", aulas: 4 },
+                    { name: "Empreendedorismo e Desenvolvimento de Negócios", icon: "bi-rocket-takeoff-fill", aulas: 4 },
+                    { name: "Projeto Multidisciplinar", icon: "bi-kanban-fill", aulas: 3 }
                 ],
                 "Vendas": [
-                    { name: "Marketing", icon: "bi-megaphone-fill" },
-                    { name: "Matemática Básica e Gestão de Investimentos em Vendas", icon: "bi-calculator-fill" },
-                    { name: "Planejamento de Vendas", icon: "bi-calendar-check-fill" },
-                    { name: "Processo Comercial, Métodos de Prospecção e Qualificação", icon: "bi-funnel-fill" },
-                    { name: "Tecnologias Digitais Aplicadas a Vendas", icon: "bi-laptop-fill" },
-                    { name: "Projeto Multidisciplinar", icon: "bi-kanban-fill" }
+                    { name: "Marketing", icon: "bi-megaphone-fill", aulas: 4 },
+                    { name: "Matemática Básica e Gestão de Investimentos em Vendas", icon: "bi-calculator-fill", aulas: 4 },
+                    { name: "Planejamento de Vendas", icon: "bi-calendar-check-fill", aulas: 4 },
+                    { name: "Processo Comercial, Métodos de Prospecção e Qualificação", icon: "bi-funnel-fill", aulas: 4 },
+                    { name: "Tecnologias Digitais Aplicadas a Vendas", icon: "bi-laptop-fill", aulas: 4 },
+                    { name: "Projeto Multidisciplinar", icon: "bi-kanban-fill", aulas: 3 }
                 ]
             }
         };
@@ -707,7 +745,33 @@
         let currentCourse = "Administração";
         let currentDiscipline = "Introdução à Administração, Legislação e Pessoas";
 
-        // Load & Save Teacher Preferences (LocalStorage)
+        // --- Theme Toggle (Dark Mode / Light Mode) ---
+        function initThemeMode() {
+            const savedTheme = localStorage.getItem("app_theme_mode") || "light";
+            applyTheme(savedTheme);
+        }
+
+        function toggleThemeMode() {
+            const html = document.documentElement;
+            const nextTheme = html.getAttribute("data-bs-theme") === "dark" ? "light" : "dark";
+            applyTheme(nextTheme);
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute("data-bs-theme", theme);
+            localStorage.setItem("app_theme_mode", theme);
+            const icon = document.getElementById("themeIcon");
+            const label = document.getElementById("themeLabel");
+            if (theme === "dark") {
+                icon.className = "bi bi-sun-fill text-warning";
+                label.textContent = "Modo Claro";
+            } else {
+                icon.className = "bi bi-moon-stars-fill";
+                label.textContent = "Modo Escuro";
+            }
+        }
+
+        // --- Preferences & LocalStorage ---
         function loadTeacherPreferences() {
             const savedTeacher = localStorage.getItem("doc_teacher_name");
             if (savedTeacher) document.getElementById("teacher").value = savedTeacher;
@@ -717,13 +781,13 @@
             if (savedYear) currentYear = savedYear;
             if (savedCourse) currentCourse = savedCourse;
 
-            // Always initialize calendar to current real week (Monday to Friday of today)
             setCurrentWeekDates();
+            renderRecentPlans();
         }
 
         function setCurrentWeekDates() {
             const now = new Date();
-            const dayOfWeek = now.getDay(); // 0 is Sunday, 1 is Monday...
+            const dayOfWeek = now.getDay();
             const monday = new Date(now);
             const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
             monday.setDate(now.getDate() + diffToMonday);
@@ -750,6 +814,88 @@
             localStorage.setItem("doc_saved_course", currentCourse);
         }
 
+        // --- Recent Plans History ---
+        function saveToRecentPlans(data) {
+            try {
+                let list = JSON.parse(localStorage.getItem("recent_lesson_plans") || "[]");
+                // Avoid exact duplicate on top
+                list = list.filter(p => !(p.semana === data.semana && p.disciplina === data.disciplina && p.ano === currentYear && p.curso === currentCourse));
+                list.unshift({
+                    id: Date.now(),
+                    ano: currentYear,
+                    curso: currentCourse,
+                    disciplina: data.disciplina,
+                    semana: data.semana,
+                    periodo: data.periodo,
+                    turma: data.turma,
+                    data_salva: new Date().toLocaleDateString('pt-BR')
+                });
+                if (list.length > 8) list = list.slice(0, 8);
+                localStorage.setItem("recent_lesson_plans", JSON.stringify(list));
+                renderRecentPlans();
+            } catch (e) {
+                console.error("Erro ao salvar histórico:", e);
+            }
+        }
+
+        function renderRecentPlans() {
+            const container = document.getElementById("recentPlansContainer");
+            const list = JSON.parse(localStorage.getItem("recent_lesson_plans") || "[]");
+
+            if (!list.length) {
+                container.innerHTML = `
+                    <div class="col-12 text-center text-muted py-3 small">
+                        <i class="bi bi-folder2-open fs-4 d-block mb-1 opacity-50"></i>
+                        Nenhum plano salvo ainda. Os planos gerados aparecerão aqui para acesso rápido!
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = "";
+            list.forEach(p => {
+                const col = document.createElement("div");
+                col.className = "col-md-6 col-lg-3";
+                col.innerHTML = `
+                    <div class="recent-card h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge bg-primary-subtle text-primary" style="font-size: 0.7rem;">Semana ${p.semana}</span>
+                                <small class="text-muted" style="font-size: 0.7rem;">${p.data_salva}</small>
+                            </div>
+                            <strong class="d-block small text-truncate" title="${p.disciplina}">${p.disciplina}</strong>
+                            <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;">${p.turma} &bull; ${p.periodo}</small>
+                        </div>
+                        <div class="mt-2 pt-2 border-top d-flex gap-1">
+                            <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2 flex-grow-1" style="font-size: 0.75rem;" onclick="loadRecentPlan('${p.ano}', '${p.curso}', '${p.disciplina}', '${p.semana}')">
+                                <i class="bi bi-arrow-repeat me-1"></i> Abrir
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(col);
+            });
+        }
+
+        function loadRecentPlan(year, course, disc, week) {
+            selectYear(year);
+            selectCourse(course);
+            currentDiscipline = disc;
+            document.querySelectorAll('.discipline-chip').forEach(c => {
+                c.classList.toggle('active', c.innerText.trim().includes(disc));
+            });
+            document.getElementById('weekSelect').value = String(week);
+            updateLiveSummary();
+            generatePreview();
+            showToast(`Plano carregado: Semana ${week} - ${disc}`);
+        }
+
+        function clearRecentPlans() {
+            localStorage.removeItem("recent_lesson_plans");
+            renderRecentPlans();
+            showToast("Histórico de planos limpo!");
+        }
+
+        // --- Pedagogical Strategy Engine ---
         function buildCoherentDevelopment(discipline, tema, withInclusion = false) {
             const discLower = (discipline || "").toLowerCase();
             const temaClean = tema || "o conteúdo previsto";
@@ -875,12 +1021,20 @@
 
             const topicBox = document.getElementById('weekTopicTitle');
             const lessonsCount = document.getElementById('weekLessonsCount');
+            const workloadBadge = document.getElementById('workloadBadge');
             
             const firstLine = data.conteudo.split('\n')[0] || `Semana ${week}`;
             topicBox.textContent = `${currentDiscipline} &bull; ${firstLine}`;
             
+            // Carga Horária
+            const list = (CURRICULUM_MATRIX[currentYear] && CURRICULUM_MATRIX[currentYear][currentCourse]) || [];
+            const discItem = list.find(d => d.name === currentDiscipline);
+            const numAulas = discItem ? discItem.aulas : 4;
+            const totalMin = numAulas * 50;
+
             const lessonLines = data.conteudo.split('\n').filter(l => l.startsWith('•'));
-            lessonsCount.textContent = `${lessonLines.length || 4} aulas planejadas (50 min/aula) com infraestrutura escolar`;
+            lessonsCount.textContent = `${lessonLines.length || numAulas} aulas planejadas de 50 min com infraestrutura escolar`;
+            workloadBadge.innerHTML = `<i class="bi bi-clock-history me-1"></i> Carga: ${numAulas} aulas (${totalMin} min/semana)`;
         }
 
         function getLessonData(targetWeek = null) {
@@ -973,6 +1127,8 @@
             const prevArea = document.getElementById('previewArea');
             prevArea.classList.remove('d-none');
             prevArea.scrollIntoView({ behavior: 'smooth' });
+
+            saveToRecentPlans(data);
         }
 
         function getLiveEditedData() {
@@ -1052,6 +1208,7 @@
                 document.body.removeChild(link);
 
                 btn.innerHTML = originalText;
+                saveToRecentPlans(data);
                 showToast("Plano de aula baixado com sucesso!");
             }, 300);
         }
@@ -1151,6 +1308,7 @@ ${data.avaliacao}
 ${data.referencias}`;
 
             navigator.clipboard.writeText(textToCopy).then(() => {
+                saveToRecentPlans(data);
                 showToast("Plano copiado com sucesso!");
             }).catch(() => {
                 showToast("Selecione e copie manualmente.");
@@ -1183,6 +1341,7 @@ ${data.referencias}`;
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            initThemeMode();
             loadTeacherPreferences();
             populateWeeks();
             selectYear(currentYear);

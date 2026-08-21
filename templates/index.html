@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plano de Aula Pro &bull; EE. Prof. Dinora Marcondes Gomes</title>
-    <!-- Google Fonts Plus Jakarta Sans -->
+    <!-- Google Fonts Plus Jakarta Sans & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -15,169 +15,254 @@
     <style>
         :root {
             --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --primary: #4338ca;
-            --primary-gradient: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+            --heading-font: 'Outfit', var(--font-family);
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-dark: #3730a3;
+            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+            --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
             --bg-body: #f8fafc;
+            --bg-mesh: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+                       radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.08) 0px, transparent 50%),
+                       radial-gradient(at 50% 100%, rgba(6, 182, 212, 0.05) 0px, transparent 50%);
             --surface: #ffffff;
             --surface-secondary: #f8fafc;
+            --surface-hover: #f1f5f9;
             --border-color: #e2e8f0;
+            --border-glow: rgba(99, 102, 241, 0.25);
             --text-main: #0f172a;
             --text-muted: #64748b;
-            --shadow-card: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
-            --radius-md: 0.75rem;
-            --radius-lg: 1rem;
+            --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+            --shadow-card: 0 20px 35px -8px rgba(15, 23, 42, 0.08), 0 4px 8px -4px rgba(15, 23, 42, 0.03);
+            --shadow-glow: 0 10px 25px -4px rgba(79, 70, 229, 0.35);
+            --radius-sm: 0.5rem;
+            --radius-md: 0.85rem;
+            --radius-lg: 1.25rem;
+            --radius-xl: 1.75rem;
         }
 
         [data-bs-theme="dark"] {
             --bg-body: #090d16;
-            --surface: #131b2e;
-            --surface-secondary: #1a243b;
-            --border-color: #263352;
-            --text-main: #f1f5f9;
+            --bg-mesh: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                       radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.12) 0px, transparent 50%),
+                       radial-gradient(at 50% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
+            --surface: #111827;
+            --surface-secondary: #172136;
+            --surface-hover: #1f2d48;
+            --border-color: #243049;
+            --border-glow: rgba(99, 102, 241, 0.4);
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.4);
+            --shadow-card: 0 20px 40px -8px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 10px 25px -4px rgba(99, 102, 241, 0.4);
         }
 
         body {
             font-family: var(--font-family);
             background-color: var(--bg-body);
+            background-image: var(--bg-mesh);
+            background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        h1, h2, h3, h4, h5, h6, .brand-title {
+            font-family: var(--heading-font);
+        }
+
+        /* Glass Navbar */
         .glass-navbar {
-            background: var(--surface);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-color);
             padding: 0.85rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
-            transition: background 0.3s ease, border-color 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        [data-bs-theme="dark"] .glass-navbar {
+            background: rgba(17, 24, 39, 0.85);
         }
 
         .brand-badge {
             background: var(--primary-gradient);
             color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 0.65rem;
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
-            box-shadow: 0 6px 16px -2px rgba(79, 70, 229, 0.3);
+            font-size: 1.35rem;
+            box-shadow: var(--shadow-glow);
+            transition: transform 0.3s ease;
         }
 
-        .theme-toggle-btn {
-            background: var(--surface-secondary);
+        .brand-badge:hover {
+            transform: rotate(-5deg) scale(1.05);
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.07) 0%, rgba(168, 85, 247, 0.07) 100%);
             border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: 2rem;
-            padding: 0.4rem 0.85rem;
-            font-size: 0.82rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            border-radius: var(--radius-xl);
+            padding: 2.2rem 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        .theme-toggle-btn:hover {
-            border-color: #6366f1;
-            color: #6366f1;
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: var(--primary-gradient);
+            opacity: 0.12;
+            filter: blur(70px);
+            border-radius: 50%;
+            pointer-events: none;
         }
 
+        /* App Card Container */
         .app-card {
             background: var(--surface);
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-xl);
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow-card);
-            padding: 2.25rem;
+            padding: 2.5rem;
             margin-bottom: 2rem;
-            transition: background 0.3s ease, border-color 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        .section-step-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 8px rgba(79, 70, 229, 0.3);
+        }
+
+        /* Selection Cards (Year & Course) */
         .select-card {
             border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 0.9rem 1.2rem;
+            border-radius: var(--radius-lg);
+            padding: 1.1rem 1.25rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             background: var(--surface-secondary);
             user-select: none;
+            position: relative;
+            overflow: hidden;
         }
 
         .select-card:hover {
-            border-color: #6366f1;
-            transform: translateY(-1px);
+            border-color: var(--primary-light);
+            background: var(--surface);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-subtle);
         }
 
         .select-card.active {
-            border-color: #4f46e5;
-            background: rgba(79, 70, 229, 0.08);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+            border-color: #6366f1;
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18), var(--shadow-subtle);
+        }
+
+        .select-card.active::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            background: #6366f1;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-md);
+            background: var(--surface-hover);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.2s ease;
         }
 
         .select-card.active .card-icon {
             background: var(--primary-gradient);
             color: white;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
         }
 
-        .card-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 0.55rem;
-            background: var(--border-color);
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.15rem;
-        }
-
+        /* Discipline Interactive Chips */
         .discipline-chip {
             border: 1.5px solid var(--border-color);
             background: var(--surface);
             color: var(--text-main);
-            padding: 0.6rem 1rem;
+            padding: 0.65rem 1.15rem;
             border-radius: 2rem;
             font-size: 0.88rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             display: inline-flex;
             align-items: center;
-            gap: 0.45rem;
+            gap: 0.5rem;
             user-select: none;
         }
 
         .discipline-chip:hover {
             border-color: #6366f1;
-            background: var(--surface-secondary);
+            background: var(--surface-hover);
+            transform: translateY(-1px);
         }
 
         .discipline-chip.active {
-            background: #4f46e5;
-            border-color: #4f46e5;
+            background: var(--primary-gradient);
+            border-color: transparent;
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+            box-shadow: var(--shadow-glow);
+            transform: scale(1.02);
         }
 
+        /* Form Inputs */
         .form-label {
             font-weight: 700;
             font-size: 0.85rem;
             color: var(--text-main);
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.4rem;
         }
 
         .form-control, .form-select {
             font-family: var(--font-family);
             border-radius: var(--radius-md);
             border: 1.5px solid var(--border-color);
-            padding: 0.7rem 0.95rem;
+            padding: 0.75rem 1rem;
             font-size: 0.92rem;
             color: var(--text-main);
             background-color: var(--surface);
@@ -186,40 +271,43 @@
 
         .form-control:focus, .form-select:focus {
             border-color: #6366f1;
-            box-shadow: 0 0 0 3.5px rgba(99, 102, 241, 0.18);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
             outline: none;
             background-color: var(--surface);
             color: var(--text-main);
         }
 
+        /* Live Preview Highlight Box */
         .live-preview-pill {
-            background: rgba(16, 185, 129, 0.08);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: var(--radius-md);
-            padding: 0.9rem 1.2rem;
-            margin-top: 0.75rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
+            border: 1.5px solid rgba(16, 185, 129, 0.35);
+            border-radius: var(--radius-lg);
+            padding: 1.1rem 1.4rem;
+            margin-top: 1rem;
         }
 
+        /* Action Buttons */
         .btn-main {
             background: var(--primary-gradient);
             color: #ffffff;
             border: none;
             border-radius: var(--radius-md);
+            font-family: var(--heading-font);
             font-weight: 700;
-            font-size: 0.95rem;
-            padding: 0.85rem 1.5rem;
-            transition: all 0.2s ease;
+            font-size: 0.98rem;
+            padding: 0.9rem 1.6rem;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            box-shadow: 0 8px 20px -4px rgba(79, 70, 229, 0.35);
+            gap: 0.55rem;
+            box-shadow: var(--shadow-glow);
             cursor: pointer;
         }
 
         .btn-main:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 12px 25px -4px rgba(79, 70, 229, 0.45);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px -4px rgba(79, 70, 229, 0.45);
             color: #ffffff;
         }
 
@@ -228,9 +316,10 @@
             color: var(--text-main);
             border: 1.5px solid var(--border-color);
             border-radius: var(--radius-md);
+            font-family: var(--heading-font);
             font-weight: 600;
-            font-size: 0.95rem;
-            padding: 0.85rem 1.3rem;
+            font-size: 0.92rem;
+            padding: 0.85rem 1.25rem;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
@@ -240,35 +329,67 @@
         }
 
         .btn-clean:hover {
-            background: var(--surface-secondary);
+            background: var(--surface-hover);
             border-color: #94a3b8;
             color: var(--text-main);
+            transform: translateY(-1px);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle-btn {
+            background: var(--surface-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 2rem;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.84rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: #6366f1;
+            color: #6366f1;
         }
 
         /* Recent Plans Cards */
         .recent-card {
             background: var(--surface);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 0.9rem 1.1rem;
-            transition: all 0.2s ease;
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.2rem;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .recent-card:hover {
             border-color: #6366f1;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
             box-shadow: var(--shadow-card);
         }
 
-        /* Official Document Format */
+        /* Inclusion Box */
+        .inclusion-box {
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.07) 0%, rgba(14, 165, 233, 0.07) 100%);
+            border: 1.5px solid rgba(13, 148, 136, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.3rem;
+            margin-top: 1.1rem;
+        }
+
+        /* Realistic Paper Preview (Official School Document) */
         .school-paper-preview {
             background: #ffffff;
             color: #000000 !important;
             border-radius: var(--radius-lg);
             border: 1px solid #cbd5e1;
-            box-shadow: var(--shadow-card);
-            padding: 2.75rem;
-            margin-top: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 3rem;
+            margin-top: 2.5rem;
+            position: relative;
         }
 
         .official-table {
@@ -284,7 +405,7 @@
             padding: 0.85rem 1.1rem;
             vertical-align: top;
             font-size: 0.94rem;
-            line-height: 1.55;
+            line-height: 1.6;
             color: #000000;
         }
 
@@ -299,7 +420,7 @@
             margin-top: 0.25rem;
             outline: none;
             border-radius: 4px;
-            padding: 2px 4px;
+            padding: 3px 6px;
             transition: background-color 0.2s ease;
         }
 
@@ -308,37 +429,30 @@
             box-shadow: 0 0 0 2px #3b82f6;
         }
 
+        /* Toast */
         .toast-custom {
             position: fixed;
             bottom: 2rem;
             right: 2rem;
             background: #0f172a;
             color: white;
-            padding: 0.8rem 1.3rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 0.9rem 1.4rem;
+            border-radius: 1rem;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.7rem;
             z-index: 1000;
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             font-weight: 600;
             transform: translateY(100px);
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .toast-custom.show {
             transform: translateY(0);
             opacity: 1;
-        }
-
-        .inclusion-box {
-            background: rgba(13, 148, 136, 0.08);
-            border: 1.5px solid rgba(13, 148, 136, 0.3);
-            border-radius: var(--radius-md);
-            padding: 0.9rem 1.2rem;
-            margin-top: 1rem;
         }
 
         @media print {
@@ -356,11 +470,11 @@
         <div class="container d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-3">
                 <div class="brand-badge">
-                    <i class="bi bi-journal-check"></i>
+                    <i class="bi bi-journal-bookmark-fill"></i>
                 </div>
                 <div>
-                    <span class="h6 fw-bold mb-0 d-block">Plano de Aula Pro</span>
-                    <small class="text-muted">EE. Prof. Dinora Marcondes Gomes &bull; Cursos Técnicos</small>
+                    <span class="h6 fw-bold mb-0 d-block brand-title">Plano de Aula Pro</span>
+                    <small class="text-muted" style="font-size: 0.78rem;">EE. Prof. Dinora Marcondes Gomes &bull; Cursos Técnicos MTEC</small>
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2">
@@ -369,8 +483,8 @@
                     <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
                     <span id="themeLabel">Modo Escuro</span>
                 </button>
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill d-none d-md-inline-block">
-                    <i class="bi bi-check2-circle me-1"></i> Modelo .DOC Oficial
+                <span class="badge bg-primary text-white border-0 px-3 py-2 rounded-pill shadow-sm d-none d-md-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                    <i class="bi bi-patch-check-fill"></i> Modelo Oficial .DOC
                 </span>
             </div>
         </div>
@@ -378,38 +492,54 @@
 
     <!-- Main Container -->
     <main class="container my-4 mb-5" style="max-width: 960px;">
-        <section class="app-card no-print">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 pb-2 border-bottom">
-                <div>
-                    <h2 class="h4 fw-bold mb-1">Preenchimento do Plano de Aula</h2>
-                    <p class="text-muted small mb-0">Selecione o ano, o curso técnico e a disciplina. Seus dados e preferências são salvos automaticamente.</p>
-                </div>
-                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#batchModal">
-                    <i class="bi bi-collection-fill me-1"></i> Gerar Bimestre Inteiro
+        
+        <!-- Hero Header -->
+        <div class="hero-banner no-print d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill small fw-bold mb-2 d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-stars"></i> Inteligência Pedagógica MTEC
+                </span>
+                <h1 class="h3 fw-bold mb-1">Crie seus Planos de Aula em Segundos</h1>
+                <p class="text-muted mb-0 small" style="max-width: 600px;">
+                    Integrado ao currículo paulista, com 50 min de aula, metodologias Lemov e os recursos reais da escola Dinora.
+                </p>
+            </div>
+            <div>
+                <button type="button" class="btn btn-sm btn-dark rounded-pill px-3 py-2 shadow-sm d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#batchModal">
+                    <i class="bi bi-collection-fill text-warning"></i> <span>Gerar Bimestre Inteiro</span>
                 </button>
             </div>
+        </div>
 
-            <!-- 1. Ano e Curso Técnico -->
+        <!-- Form Card -->
+        <section class="app-card no-print">
+            
+            <!-- Step 1: Ano e Curso Técnico -->
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="section-step-badge">1</span>
+                <h2 class="h5 fw-bold mb-0">Selecione o Ano e o Curso Técnico</h2>
+            </div>
+
             <div class="row g-3 mb-4">
                 <!-- Seletor de Ano -->
                 <div class="col-md-6">
-                    <label class="form-label text-primary mb-2"><i class="bi bi-calendar-range me-1"></i> 1. Ano / Série</label>
+                    <label class="form-label text-muted small"><i class="bi bi-mortarboard-fill me-1 text-primary"></i> Série / Ano do Ensino Médio</label>
                     <div class="row g-2">
                         <div class="col-6">
-                            <div class="select-card active d-flex align-items-center gap-2" id="card2Ano" onclick="selectYear('2º Ano (MTEC)')">
+                            <div class="select-card active d-flex align-items-center gap-3" id="card2Ano" onclick="selectYear('2º Ano (MTEC)')">
                                 <div class="card-icon"><i class="bi bi-mortarboard-fill"></i></div>
                                 <div>
-                                    <strong class="d-block small">2º Ano</strong>
-                                    <small class="text-muted" style="font-size: 0.72rem;">3 Disciplinas</small>
+                                    <strong class="d-block text-dark">2º Ano</strong>
+                                    <small class="text-muted" style="font-size: 0.73rem;">3 Disciplinas</small>
                                 </div>
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="select-card d-flex align-items-center gap-2" id="card3Ano" onclick="selectYear('3º Ano (MTEC)')">
+                            <div class="select-card d-flex align-items-center gap-3" id="card3Ano" onclick="selectYear('3º Ano (MTEC)')">
                                 <div class="card-icon"><i class="bi bi-graph-up-arrow"></i></div>
                                 <div>
-                                    <strong class="d-block small">3º Ano</strong>
-                                    <small class="text-muted" style="font-size: 0.72rem;">6 Disciplinas</small>
+                                    <strong class="d-block text-dark">3º Ano</strong>
+                                    <small class="text-muted" style="font-size: 0.73rem;">6 Disciplinas</small>
                                 </div>
                             </div>
                         </div>
@@ -418,23 +548,23 @@
 
                 <!-- Seletor de Curso -->
                 <div class="col-md-6">
-                    <label class="form-label text-primary mb-2"><i class="bi bi-briefcase-fill me-1"></i> 2. Curso Técnico</label>
+                    <label class="form-label text-muted small"><i class="bi bi-briefcase-fill me-1 text-primary"></i> Habilitação Técnica</label>
                     <div class="row g-2">
                         <div class="col-6">
-                            <div class="select-card active d-flex align-items-center gap-2" id="cardAdm" onclick="selectCourse('Administração')">
+                            <div class="select-card active d-flex align-items-center gap-3" id="cardAdm" onclick="selectCourse('Administração')">
                                 <div class="card-icon"><i class="bi bi-building"></i></div>
                                 <div>
-                                    <strong class="d-block small">Administração</strong>
-                                    <small class="text-muted" style="font-size: 0.72rem;">Técnico ADM</small>
+                                    <strong class="d-block text-dark">Administração</strong>
+                                    <small class="text-muted" style="font-size: 0.73rem;">Técnico ADM</small>
                                 </div>
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="select-card d-flex align-items-center gap-2" id="cardVendas" onclick="selectCourse('Vendas')">
+                            <div class="select-card d-flex align-items-center gap-3" id="cardVendas" onclick="selectCourse('Vendas')">
                                 <div class="card-icon"><i class="bi bi-cart-check-fill"></i></div>
                                 <div>
-                                    <strong class="d-block small">Vendas</strong>
-                                    <small class="text-muted" style="font-size: 0.72rem;">Técnico Vendas</small>
+                                    <strong class="d-block text-dark">Vendas</strong>
+                                    <small class="text-muted" style="font-size: 0.73rem;">Técnico Vendas</small>
                                 </div>
                             </div>
                         </div>
@@ -442,28 +572,34 @@
                 </div>
             </div>
 
-            <!-- 2. Disciplinas (Interactive Chips) -->
-            <div class="mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <label class="form-label text-primary mb-0"><i class="bi bi-book-half me-1"></i> 3. Disciplina (Componente Curricular)</label>
-                    <span class="badge bg-light text-secondary border small" id="disciplineCountBadge">3 disciplinas disponíveis</span>
+            <!-- Step 2: Disciplinas (Interactive Chips) -->
+            <div class="d-flex align-items-center justify-content-between mb-2 pt-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="section-step-badge">2</span>
+                    <h2 class="h5 fw-bold mb-0">Componente Curricular (Disciplina)</h2>
                 </div>
-                <div class="d-flex flex-wrap gap-2" id="disciplineChipsContainer">
-                    <!-- Populated dynamically -->
-                </div>
+                <span class="badge bg-light text-secondary border small" id="disciplineCountBadge">3 disciplinas disponíveis</span>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mb-4" id="disciplineChipsContainer">
+                <!-- Populated dynamically -->
             </div>
 
             <hr class="my-4 border-slate-200">
 
-            <!-- 3. Form Inputs -->
+            <!-- Step 3: Informações do Professor e Datas -->
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="section-step-badge">3</span>
+                <h2 class="h5 fw-bold mb-0">Dados do Professor e Período</h2>
+            </div>
+
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label for="teacher" class="form-label"><i class="bi bi-person-fill me-1 text-primary"></i> Professor(a)</label>
+                    <label for="teacher" class="form-label"><i class="bi bi-person-circle me-1 text-primary"></i> Professor(a)</label>
                     <input type="text" class="form-control" id="teacher" placeholder="Ex: Prof. Thamy Oliveira" oninput="saveTeacherPreferences()" required>
                 </div>
 
                 <div class="col-md-6">
-                    <label for="classroom" class="form-label"><i class="bi bi-people-fill me-1 text-primary"></i> Ano / Série / Turma</label>
+                    <label for="classroom" class="form-label"><i class="bi bi-people-fill me-1 text-primary"></i> Turma Identificada</label>
                     <input type="text" class="form-control" id="classroom" placeholder="Ex: 2º MTEC - Administração" oninput="saveTeacherPreferences()" required>
                 </div>
 
@@ -478,7 +614,7 @@
                 <div class="col-md-6">
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <label class="form-label text-primary mb-0"><i class="bi bi-calendar3 me-1"></i> Período de Realização (Calendário)</label>
-                        <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 small" onclick="setCurrentWeekDates()" title="Definir para a semana atual">
+                        <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 small fw-semibold" onclick="setCurrentWeekDates()" title="Definir para a semana atual">
                             <i class="bi bi-arrow-clockwise me-1"></i> Data Atual
                         </button>
                     </div>
@@ -496,23 +632,23 @@
 
             <!-- Inclusão e Adaptação Curricular (PEI) Toggle -->
             <div class="inclusion-box d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-3">
                     <div class="form-check form-switch mb-0">
-                        <input class="form-check-input" type="checkbox" role="switch" id="toggleInclusion" onchange="updateLiveSummary()">
+                        <input class="form-check-input" type="checkbox" role="switch" id="toggleInclusion" onchange="updateLiveSummary()" style="width: 2.2em; height: 1.2em; cursor: pointer;">
                     </div>
                     <div>
-                        <strong class="small d-block"><i class="bi bi-universal-access-circle me-1 text-teal"></i> Incluir Adaptações Curriculares e Acessibilidade (PEI / Educação Especial)</strong>
-                        <small class="text-muted" style="font-size: 0.78rem;">Adiciona estratégias de mediação por pares, materiais com fonte ampliada e flexibilização de tempo na sala técnica.</small>
+                        <strong class="small d-block text-dark"><i class="bi bi-universal-access-circle me-1 text-teal"></i> Incluir Adaptações Curriculares e Acessibilidade (PEI / Ed. Especial)</strong>
+                        <small class="text-muted" style="font-size: 0.78rem;">Insere mediação por pares, materiais com fonte ampliada e flexibilização de tempo na sala técnica.</small>
                     </div>
                 </div>
-                <span class="badge bg-dark text-white px-2 py-1 rounded-pill small">Opcional</span>
+                <span class="badge bg-teal text-white bg-dark px-2 py-1 rounded-pill small">Opcional</span>
             </div>
 
             <!-- Live Week Topic Preview & Carga Horária -->
             <div class="live-preview-pill d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div>
                     <span class="badge bg-success text-white px-2 py-1 rounded-pill small me-1"><i class="bi bi-check2-circle"></i> Conteúdo Localizado</span>
-                    <strong class="text-success-emphasis" id="weekTopicTitle">Carregando tema da semana...</strong>
+                    <strong class="text-success-emphasis d-block mt-1" id="weekTopicTitle" style="font-size: 0.95rem;">Carregando tema da semana...</strong>
                     <div class="text-muted small mt-1" id="weekLessonsCount">4 aulas planejadas de 50 min com infraestrutura escolar</div>
                 </div>
                 <div>
@@ -524,20 +660,20 @@
 
             <!-- Action Buttons -->
             <div class="d-flex flex-wrap align-items-center gap-2 mt-4 pt-3 border-top">
-                <button type="button" class="btn-main" id="btnDownload" onclick="downloadDocument()">
+                <button type="button" class="btn-main flex-grow-1" id="btnDownload" onclick="downloadDocument()">
                     <i class="bi bi-file-earmark-word-fill"></i> Baixar Word Oficial (.docx)
                 </button>
                 <button type="button" class="btn-clean" id="btnPreview" onclick="generatePreview()">
-                    <i class="bi bi-eye-fill"></i> Pré-visualizar e Editar na Tela
+                    <i class="bi bi-eye-fill"></i> Pré-visualizar & Editar
                 </button>
                 <button type="button" class="btn-clean" id="btnCopy" onclick="copyPlanToClipboard()">
-                    <i class="bi bi-clipboard-check-fill"></i> Copiar Texto
+                    <i class="bi bi-clipboard-check-fill"></i> Copiar
                 </button>
-                <button type="button" class="btn-clean" onclick="shareViaWhatsApp()">
-                    <i class="bi bi-whatsapp text-success"></i> WhatsApp
+                <button type="button" class="btn-clean" onclick="shareViaWhatsApp()" title="Enviar no WhatsApp">
+                    <i class="bi bi-whatsapp text-success"></i>
                 </button>
-                <button type="button" class="btn-clean" onclick="shareViaEmail()">
-                    <i class="bi bi-envelope-fill text-primary"></i> E-mail
+                <button type="button" class="btn-clean" onclick="shareViaEmail()" title="Enviar por E-mail">
+                    <i class="bi bi-envelope-fill text-primary"></i>
                 </button>
             </div>
         </section>
@@ -545,7 +681,10 @@
         <!-- Meus Planos Recentes Salvos -->
         <section class="app-card no-print py-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3 class="h6 fw-bold mb-0 text-dark"><i class="bi bi-clock-history text-primary me-2"></i> Meus Planos Recentes Salvos</h3>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-clock-history text-primary fs-5"></i>
+                    <h3 class="h6 fw-bold mb-0 text-dark">Meus Planos Recentes Salvos</h3>
+                </div>
                 <button type="button" class="btn btn-sm btn-link text-muted p-0 small text-decoration-none" onclick="clearRecentPlans()">
                     <i class="bi bi-trash3 me-1"></i> Limpar Histórico
                 </button>
@@ -553,7 +692,7 @@
             <div class="row g-2" id="recentPlansContainer">
                 <div class="col-12 text-center text-muted py-3 small">
                     <i class="bi bi-folder2-open fs-4 d-block mb-1 opacity-50"></i>
-                    Nenhum plano salvo ainda. Os planos que você gerar aparecerão aqui para acesso rápido!
+                    Nenhum plano salvo ainda. Os planos gerados aparecerão aqui para acesso rápido!
                 </div>
             </div>
         </section>
@@ -570,7 +709,7 @@
                         <i class="bi bi-clipboard me-1"></i> Copiar
                     </button>
                     <button class="btn btn-sm btn-dark px-3 py-2 rounded-3" onclick="window.print()">
-                        <i class="bi bi-printer me-1"></i> Imprimir / Salvar em PDF
+                        <i class="bi bi-printer me-1"></i> Imprimir / PDF
                     </button>
                 </div>
             </div>
@@ -1024,7 +1163,7 @@
             const workloadBadge = document.getElementById('workloadBadge');
             
             const firstLine = data.conteudo.split('\n')[0] || `Semana ${week}`;
-            topicBox.textContent = `${currentDiscipline} &bull; ${firstLine}`;
+            topicBox.innerHTML = `<span class="text-primary fw-bold">${currentDiscipline}</span> &bull; ${firstLine}`;
             
             // Carga Horária
             const list = (CURRICULUM_MATRIX[currentYear] && CURRICULUM_MATRIX[currentYear][currentCourse]) || [];

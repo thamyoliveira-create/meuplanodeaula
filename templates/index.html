@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plano de Aula &bull; EE. Prof. Dinora Marcondes Gomes</title>
+    <title>Plano de Aula Pro &bull; EE. Prof. Dinora Marcondes Gomes</title>
     <!-- Google Fonts Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -172,7 +172,7 @@
             border-radius: var(--radius-md);
             font-weight: 700;
             font-size: 0.95rem;
-            padding: 0.85rem 1.6rem;
+            padding: 0.85rem 1.5rem;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
@@ -195,7 +195,7 @@
             border-radius: var(--radius-md);
             font-weight: 600;
             font-size: 0.95rem;
-            padding: 0.85rem 1.4rem;
+            padding: 0.85rem 1.3rem;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
@@ -208,6 +208,27 @@
             background: #f8fafc;
             border-color: #94a3b8;
             color: #0f172a;
+        }
+
+        .btn-batch {
+            background: #0f172a;
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.85rem 1.4rem;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .btn-batch:hover {
+            background: #1e293b;
+            color: white;
+            transform: translateY(-1px);
         }
 
         .school-paper-preview {
@@ -242,6 +263,15 @@
             color: #1e293b;
             white-space: pre-line;
             margin-top: 0.25rem;
+            outline: none;
+            border-radius: 4px;
+            padding: 2px 4px;
+            transition: background-color 0.2s ease;
+        }
+
+        .official-table .field-val:focus {
+            background-color: #eff6ff;
+            box-shadow: 0 0 0 2px #3b82f6;
         }
 
         .toast-custom {
@@ -269,6 +299,14 @@
             opacity: 1;
         }
 
+        .inclusion-box {
+            background: #f0fdfa;
+            border: 1.5px solid #99f6e4;
+            border-radius: var(--radius-md);
+            padding: 0.9rem 1.2rem;
+            margin-top: 1rem;
+        }
+
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; }
@@ -287,24 +325,32 @@
                     <i class="bi bi-journal-check"></i>
                 </div>
                 <div>
-                    <span class="h6 fw-bold mb-0 text-dark d-block">Plano de Aula Oficial</span>
-                    <small class="text-muted">EE. Prof. Dinora Marcondes Gomes &bull; Cursos Técnicos (Adm e Vendas)</small>
+                    <span class="h6 fw-bold mb-0 text-dark d-block">Plano de Aula Pro</span>
+                    <small class="text-muted">EE. Prof. Dinora Marcondes Gomes &bull; Cursos Técnicos</small>
                 </div>
             </div>
             <div class="d-none d-md-flex align-items-center gap-2">
                 <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill">
-                    <i class="bi bi-check-circle-fill me-1"></i> Adm e Vendas (2º e 3º Ano)
+                    <i class="bi bi-memory me-1"></i> Memória Ativa
+                </span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
+                    <i class="bi bi-check2-circle me-1"></i> Modelo .DOC Oficial
                 </span>
             </div>
         </div>
     </nav>
 
     <!-- Main Container -->
-    <main class="container my-4 mb-5" style="max-width: 940px;">
+    <main class="container my-4 mb-5" style="max-width: 960px;">
         <section class="app-card no-print">
-            <div class="mb-4 pb-2 border-bottom">
-                <h2 class="h4 fw-bold text-dark mb-1">Preenchimento do Plano de Aula</h2>
-                <p class="text-muted small mb-0">Selecione o ano, o curso técnico e a disciplina. As habilidades e o plano oficial de 50 minutos são estruturados automaticamente.</p>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 pb-2 border-bottom">
+                <div>
+                    <h2 class="h4 fw-bold text-dark mb-1">Preenchimento do Plano de Aula</h2>
+                    <p class="text-muted small mb-0">Selecione o ano, o curso técnico e a disciplina. Seus dados são salvos automaticamente.</p>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#batchModal">
+                    <i class="bi bi-collection-fill me-1"></i> Gerar Bimestre Inteiro
+                </button>
             </div>
 
             <!-- 1. Ano e Curso Técnico -->
@@ -377,25 +423,39 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label for="teacher" class="form-label"><i class="bi bi-person-fill me-1 text-primary"></i> Professor(a)</label>
-                    <input type="text" class="form-control" id="teacher" placeholder="Ex: Prof. Thamy Oliveira" value="Prof. Thamy Oliveira" required>
+                    <input type="text" class="form-control" id="teacher" placeholder="Ex: Prof. Thamy Oliveira" oninput="saveTeacherPreferences()" required>
                 </div>
 
                 <div class="col-md-6">
-                    <label for="period" class="form-label"><i class="bi bi-calendar3 me-1 text-primary"></i> Período de Realização</label>
-                    <input type="text" class="form-control" id="period" placeholder="Ex: Semana de 24 a 28 de Fevereiro" value="Semana de 24 a 28 de Fevereiro" required>
+                    <label for="period" class="form-label"><i class="bi bi-calendar3 me-1 text-primary"></i> Período de Realização / Data</label>
+                    <input type="text" class="form-control" id="period" placeholder="Ex: Semana de 02/02 a 06/02/2026" oninput="saveTeacherPreferences()" required>
                 </div>
 
                 <div class="col-md-6">
                     <label for="classroom" class="form-label"><i class="bi bi-people-fill me-1 text-primary"></i> Ano / Série / Turma</label>
-                    <input type="text" class="form-control" id="classroom" placeholder="Ex: 2º MTEC - Administração" value="2º MTEC - Administração" required>
+                    <input type="text" class="form-control" id="classroom" placeholder="Ex: 2º MTEC - Administração" oninput="saveTeacherPreferences()" required>
                 </div>
 
                 <div class="col-md-6">
-                    <label for="weekSelect" class="form-label"><i class="bi bi-calendar-week-fill me-1 text-primary"></i> Semana do Curso</label>
-                    <select class="form-select" id="weekSelect" onchange="updateLiveSummary()">
-                        <!-- Populated dynamically (1 to 28) -->
+                    <label for="weekSelect" class="form-label"><i class="bi bi-calendar-week-fill me-1 text-primary"></i> Semana do Curso (1 a 28)</label>
+                    <select class="form-select" id="weekSelect" onchange="onWeekChange()">
+                        <!-- Populated dynamically (1 to 28) with dates -->
                     </select>
                 </div>
+            </div>
+
+            <!-- Inclusão e Adaptação Curricular (PEI) Toggle -->
+            <div class="inclusion-box d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" role="switch" id="toggleInclusion" onchange="updateLiveSummary()">
+                    </div>
+                    <div>
+                        <strong class="text-teal-900 small d-block"><i class="bi bi-universal-access-circle me-1"></i> Incluir Adaptações Curriculares e Acessibilidade (PEI / Educação Especial)</strong>
+                        <small class="text-muted" style="font-size: 0.78rem;">Adiciona estratégias de mediação por pares, materiais com fonte ampliada e flexibilização de tempo na sala técnica.</small>
+                    </div>
+                </div>
+                <span class="badge bg-teal text-white bg-dark px-2 py-1 rounded-pill small">Opcional</span>
             </div>
 
             <!-- Live Week Topic Preview -->
@@ -403,28 +463,37 @@
                 <div>
                     <span class="badge bg-success text-white px-2 py-1 rounded-pill small me-1"><i class="bi bi-check2-circle"></i> Conteúdo Localizado</span>
                     <strong class="text-success-emphasis" id="weekTopicTitle">Carregando tema da semana...</strong>
-                    <div class="text-muted small mt-1" id="weekLessonsCount">4 aulas planejadas para esta semana</div>
+                    <div class="text-muted small mt-1" id="weekLessonsCount">4 aulas planejadas (50 min/aula) com infraestrutura da escola</div>
                 </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="d-flex flex-wrap align-items-center gap-3 mt-4 pt-3 border-top">
+            <div class="d-flex flex-wrap align-items-center gap-2 mt-4 pt-3 border-top">
                 <button type="button" class="btn-main" id="btnDownload" onclick="downloadDocument()">
-                    <i class="bi bi-file-earmark-word-fill"></i> Baixar Word Oficial (.doc / .docx)
+                    <i class="bi bi-file-earmark-word-fill"></i> Baixar Word Oficial (.docx)
                 </button>
                 <button type="button" class="btn-clean" id="btnPreview" onclick="generatePreview()">
-                    <i class="bi bi-eye-fill"></i> Pré-visualizar no Modelo Oficial
+                    <i class="bi bi-eye-fill"></i> Pré-visualizar e Editar na Tela
                 </button>
                 <button type="button" class="btn-clean" id="btnCopy" onclick="copyPlanToClipboard()">
                     <i class="bi bi-clipboard-check-fill"></i> Copiar Texto
                 </button>
+                <button type="button" class="btn-clean" onclick="shareViaWhatsApp()">
+                    <i class="bi bi-whatsapp text-success"></i> WhatsApp
+                </button>
+                <button type="button" class="btn-clean" onclick="shareViaEmail()">
+                    <i class="bi bi-envelope-fill text-primary"></i> E-mail
+                </button>
             </div>
         </section>
 
-        <!-- School Paper Preview Area (Exact School Format) -->
+        <!-- School Paper Preview Area (Exact School Format & Inline Editable) -->
         <section id="previewArea" class="school-paper-preview d-none">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 pb-3 border-bottom no-print">
-                <span class="badge bg-primary px-3 py-2 rounded-pill"><i class="bi bi-check2-circle me-1"></i> Modelo da Escola EE. Prof. Dinora Marcondes Gomes</span>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-3 border-bottom no-print">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary px-3 py-2 rounded-pill"><i class="bi bi-check2-circle me-1"></i> Modelo Oficial EE. Prof. Dinora Marcondes Gomes</span>
+                    <span class="badge bg-warning text-dark border px-2 py-1 rounded-pill small"><i class="bi bi-pencil-square me-1"></i> Edição Direta Habilitada (Clique no texto para alterar)</span>
+                </div>
                 <div class="d-flex gap-2">
                     <button class="btn btn-sm btn-outline-secondary px-3 py-2 rounded-3" onclick="copyPlanToClipboard()">
                         <i class="bi bi-clipboard me-1"></i> Copiar
@@ -444,71 +513,116 @@
                 <h5 class="fw-bold text-dark mt-2" id="docTitlePreview">Plano de Aula - 2026 - SEMANA 1</h5>
             </div>
 
-            <!-- Exact 12 Rows Table from template.docx -->
+            <!-- Exact 12 Rows Table from template.docx with contenteditable -->
             <table class="official-table">
                 <tr>
-                    <td><span class="field-label">Professor :</span> <span id="prevTeacher">-</span></td>
+                    <td><span class="field-label">Professor :</span> <span id="prevTeacher" contenteditable="true" class="field-val">-</span></td>
                 </tr>
                 <tr>
-                    <td><span class="field-label">Componente curricular :</span> <span id="prevDiscipline">-</span></td>
+                    <td><span class="field-label">Componente curricular :</span> <span id="prevDiscipline" contenteditable="true" class="field-val">-</span></td>
                 </tr>
                 <tr>
-                    <td><span class="field-label">3 . Ano/Série/Turma :</span> <span id="prevClassroom">-</span></td>
+                    <td><span class="field-label">3 . Ano/Série/Turma :</span> <span id="prevClassroom" contenteditable="true" class="field-val">-</span></td>
                 </tr>
                 <tr>
-                    <td><span class="field-label">4 . Período de realização :</span> <span id="prevPeriod">-</span></td>
+                    <td><span class="field-label">4 . Período de realização :</span> <span id="prevPeriod" contenteditable="true" class="field-val">-</span></td>
                 </tr>
                 <tr>
                     <td>
                         <div class="field-label mb-1">5 . Habilidades :</div>
-                        <div class="field-val" id="prevHabilidades">-</div>
+                        <div class="field-val" id="prevHabilidades" contenteditable="true">-</div>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <div class="field-label mb-1">6 . Objetos de Conhecimento :</div>
-                        <div class="field-val" id="prevObjetos">-</div>
+                        <div class="field-val" id="prevObjetos" contenteditable="true">-</div>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <div class="field-label mb-1">7 . Conteúdo :</div>
-                        <div class="field-val" id="prevConteudo">-</div>
+                        <div class="field-val" id="prevConteudo" contenteditable="true">-</div>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <div class="field-label mb-1">8 . Objetivos :</div>
-                        <div class="field-val" id="prevObjetivos">-</div>
+                        <div class="field-val" id="prevObjetivos" contenteditable="true">-</div>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <div class="field-label mb-1">9 . Estratégias :</div>
-                        <div class="field-val" id="prevEstrategias">-</div>
+                        <div class="field-val" id="prevEstrategias" contenteditable="true">-</div>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <div class="field-label mb-1">1 0 . Recursos didáticos :</div>
-                        <div class="field-val" id="prevRecursos">-</div>
+                        <div class="field-val" id="prevRecursos" contenteditable="true">-</div>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <div class="field-label mb-1">1 1 . Critérios de Avaliação :</div>
-                        <div class="field-val" id="prevAvaliacao">-</div>
+                        <div class="field-val" id="prevAvaliacao" contenteditable="true">-</div>
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <div class="field-label mb-1">12 . Referências :</div>
-                        <div class="field-val" id="prevReferencias">-</div>
+                        <div class="field-val" id="prevReferencias" contenteditable="true">-</div>
                     </td>
                 </tr>
             </table>
         </section>
     </main>
+
+    <!-- Modal: Gerador em Lote / Bimestral -->
+    <div class="modal fade no-print" id="batchModal" tabindex="-1" aria-labelledby="batchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark" id="batchModalLabel">
+                        <i class="bi bi-collection-fill text-primary me-2"></i> Gerar Plano por Bimestre / Lote
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <p class="text-muted small mb-3">Selecione o período do bimestre para compilar todas as semanas em um <strong>único arquivo Word (.docx)</strong> com quebra de página automática.</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Selecione o Ciclo Bimestral:</label>
+                        <select class="form-select" id="batchCycleSelect" onchange="onBatchCycleChange()">
+                            <option value="1-7" selected>1º Bimestre (Semanas 1 a 7 &bull; Fev a Mar)</option>
+                            <option value="8-14">2º Bimestre (Semanas 8 a 14 &bull; Abr a Mai)</option>
+                            <option value="15-21">3º Bimestre (Semanas 15 a 21 &bull; Jun a Ago)</option>
+                            <option value="22-28">4º Bimestre (Semanas 22 a 28 &bull; Set a Nov)</option>
+                            <option value="custom">Personalizado (Escolher semanas)</option>
+                        </select>
+                    </div>
+
+                    <div class="row g-2 d-none" id="customBatchRange">
+                        <div class="col-6">
+                            <label class="form-label small">Da Semana:</label>
+                            <input type="number" class="form-control" id="batchStartWeek" min="1" max="28" value="1">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small">Até a Semana:</label>
+                            <input type="number" class="form-control" id="batchEndWeek" min="1" max="28" value="7">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn-main" onclick="downloadBatchDocument()">
+                        <i class="bi bi-file-earmark-zip-fill me-1"></i> Baixar Bimestre (.docx)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Toast Notification -->
     <div id="toastMessage" class="toast-custom">
@@ -523,7 +637,17 @@
     <script src="/curriculum_data.js"></script>
 
     <script>
-        // Matrix of Disciplines: 3 in 2º Ano (Adm & Vendas) and 6 in 3º Ano (Adm & Vendas)
+        // Calendar dates SP 2026 for all 28 weeks
+        const WEEK_DATES_2026 = {
+            1: "02/02 a 06/02/2026", 2: "09/02 a 13/02/2026", 3: "16/02 a 20/02/2026", 4: "23/02 a 27/02/2026",
+            5: "02/03 a 06/03/2026", 6: "09/03 a 13/03/2026", 7: "16/03 a 20/03/2026", 8: "23/03 a 27/03/2026",
+            9: "30/03 a 03/04/2026", 10: "06/04 a 10/04/2026", 11: "13/04 a 17/04/2026", 12: "20/04 a 24/04/2026",
+            13: "27/04 a 30/04/2026", 14: "04/05 a 08/05/2026", 15: "11/05 a 15/05/2026", 16: "18/05 a 22/05/2026",
+            17: "25/05 a 29/05/2026", 18: "01/06 a 05/06/2026", 19: "08/06 a 12/06/2026", 20: "15/06 a 19/06/2026",
+            21: "22/06 a 26/06/2026", 22: "03/08 a 07/08/2026", 23: "10/08 a 14/08/2026", 24: "17/08 a 21/08/2026",
+            25: "24/08 a 28/08/2026", 26: "31/08 a 04/09/2026", 27: "08/09 a 11/09/2026", 28: "14/09 a 18/09/2026"
+        };
+
         const CURRICULUM_MATRIX = {
             "2º Ano (MTEC)": {
                 "Administração": [
@@ -561,27 +685,51 @@
         let currentCourse = "Administração";
         let currentDiscipline = "Introdução à Administração, Legislação e Pessoas";
 
-        // Coherent lesson development for 50-minute periods with 1-2 Lemov techniques
-        function buildCoherentDevelopment(discipline, tema) {
+        // Load & Save Teacher Preferences (LocalStorage)
+        function loadTeacherPreferences() {
+            const savedTeacher = localStorage.getItem("doc_teacher_name");
+            if (savedTeacher) document.getElementById("teacher").value = savedTeacher;
+            
+            const savedYear = localStorage.getItem("doc_saved_year");
+            const savedCourse = localStorage.getItem("doc_saved_course");
+            if (savedYear) currentYear = savedYear;
+            if (savedCourse) currentCourse = savedCourse;
+        }
+
+        function saveTeacherPreferences() {
+            const teacher = document.getElementById("teacher").value;
+            localStorage.setItem("doc_teacher_name", teacher);
+            localStorage.setItem("doc_saved_year", currentYear);
+            localStorage.setItem("doc_saved_course", currentCourse);
+        }
+
+        function buildCoherentDevelopment(discipline, tema, withInclusion = false) {
             const discLower = (discipline || "").toLowerCase();
             const temaClean = tema || "o conteúdo previsto";
 
+            let inclusionText = "";
+            let inclusionRecurso = "";
+            if (withInclusion) {
+                inclusionText = "\n\n• Adaptações Curriculares e Acessibilidade (Inclusão/PEI): Mediação orientada com apoio de pares, fragmentação de comandos em etapas curtas, disponibilização prévia de materiais digitais com fonte ampliada e flexibilização de tempo para realização das atividades nos netbooks e sala especializada.";
+                inclusionRecurso = ", materiais com fonte ampliada/leitura facilitada e suporte individualizado";
+            }
+
             if (discLower.includes("matemática") || discLower.includes("financeira") || discLower.includes("contabilidade") || discLower.includes("investimentos") || discLower.includes("cálculo")) {
                 return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e aplicação da técnica 'Faça Agora' (Do Now), com um exercício rápido projetado na TV/quadro branco envolvendo situações cotidianas para ativar o raciocínio matemático e financeiro dos alunos.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Apresentação dos conceitos no quadro branco e na TV. Demonstração prática do cálculo através da 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz). Em seguida, os alunos realizam exercícios dirigidos individualmente ou com auxílio dos netbooks para cálculos aplicados à administração e vendas.\n\n• Fechamento (5 a 10 min): Correção no quadro branco de dúvidas recorrentes, síntese da fórmula/procedimento utilizado e checagem rápida de retenção da turma.`,
-                    recursos: `Quadro branco, TV para projeção de fórmulas e tabelas, netbooks para cálculos e planilhas eletrônicas, calculadoras e folhas de atividades dirigidas.`,
+                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e aplicação da técnica 'Faça Agora' (Do Now), com um exercício rápido projetado na TV/quadro branco envolvendo situações cotidianas para ativar o raciocínio matemático e financeiro dos alunos.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Apresentação dos conceitos no quadro branco e na TV. Demonstração prática do cálculo através da 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz). Em seguida, os alunos realizam exercícios dirigidos individualmente ou com auxílio dos netbooks para cálculos aplicados à administração e vendas.\n\n• Fechamento (5 a 10 min): Correção no quadro branco de dúvidas recorrentes, síntese da fórmula/procedimento utilizado e checagem rápida de retenção da turma.${inclusionText}`,
+                    recursos: `Quadro branco, TV para projeção de fórmulas e tabelas, netbooks para cálculos e planilhas eletrônicas, calculadoras e folhas de atividades dirigidas${inclusionRecurso}.`,
                     avaliacao: `Avaliação formativa e contínua, observando a participação nas atividades, a resolução correta dos cálculos e a aplicação prática nos netbooks/caderno.`
                 };
             } else if (discLower.includes("marketing") || discLower.includes("vendas") || discLower.includes("comunicação") || discLower.includes("negócios") || discLower.includes("prospecção") || discLower.includes("comercial") || discLower.includes("projeto")) {
                 return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e apresentação de um 'Gancho Inicial' (Hook) na TV com um vídeo/exemplo de case de mercado relacionado a ${temaClean}, despertando o interesse da turma.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Explanação dialogada pelo professor com suporte da TV. Em seguida, na sala especializada do curso técnico ou com uso de netbooks, aplicação da técnica 'Vire e Converse' (Turn and Talk) em duplas para debaterem a estratégia comercial ou prototiparem a solução prática/estudo de caso.\n\n• Fechamento (5 a 10 min): Compartilhamento das propostas das duplas, síntese do professor no quadro branco e alinhamento com as práticas reais do mercado (utilizando o auditório quando houver apresentação de pitches/seminários).`,
-                    recursos: `Quadro branco, TV para exibição de cases e campanhas, netbooks para pesquisas e criação de propostas, sala especializada do curso técnico para dinâmicas práticas e auditório para apresentações de projetos.`,
+                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e apresentação de um 'Gancho Inicial' (Hook) na TV com um vídeo/exemplo de case de mercado relacionado a ${temaClean}, despertando o interesse da turma.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Explanação dialogada pelo professor com suporte da TV. Em seguida, na sala especializada do curso técnico ou com uso de netbooks, aplicação da técnica 'Vire e Converse' (Turn and Talk) em duplas para debaterem a estratégia comercial ou prototiparem a solução prática/estudo de caso.\n\n• Fechamento (5 a 10 min): Compartilhamento das propostas das duplas, síntese do professor no quadro branco e alinhamento com as práticas reais do mercado (utilizando o auditório quando houver apresentação de pitches/seminários).${inclusionText}`,
+                    recursos: `Quadro branco, TV para exibição de cases e campanhas, netbooks para pesquisas e criação de propostas, sala especializada do curso técnico para dinâmicas práticas e auditório para apresentações de projetos${inclusionRecurso}.`,
                     avaliacao: `Avaliação processual baseada na participação ativa nas discussões, na clareza da argumentação técnica durante os debates e na produção prática em equipe.`
                 };
             } else {
                 return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e contextualização rápida da temática sobre ${temaClean} com pergunta disparadora na TV/quadro branco. Aplicação da técnica 'Faça Agora' (Do Now) sobre desafios da rotina corporativa.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Mediação teórica pelo professor articulando a legislação e os procedimentos organizacionais. Na sala especializada do curso técnico, aplicação da técnica 'Todos Escrevem' (Everybody Writes), com registro individual de 3 minutos para estruturar a solução de rotinas administrativas/simulações antes do debate coletivo.\n\n• Fechamento (5 a 10 min): Retomada dos conceitos principais no quadro branco, esclarecimento pontual de dúvidas e sistematização da rotina desenvolvida.`,
-                    recursos: `Quadro branco, TV para projeção de fluxogramas e normas regulatórias, netbooks para consulta de legislações/documentos empresariais e sala especializada do curso técnico para simulação de rotinas organizacionais.`,
+                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e contextualização rápida da temática sobre ${temaClean} com pergunta disparadora na TV/quadro branco. Aplicação da técnica 'Faça Agora' (Do Now) sobre desafios da rotina corporativa.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Mediação teórica pelo professor articulando a legislação e os procedimentos organizacionais. Na sala especializada do curso técnico, aplicação da técnica 'Todos Escrevem' (Everybody Writes), com registro individual de 3 minutos para estruturar a solução de rotinas administrativas/simulações antes do debate coletivo.\n\n• Fechamento (5 a 10 min): Retomada dos conceitos principais no quadro branco, esclarecimento pontual de dúvidas e sistematização da rotina desenvolvida.${inclusionText}`,
+                    recursos: `Quadro branco, TV para projeção de fluxogramas e normas regulatórias, netbooks para consulta de legislações/documentos empresariais e sala especializada do curso técnico para simulação de rotinas organizacionais${inclusionRecurso}.`,
                     avaliacao: `Avaliação formativa, considerando a pontualidade, a postura profissional, o engajamento nas simulações e a precisão técnica nas produções escritas.`
                 };
             }
@@ -593,6 +741,7 @@
             document.getElementById('card3Ano').classList.toggle('active', year.includes('3º'));
             updateClassroomValue();
             renderDisciplineChips();
+            saveTeacherPreferences();
         }
 
         function selectCourse(course) {
@@ -601,6 +750,7 @@
             document.getElementById('cardVendas').classList.toggle('active', course === 'Vendas');
             updateClassroomValue();
             renderDisciplineChips();
+            saveTeacherPreferences();
         }
 
         function updateClassroomValue() {
@@ -643,9 +793,19 @@
             for (let i = 1; i <= 28; i++) {
                 const opt = document.createElement('option');
                 opt.value = String(i);
-                opt.textContent = `Semana ${i}`;
+                const dateStr = WEEK_DATES_2026[i] || "";
+                opt.textContent = `Semana ${i} (${dateStr})`;
                 weekSelect.appendChild(opt);
             }
+            onWeekChange();
+        }
+
+        function onWeekChange() {
+            const week = parseInt(document.getElementById('weekSelect').value || '1');
+            const periodInput = document.getElementById('period');
+            const dateStr = WEEK_DATES_2026[week] || `Semana ${week}`;
+            periodInput.value = `Semana de ${dateStr}`;
+            updateLiveSummary();
         }
 
         function updateLiveSummary() {
@@ -659,14 +819,16 @@
             topicBox.textContent = `${currentDiscipline} &bull; ${firstLine}`;
             
             const lessonLines = data.conteudo.split('\n').filter(l => l.startsWith('•'));
-            lessonsCount.textContent = `${lessonLines.length || 4} aulas programadas com habilidades oficiais (50 min/aula)`;
+            lessonsCount.textContent = `${lessonLines.length || 4} aulas planejadas (50 min/aula) com infraestrutura escolar`;
         }
 
-        function getLessonData() {
+        function getLessonData(targetWeek = null) {
             const teacher = document.getElementById('teacher').value.trim() || "Prof. Thamy Oliveira";
-            const period = document.getElementById('period').value.trim() || "Semana de 24 a 28 de Fevereiro";
             const classroom = document.getElementById('classroom').value.trim() || "2º MTEC - Administração";
-            const week = document.getElementById('weekSelect').value || '1';
+            const week = targetWeek || document.getElementById('weekSelect').value || '1';
+            const dateStr = WEEK_DATES_2026[parseInt(week)] || `Semana ${week}`;
+            const period = targetWeek ? `Semana de ${dateStr}` : (document.getElementById('period').value.trim() || `Semana de ${dateStr}`);
+            const withInclusion = document.getElementById('toggleInclusion').checked;
 
             let rows = [];
             if (window.CURRICULUM_DATA && Array.isArray(window.CURRICULUM_DATA)) {
@@ -712,7 +874,7 @@
                 habStr += `\n\nHabilidades Socioemocionais:\n${Array.from(habSocio).join('\n')}`;
             }
 
-            const pedagogy = buildCoherentDevelopment(currentDiscipline, temaStr);
+            const pedagogy = buildCoherentDevelopment(currentDiscipline, temaStr, withInclusion);
 
             return {
                 professor: teacher,
@@ -735,79 +897,90 @@
             const data = getLessonData();
 
             document.getElementById('docTitlePreview').textContent = `Plano de Aula - 2026 - SEMANA ${data.semana}`;
-            document.getElementById('prevTeacher').textContent = data.professor;
-            document.getElementById('prevDiscipline').textContent = data.disciplina;
-            document.getElementById('prevClassroom').textContent = data.turma;
-            document.getElementById('prevPeriod').textContent = data.periodo;
-            document.getElementById('prevHabilidades').textContent = data.habilidades;
-            document.getElementById('prevObjetos').textContent = data.objetos;
-            document.getElementById('prevConteudo').textContent = data.conteudo;
-            document.getElementById('prevObjetivos').textContent = data.objetivos;
-            document.getElementById('prevEstrategias').textContent = data.estrategias;
-            document.getElementById('prevRecursos').textContent = data.recursos;
-            document.getElementById('prevAvaliacao').textContent = data.avaliacao;
-            document.getElementById('prevReferencias').textContent = data.referencias;
+            document.getElementById('prevTeacher').innerText = data.professor;
+            document.getElementById('prevDiscipline').innerText = data.disciplina;
+            document.getElementById('prevClassroom').innerText = data.turma;
+            document.getElementById('prevPeriod').innerText = data.periodo;
+            document.getElementById('prevHabilidades').innerText = data.habilidades;
+            document.getElementById('prevObjetos').innerText = data.objetos;
+            document.getElementById('prevConteudo').innerText = data.conteudo;
+            document.getElementById('prevObjetivos').innerText = data.objetivos;
+            document.getElementById('prevEstrategias').innerText = data.estrategias;
+            document.getElementById('prevRecursos').innerText = data.recursos;
+            document.getElementById('prevAvaliacao').innerText = data.avaliacao;
+            document.getElementById('prevReferencias').innerText = data.referencias;
 
             const prevArea = document.getElementById('previewArea');
             prevArea.classList.remove('d-none');
             prevArea.scrollIntoView({ behavior: 'smooth' });
         }
 
+        function getLiveEditedData() {
+            return {
+                professor: document.getElementById('prevTeacher').innerText.trim() || document.getElementById('teacher').value,
+                disciplina: document.getElementById('prevDiscipline').innerText.trim() || currentDiscipline,
+                turma: document.getElementById('prevClassroom').innerText.trim() || document.getElementById('classroom').value,
+                periodo: document.getElementById('prevPeriod').innerText.trim() || document.getElementById('period').value,
+                semana: document.getElementById('weekSelect').value,
+                habilidades: document.getElementById('prevHabilidades').innerText.trim(),
+                objetos: document.getElementById('prevObjetos').innerText.trim(),
+                conteudo: document.getElementById('prevConteudo').innerText.trim(),
+                objetivos: document.getElementById('prevObjetivos').innerText.trim(),
+                estrategias: document.getElementById('prevEstrategias').innerText.trim(),
+                recursos: document.getElementById('prevRecursos').innerText.trim(),
+                avaliacao: document.getElementById('prevAvaliacao').innerText.trim(),
+                referencias: document.getElementById('prevReferencias').innerText.trim(),
+            };
+        }
+
+        function createWordHtmlForData(data) {
+            return `
+            <table class="header-table" style="width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 20px;">
+                <tr>
+                    <td style="padding: 4px; border: none;">
+                        <h6 style="margin: 2px 0; font-size: 10pt; font-weight: bold;">GOVERNO DE ESTADO DE SÃO PAULO – SECRETÁRIA DA EDUCAÇÃO</h6>
+                        <h6 style="margin: 2px 0; font-size: 9.5pt; font-weight: bold;">DIRETORIA DE ENSINO-REGIÃO DE ARARAQUARA</h6>
+                        <h6 style="margin: 2px 0; font-size: 9.5pt; font-weight: bold;">EE. PROF.DINORA MARCODES GOMES</h6>
+                        <p style="font-size: 8.5pt; margin: 2px 0;">RUA EMILIA GALLI, 549 - CENTRO-AMERICO BRASILIENSE - SP. TELEFONE: (16) 33921335 CEP: 14.820.015 | E-mail: e021830a@educacao.sp.gov.br</p>
+                        <h4 style="margin: 6px 0; font-size: 11.5pt; font-weight: bold;">Plano de Aula - 2026 - SEMANA ${data.semana}</h4>
+                    </td>
+                </tr>
+            </table>
+
+            <table class="main-table" style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">Professor :</span> ${data.professor}</td></tr>
+                <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">Componente curricular :</span> ${data.disciplina}</td></tr>
+                <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">3 . Ano/Série/Turma :</span> ${data.turma}</td></tr>
+                <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">4 . Período de realização :</span> ${data.periodo}</td></tr>
+                <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">5 . Habilidades :</span><div style="white-space: pre-line; margin-top: 4px;">${data.habilidades}</div></td></tr>
+                <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">6 . Objetos de Conhecimento :</span><div style="white-space: pre-line; margin-top: 4px;">${data.objetos}</div></td></tr>
+                <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">7 . Conteúdo :</span><div style="white-space: pre-line; margin-top: 4px;">${data.conteudo}</div></td></tr>
+                <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">8 . Objetivos :</span><div style="white-space: pre-line; margin-top: 4px;">${data.objetivos}</div></td></tr>
+                <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">9 . Estratégias :</span><div style="white-space: pre-line; margin-top: 4px;">${data.estrategias}</div></td></tr>
+                <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">1 0 . Recursos didáticos :</span><div style="white-space: pre-line; margin-top: 4px;">${data.recursos}</div></td></tr>
+                <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">1 1 . Critérios de Avaliação :</span><div style="white-space: pre-line; margin-top: 4px;">${data.avaliacao}</div></td></tr>
+                <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">12 . Referências :</span><div style="white-space: pre-line; margin-top: 4px;">${data.referencias}</div></td></tr>
+            </table>
+            `;
+        }
+
         function downloadDocument() {
-            const data = getLessonData();
+            const isPreviewVisible = !document.getElementById('previewArea').classList.contains('d-none');
+            const data = isPreviewVisible ? getLiveEditedData() : getLessonData();
+
             const btn = document.getElementById('btnDownload');
             const originalText = btn.innerHTML;
             btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Baixando...`;
 
             setTimeout(() => {
-                const docHtml = `
+                const docBody = createWordHtmlForData(data);
+                const fullDoc = `
                 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                <head>
-                    <meta charset='utf-8'>
-                    <title>Plano de Aula - Semana ${data.semana}</title>
-                    <style>
-                        body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #000; }
-                        .header-table { width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 20px; }
-                        .header-table td { padding: 4px; border: none; }
-                        .main-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                        .main-table td { border: 1px solid #000; padding: 8px 10px; vertical-align: top; font-size: 10.5pt; line-height: 1.4; }
-                        .label { font-weight: bold; }
-                        .val { white-space: pre-line; margin-top: 4px; }
-                        h4, h5, h6 { margin: 2px 0; }
-                    </style>
-                </head>
-                <body>
-                    <table class="header-table">
-                        <tr>
-                            <td>
-                                <h6>GOVERNO DE ESTADO DE SÃO PAULO – SECRETÁRIA DA EDUCAÇÃO</h6>
-                                <h6>DIRETORIA DE ENSINO-REGIÃO DE ARARAQUARA</h6>
-                                <h6>EE. PROF.DINORA MARCODES GOMES</h6>
-                                <p style="font-size: 8.5pt; margin: 2px 0;">RUA EMILIA GALLI, 549 - CENTRO-AMERICO BRASILIENSE - SP. TELEFONE: (16) 33921335 CEP: 14.820.015 | E-mail: e021830a@educacao.sp.gov.br</p>
-                                <h4>Plano de Aula - 2026 - SEMANA ${data.semana}</h4>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <table class="main-table">
-                        <tr><td><span class="label">Professor :</span> ${data.professor}</td></tr>
-                        <tr><td><span class="label">Componente curricular :</span> ${data.disciplina}</td></tr>
-                        <tr><td><span class="label">3 . Ano/Série/Turma :</span> ${data.turma}</td></tr>
-                        <tr><td><span class="label">4 . Período de realização :</span> ${data.periodo}</td></tr>
-                        <tr><td><span class="label">5 . Habilidades :</span><div class="val">${data.habilidades}</div></td></tr>
-                        <tr><td><span class="label">6 . Objetos de Conhecimento :</span><div class="val">${data.objetos}</div></td></tr>
-                        <tr><td><span class="label">7 . Conteúdo :</span><div class="val">${data.conteudo}</div></td></tr>
-                        <tr><td><span class="label">8 . Objetivos :</span><div class="val">${data.objetivos}</div></td></tr>
-                        <tr><td><span class="label">9 . Estratégias :</span><div class="val">${data.estrategias}</div></td></tr>
-                        <tr><td><span class="label">1 0 . Recursos didáticos :</span><div class="val">${data.recursos}</div></td></tr>
-                        <tr><td><span class="label">1 1 . Critérios de Avaliação :</span><div class="val">${data.avaliacao}</div></td></tr>
-                        <tr><td><span class="label">12 . Referências :</span><div class="val">${data.referencias}</div></td></tr>
-                    </table>
-                </body>
-                </html>
+                <head><meta charset='utf-8'><title>Plano de Aula - Semana ${data.semana}</title></head>
+                <body style="font-family: Calibri, Arial, sans-serif;">${docBody}</body></html>
                 `;
 
-                const blob = new Blob(['\ufeff', docHtml], { type: 'application/msword' });
+                const blob = new Blob(['\ufeff', fullDoc], { type: 'application/msword' });
                 const cleanDisc = data.disciplina.replace(/[^a-zA-Z0-9]/g, '_');
                 const filename = `Plano_de_Aula_Semana_${data.semana}_${cleanDisc}.doc`;
 
@@ -819,12 +992,69 @@
                 document.body.removeChild(link);
 
                 btn.innerHTML = originalText;
-                showToast("Documento oficial Word baixado com sucesso!");
+                showToast("Plano de aula baixado com sucesso!");
             }, 300);
         }
 
+        function onBatchCycleChange() {
+            const val = document.getElementById('batchCycleSelect').value;
+            const customDiv = document.getElementById('customBatchRange');
+            if (val === 'custom') {
+                customDiv.classList.remove('d-none');
+            } else {
+                customDiv.classList.add('d-none');
+            }
+        }
+
+        function downloadBatchDocument() {
+            const cycleVal = document.getElementById('batchCycleSelect').value;
+            let startW = 1, endW = 7;
+
+            if (cycleVal === 'custom') {
+                startW = parseInt(document.getElementById('batchStartWeek').value) || 1;
+                endW = parseInt(document.getElementById('batchEndWeek').value) || 7;
+            } else {
+                const parts = cycleVal.split('-');
+                startW = parseInt(parts[0]);
+                endW = parseInt(parts[1]);
+            }
+
+            let fullBody = "";
+            for (let w = startW; w <= endW; w++) {
+                const wData = getLessonData(String(w));
+                fullBody += createWordHtmlForData(wData);
+                if (w < endW) {
+                    fullBody += `<br clear="all" style="page-break-before:always;" /><br/>`;
+                }
+            }
+
+            const fullDoc = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head><meta charset='utf-8'><title>Plano_Bimestral_Semanas_${startW}_a_${endW}</title></head>
+            <body style="font-family: Calibri, Arial, sans-serif;">${fullBody}</body></html>
+            `;
+
+            const blob = new Blob(['\ufeff', fullDoc], { type: 'application/msword' });
+            const cleanDisc = currentDiscipline.replace(/[^a-zA-Z0-9]/g, '_');
+            const filename = `Plano_Bimestral_Semanas_${startW}_a_${endW}_${cleanDisc}.doc`;
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('batchModal'));
+            if (modal) modal.hide();
+
+            showToast(`Bimestre completo (Semanas ${startW} a ${endW}) baixado com sucesso!`);
+        }
+
         function copyPlanToClipboard() {
-            const data = getLessonData();
+            const isPreviewVisible = !document.getElementById('previewArea').classList.contains('d-none');
+            const data = isPreviewVisible ? getLiveEditedData() : getLessonData();
+
             const textToCopy = `GOVERNO DE ESTADO DE SÃO PAULO – SECRETÁRIA DA EDUCAÇÃO
 DIRETORIA DE ENSINO-REGIÃO DE ARARAQUARA
 EE. PROF.DINORA MARCODES GOMES
@@ -861,10 +1091,28 @@ ${data.avaliacao}
 ${data.referencias}`;
 
             navigator.clipboard.writeText(textToCopy).then(() => {
-                showToast("Plano copiado com a formatação oficial!");
+                showToast("Plano copiado com sucesso!");
             }).catch(() => {
                 showToast("Selecione e copie manualmente.");
             });
+        }
+
+        function shareViaWhatsApp() {
+            const isPreviewVisible = !document.getElementById('previewArea').classList.contains('d-none');
+            const data = isPreviewVisible ? getLiveEditedData() : getLessonData();
+
+            const msg = `*EE. PROF. DINORA MARCONDES GOMES*\n*PLANO DE AULA 2026 - SEMANA ${data.semana}*\n\n*Professor(a):* ${data.professor}\n*Componente:* ${data.disciplina}\n*Turma:* ${data.turma}\n*Período:* ${data.periodo}\n\n*Conteúdo:*\n${data.conteudo}\n\n*Estratégias (50 min):*\n${data.estrategias}\n\n*Recursos:* ${data.recursos}`;
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        function shareViaEmail() {
+            const isPreviewVisible = !document.getElementById('previewArea').classList.contains('d-none');
+            const data = isPreviewVisible ? getLiveEditedData() : getLessonData();
+
+            const subject = encodeURIComponent(`Plano de Aula - Semana ${data.semana} - ${data.disciplina} - ${data.turma}`);
+            const body = encodeURIComponent(`GOVERNO DO ESTADO DE SÃO PAULO – SECRETARIA DA EDUCAÇÃO\nEE. PROF. DINORA MARCONDES GOMES\n\nPLANO DE AULA - 2026 - SEMANA ${data.semana}\n\nProfessor(a): ${data.professor}\nComponente: ${data.disciplina}\nTurma: ${data.turma}\nPeríodo: ${data.periodo}\n\n5. HABILIDADES:\n${data.habilidades}\n\n7. CONTEÚDO:\n${data.conteudo}\n\n8. OBJETIVOS:\n${data.objetivos}\n\n9. ESTRATÉGIAS (50 min):\n${data.estrategias}\n\n10. RECURSOS:\n${data.recursos}\n\n11. AVALIAÇÃO:\n${data.avaliacao}`);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
         }
 
         function showToast(msg) {
@@ -875,8 +1123,10 @@ ${data.referencias}`;
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            loadTeacherPreferences();
             populateWeeks();
-            selectYear("2º Ano (MTEC)");
+            selectYear(currentYear);
+            selectCourse(currentCourse);
         });
     </script>
 </body>

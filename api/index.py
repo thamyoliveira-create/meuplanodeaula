@@ -2,6 +2,7 @@
 """
 Flask Web Application for Lesson Plan Generator
 Entrypoint for Vercel Serverless Function: api/index.py
+Includes Intelligent Pedagogical Engine with Doug Lemov Techniques and Active Methodologies.
 """
 
 import io
@@ -14,7 +15,7 @@ from typing import Union, List, Dict, Any
 
 from flask import Flask, request, send_file, jsonify
 from docx import Document
-from docx.shared import Pt
+from docx.shared import Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
 
@@ -22,7 +23,6 @@ BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
-# Import pre-compiled curriculum data directly as Python object
 try:
     from api.curriculum_data import CURRICULUM_DATA
 except Exception:
@@ -35,13 +35,59 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
 
 
-# --- Data Filtering & Compiling ---
+# --- Pedagogical Intelligence: Lemov Techniques & Active Methodologies ---
+
+def select_lemov_and_active_methodology(discipline: str, titles: List[str], objectives: List[str]) -> Dict[str, str]:
+    """
+    Intelligently select and construct Doug Lemov techniques and active methodologies
+    tailored to the technical subject and lesson objectives.
+    """
+    disc_lower = discipline.lower()
+    content_text = " ".join(titles + objectives).lower()
+
+    # Case 1: Mathematical / Financial / Quantitative
+    if "matemática" in disc_lower or "financeira" in disc_lower or "contabilidade" in disc_lower or "cálculo" in content_text:
+        return {
+            "estrategia_principal": "Modelagem Gradual (Eu Faço, Nós Fazemos, Você Faz) e Aprendizagem Baseada em Problemas (PBL)",
+            "lemov_tecnicas": "• Faça Agora (Do Now): Exercício rápido de aquecimento de 3 a 5 min.\n• Modelagem Gradual (I Do, We Do, You Do): Demonstração passo a passo do cálculo na lousa, resolução conjunta e prática autônoma individual.\n• Padronize o Formato: Organização estruturada do raciocínio matemático no caderno.\n• Circule pela Sala: Monitoramento ativo das etapas de cálculo com intervenções pontuais.\n• Bilhete de Saída (Exit Ticket): Mini-desafio final de 3 minutos para checagem imediata de retenção.",
+            "recursos_lemov": "Lousa interativa/quadro, folhas de atividades práticas dirigidas, calculadoras e formulários de exercícios estruturados.",
+            "avaliacao_lemov": "Avaliação formativa processual com aplicação do 'Certo é Certo' (correção de etapas) e conferência do 'Bilhete de Saída'."
+        }
+
+    # Case 2: Marketing, Sales, Strategy & Business Communication
+    elif "marketing" in disc_lower or "vendas" in disc_lower or "comunicação" in disc_lower or "estratégico" in disc_lower or "negócios" in disc_lower:
+        return {
+            "estrategia_principal": "Estudo de Casos Empresariais Reais (PBL), Aprendizagem por Pares e Design de Estratégias",
+            "lemov_tecnicas": "• Gancho Inicial (Hook): Apresentação de um case ou campanha de mercado instigante nos primeiros minutos.\n• Vire e Converse (Turn and Talk): Debate rápido em duplas para gerar hipóteses de mercado antes da discussão plenária.\n• Puxe Mais (Stretch It): Perguntas de aprofundamento aos alunos que respondem corretamente para expandir a visão crítica.\n• Mostre e Conte (Show Call): Projeção de soluções e pitches dos alunos para análise construtiva coletiva.\n• Formato Importa: Estímulo à comunicação oral e escrita com vocabulário técnico de marketing e negócios.",
+            "recursos_lemov": "Projetor multimídia, computadores do laboratório com acesso a estudos de casos reais, material de apoio e ambiente virtual.",
+            "avaliacao_lemov": "Avaliação contínua por rubricas: análise crítica nos estudos de caso, qualidade da argumentação técnica e participação cooperativa."
+        }
+
+    # Case 3: Management, Operations, People & Legal (RH)
+    elif "pessoas" in disc_lower or "legislação" in disc_lower or "administração" in disc_lower or "operações" in disc_lower or "recursos humanos" in content_text:
+        return {
+            "estrategia_principal": "Simulação de Rotinas Organizacionais, Análise Crítica de Cenários e Sala de Aula Invertida",
+            "lemov_tecnicas": "• Faça Agora (Do Now): Situação-problema inicial sobre dilemas da rotina empresarial/jurídica.\n• Todos Escrevem (Everybody Writes): Tempo individual cronometrado para os alunos registrarem soluções antes do debate.\n• Sem Escapatória (No Opt Out): Garantir que todo aluno participe ativamente e reformule a resposta até atingir o rigor técnico.\n• Chamada Fria (Cold Call): Perguntas dirigidas de forma acolhedora para manter o foco e engajamento uniforme de toda a turma.\n• Certo é Certo (Right is Right): Exigência de conformidade às normas legais (ex: CLT, LGPD) e procedimentos organizacionais.",
+            "recursos_lemov": "Lousa digital, cenários simulados de departamento de RH e gestão, legislação comentada e formulários administrativos.",
+            "avaliacao_lemov": "Acompanhamento formativo diário, verificação das produções escritas individuais e assertividade na aplicação das rotinas administrativas."
+        }
+
+    # General technical subjects fallback
+    else:
+        return {
+            "estrategia_principal": "Metodologias Ativas com Modelagem Gradual e Resolução Prática de Problemas",
+            "lemov_tecnicas": "• Faça Agora (Do Now): Atividade de retomada nos primeiros 5 minutos.\n• Modelagem Gradual (Eu Faço, Nós Fazemos, Você Faz): Explanação conceitual, aplicação orientada e execução individual.\n• Vire e Converse (Turn and Talk): Discussão em pares para fixação dos conceitos técnicos.\n• Circule pela Sala: Feedback formativo imediato durante as atividades.\n• Bilhete de Saída (Exit Ticket): Fechamento com verificação de aprendizagem.",
+            "recursos_lemov": "Lousa, projetor multimídia, material impresso e ambiente de aprendizagem.",
+            "avaliacao_lemov": "Avaliação formativa e contínua, observação da prática orientada e entrega dos bilhetes de saída."
+        }
+
+
+# --- Curriculum Rows & Compiling ---
 
 def get_curriculum_rows() -> List[Dict[str, str]]:
     if CURRICULUM_DATA:
         return CURRICULUM_DATA
 
-    # Fallback to reading CSV if exists
     rows = []
     for fname in ["schedule_2ano.csv", "schedule.csv"]:
         for parent in [pathlib.Path(__file__).parent, BASE_DIR / "data", BASE_DIR]:
@@ -71,23 +117,6 @@ def filter_rows(rows: List[Dict[str, str]], week: str, discipline: str = "") -> 
 
 
 def compile_lesson_data(rows: List[Dict[str, str]], teacher: str, period: str, classroom: str, discipline: str, week: str) -> Dict[str, str]:
-    if not rows:
-        return {
-            "professor": teacher or "Professor(a)",
-            "disciplina": discipline or "Componente Curricular",
-            "turma": classroom or "Turma",
-            "periodo": period or f"Semana {week}",
-            "semana": week or "1",
-            "habilidades": "Desenvolvimento das competências técnicas e socioemocionais da semana.",
-            "objetos": "Objetos de conhecimento previstos para o componente curricular.",
-            "conteudo": f"Aulas e temas correspondentes à Semana {week}.",
-            "objetivos": "Compreender, analisar e aplicar os conceitos abordados.",
-            "estrategias": "Aulas expositivas dialogadas, estudos de caso práticos e atividades em grupo.",
-            "recursos": "Lousa, projetor multimídia, computadores do laboratório e material de apoio.",
-            "avaliacao": "Participação ativa, resolução de exercícios práticos e autoavaliação.",
-            "referencias": "Currículo Paulista / Diretrizes da Educação Profissional Técnica - SEDUC-SP."
-        }
-
     aulas_titles = []
     temas = set()
     hab_tecnicas = set()
@@ -115,30 +144,39 @@ def compile_lesson_data(rows: List[Dict[str, str]], teacher: str, period: str, c
         if obj: objetivos.append(f"• {obj}")
 
     tema_str = " | ".join(temas) if temas else f"Semana {week}"
-    conteudo_str = f"Tema: {tema_str}\n" + "\n".join(aulas_titles) if aulas_titles else tema_str
-    habilidades_str = "Habilidades Técnicas:\n" + "\n".join(hab_tecnicas) if hab_tecnicas else "Desenvolver competências técnicas da área."
+    conteudo_str = f"Tema da Semana: {tema_str}\n\nAulas Previstas:\n" + "\n".join(aulas_titles) if aulas_titles else tema_str
+    habilidades_str = "Habilidades Técnicas:\n" + "\n".join(hab_tecnicas) if hab_tecnicas else "Desenvolver competências técnicas da área profissional."
     if hab_socio:
         habilidades_str += "\n\nHabilidades Socioemocionais:\n" + "\n".join(hab_socio)
 
+    # Dynamic Lemov & Active Methodologies Assignment
+    lemov_info = select_lemov_and_active_methodology(discipline, aulas_titles, objetivos)
+
+    estrategias_completas = (
+        f"Metodologia Ativa Central:\n{lemov_info['estrategia_principal']}\n\n"
+        f"Técnicas de Ensino Estruturadas (Doug Lemov - Aula Nota 10):\n"
+        f"{lemov_info['lemov_tecnicas']}"
+    )
+
     return {
-        "professor": teacher,
+        "professor": teacher or "Professor(a)",
         "disciplina": discipline or (rows[0].get("Nome do componente", "") if rows else "Técnico"),
-        "turma": classroom,
-        "periodo": period,
-        "semana": week,
+        "turma": classroom or "Turma MTEC",
+        "periodo": period or f"Semana {week}",
+        "semana": week or "1",
         "habilidades": habilidades_str,
         "objetos": "\n".join(obj_conhecimento) if obj_conhecimento else "Conceitos fundamentais da disciplina.",
         "conteudo": conteudo_str,
         "objetivos": "\n".join(objetivos) if objetivos else "Desenvolver os conhecimentos previstos.",
-        "estrategias": "Aulas expositivas dialogadas, estudos de casos práticos, dinâmicas e resolução de problemas em grupo.",
-        "recursos": "Quadro, projetor multimídia, computadores do laboratório, material de apoio impresso/digital.",
-        "avaliacao": "Avaliação contínua, participação ativa nas discussões, entrega de exercícios e produções práticas.",
-        "referencias": "Diretrizes Curriculares da Educação Profissional Técnica - SEDUC-SP e bibliografia recomendada."
+        "estrategias": estrategias_completas,
+        "recursos": lemov_info["recursos_lemov"],
+        "avaliacao": lemov_info["avaliacao_lemov"],
+        "referencias": "Diretrizes Curriculares da Educação Profissional Técnica - SEDUC-SP; LEMOV, Doug. Aula Nota 10 3.0: 63 técnicas para melhorar a gestão da sala de aula."
     }
 
 
 def create_clean_document(lesson_data: Dict[str, str]) -> Document:
-    """Build pristine school lesson plan document."""
+    """Build pristine school lesson plan document with Lemov methodologies."""
     doc = Document()
 
     # Header
@@ -168,7 +206,7 @@ def create_clean_document(lesson_data: Dict[str, str]) -> Document:
         ("6. Objetos de Conhecimento", lesson_data['objetos']),
         ("7. Conteúdo", lesson_data['conteudo']),
         ("8. Objetivos", lesson_data['objetivos']),
-        ("9. Estratégias", lesson_data['estrategias']),
+        ("9. Estratégias (Metodologias Ativas & Lemov)", lesson_data['estrategias']),
         ("10. Recursos didáticos", lesson_data['recursos']),
         ("11. Critérios de Avaliação", lesson_data['avaliacao']),
         ("12. Referências", lesson_data['referencias']),

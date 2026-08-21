@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plano de Aula &bull; Gerador Automático</title>
+    <title>Plano de Aula &bull; Gerador com Metodologias de Lemov</title>
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,6 +78,19 @@
             padding: 0.3rem 0.75rem;
             border-radius: 2rem;
             margin-bottom: 0.75rem;
+        }
+
+        .lemov-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #7c2d12;
+            background: #ffedd5;
+            border: 1px solid #fed7aa;
+            padding: 0.25rem 0.65rem;
+            border-radius: 1rem;
         }
 
         .form-label {
@@ -236,17 +249,22 @@
             border: 1px solid var(--border-color);
             border-left: 3.5px solid var(--primary);
             border-radius: var(--radius-md);
-            padding: 1rem 1.25rem;
-            margin-bottom: 0.9rem;
+            padding: 1.1rem 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-card-lemov {
+            border-left: 4px solid #ea580c;
+            background: #fffaf5;
         }
 
         .content-card-title {
-            font-size: 0.76rem;
+            font-size: 0.78rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: #475569;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.45rem;
         }
 
         .content-card-body {
@@ -276,16 +294,16 @@
         <div class="container d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-3">
                 <div class="brand-icon shadow-sm">
-                    <i class="bi bi-file-earmark-check"></i>
+                    <i class="bi bi-mortarboard"></i>
                 </div>
                 <div>
-                    <h1 class="h6 fw-bold mb-0 text-dark">Gerador de Plano de Aula</h1>
-                    <small class="text-secondary">Cursos Técnicos (2º e 3º Ano) &bull; EE. Prof. Dinora Marcondes Gomes</small>
+                    <h1 class="h6 fw-bold mb-0 text-dark">Gerador de Plano de Aula &bull; Metodologias Ativas</h1>
+                    <small class="text-secondary">Técnicas de Doug Lemov (Aula Nota 10) &bull; Cursos Técnicos (2º e 3º Ano)</small>
                 </div>
             </div>
-            <div class="integration-pill d-none d-sm-inline-flex">
-                <i class="bi bi-check-circle-fill"></i>
-                <span>2º e 3º Ano Integrados</span>
+            <div class="d-none d-md-flex align-items-center gap-2">
+                <span class="lemov-tag"><i class="bi bi-stars"></i> IA Lemov Ativa</span>
+                <span class="integration-pill"><i class="bi bi-check-circle-fill"></i> 2º e 3º Ano</span>
             </div>
         </div>
     </header>
@@ -295,9 +313,9 @@
         <section class="card-container no-print">
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4 pb-3 border-bottom">
                 <div>
-                    <span class="section-tag"><i class="bi bi-lightning-charge-fill"></i> Preenchimento Rápido</span>
+                    <span class="section-tag"><i class="bi bi-stars"></i> Metodologias Inteligentes de Lemov</span>
                     <h2 class="h4 fw-bold text-dark mb-1">Criar Novo Plano de Aula</h2>
-                    <p class="text-muted small mb-0">Selecione o ano do curso técnico e a disciplina. As habilidades e temas são preenchidos automaticamente.</p>
+                    <p class="text-muted small mb-0">O sistema seleciona automaticamente as <strong>técnicas pedagógicas de Lemov e metodologias ativas</strong> mais adequadas para o conteúdo da aula.</p>
                 </div>
             </div>
 
@@ -400,6 +418,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom no-print">
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-primary px-3 py-2 rounded-pill"><i class="bi bi-check2-circle me-1"></i> Pré-visualização Pronta</span>
+                    <span class="lemov-tag"><i class="bi bi-stars"></i> Metodologias de Lemov Aplicadas</span>
                 </div>
                 <button class="btn btn-sm btn-dark px-3 py-2 rounded-3" onclick="window.print()">
                     <i class="bi bi-printer me-1"></i> Imprimir / Salvar em PDF
@@ -442,7 +461,7 @@
 
     <footer class="text-center text-muted py-4 no-print border-top mt-5">
         <div class="container">
-            <small>Plano de Aula Automático &bull; 2º e 3º Ano Cursos Técnicos</small>
+            <small>Plano de Aula Automático &bull; Metodologias Ativas & Técnicas de Doug Lemov (Aula Nota 10)</small>
         </div>
     </footer>
 
@@ -551,7 +570,7 @@
 
             const btn = document.getElementById('btnPreview');
             btn.disabled = true;
-            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Carregando...`;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Analisando com IA...`;
 
             const form = document.getElementById('planForm');
             const formData = new FormData(form);
@@ -573,21 +592,24 @@
                     fieldsDiv.innerHTML = '';
 
                     const sections = [
-                        { label: '5. Habilidades (Técnicas e Socioemocionais)', value: result.data.habilidades },
-                        { label: '6. Objetos de Conhecimento', value: result.data.objetos },
-                        { label: '7. Conteúdo das Aulas', value: result.data.conteudo },
-                        { label: '8. Objetivos das Aulas', value: result.data.objetivos },
-                        { label: '9. Estratégias Metodológicas', value: result.data.estrategias },
-                        { label: '10. Recursos Didáticos', value: result.data.recursos },
-                        { label: '11. Critérios de Avaliação', value: result.data.avaliacao },
-                        { label: '12. Referências', value: result.data.referencias }
+                        { label: '5. Habilidades (Técnicas e Socioemocionais)', value: result.data.habilidades, isLemov: false },
+                        { label: '6. Objetos de Conhecimento', value: result.data.objetos, isLemov: false },
+                        { label: '7. Conteúdo das Aulas', value: result.data.conteudo, isLemov: false },
+                        { label: '8. Objetivos das Aulas', value: result.data.objetivos, isLemov: false },
+                        { label: '9. Estratégias (Metodologias Ativas & Técnicas de Doug Lemov)', value: result.data.estrategias, isLemov: true },
+                        { label: '10. Recursos Didáticos', value: result.data.recursos, isLemov: false },
+                        { label: '11. Critérios de Avaliação Formativa', value: result.data.avaliacao, isLemov: false },
+                        { label: '12. Referências Bibliográficas', value: result.data.referencias, isLemov: false }
                     ];
 
                     sections.forEach(sec => {
                         const card = document.createElement('div');
-                        card.className = 'content-card';
+                        card.className = `content-card ${sec.isLemov ? 'content-card-lemov' : ''}`;
                         card.innerHTML = `
-                            <div class="content-card-title">${sec.label}</div>
+                            <div class="content-card-title ${sec.isLemov ? 'text-warning-emphasis' : ''}">
+                                ${sec.isLemov ? '<i class="bi bi-stars me-1 text-warning"></i>' : ''}
+                                ${sec.label}
+                            </div>
                             <div class="content-card-body">${sec.value || 'Não informado'}</div>
                         `;
                         fieldsDiv.appendChild(card);

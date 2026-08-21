@@ -2,7 +2,7 @@
 """
 Flask Web Application for Lesson Plan Generator
 Entrypoint for Vercel Serverless Function: api/index.py
-Matches exact EE. Prof. Dinora Marcondes Gomes school template format with coherent lesson development.
+Matches exact EE. Prof. Dinora Marcondes Gomes school template format with 50-minute lesson periods.
 """
 
 import io
@@ -15,7 +15,7 @@ from typing import Union, List, Dict, Any
 
 from flask import Flask, request, send_file, jsonify
 from docx import Document
-from docx.shared import Pt, Inches
+from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
 
@@ -35,45 +35,45 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
 
 
-# --- Pedagogical Engine: Coherent Lesson Flow & 1-2 Lemov Techniques ---
+# --- Pedagogical Engine: 50-minute lesson structure & 1-2 Lemov Techniques ---
 
 def build_coherent_lesson_development(discipline: str, titles: List[str], objectives: List[str], tema: str) -> Dict[str, str]:
     """
-    Generate coherent lesson development with 1 or 2 tailored Doug Lemov techniques.
+    Generate coherent 50-minute lesson development with 1 or 2 tailored Doug Lemov techniques.
     """
     disc_lower = (discipline or "").lower()
     text_content = " ".join(titles + objectives).lower()
     tema_clean = tema or "o conteúdo previsto"
 
-    # Math / Calculation / Financial
+    # Math / Calculation / Financial (Total: 50 min)
     if "matemática" in disc_lower or "financeira" in disc_lower or "contabilidade" in disc_lower or "cálculo" in text_content:
         estrategias = (
-            f"• Momento Inicial (10 min): Acolhimento e aplicação da técnica 'Faça Agora' (Do Now), com um exercício rápido de aquecimento envolvendo situações cotidianas para ativar o raciocínio matemático dos alunos.\n\n"
-            f"• Desenvolvimento (Mediação e Prática - 60 min): Apresentação dos conceitos e demonstração passo a passo na lousa através da 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz). Em seguida, os alunos realizam exercícios práticos e situações-problema aplicadas à administração com acompanhamento do professor.\n\n"
-            f"• Fechamento (10 min): Sistematização do aprendizado, correção coletiva de dúvidas e verificação rápida de retenção do conteúdo trabalhado."
+            f"• Momento Inicial (5 a 10 min): Acolhimento e aplicação da técnica 'Faça Agora' (Do Now), com um exercício rápido de 3 a 5 minutos na lousa envolvendo situações cotidianas para ativar o raciocínio matemático dos alunos.\n\n"
+            f"• Desenvolvimento (Mediação e Prática - 30 a 35 min): Apresentação do conceito pelo professor e demonstração prática do cálculo através da 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz). Em seguida, os alunos realizam exercícios dirigidos com apoio do professor.\n\n"
+            f"• Fechamento (5 a 10 min): Correção de dúvidas recorrentes, síntese da fórmula/procedimento utilizado e checagem rápida de retenção da turma."
         )
         recursos = "Lousa, projetor multimídia, folha de atividades dirigidas, calculadoras e material didático."
-        avaliacao = "Avaliação formativa e contínua, observando a participação nas atividades, a resolução correta dos cálculos e a capacidade de aplicação em situações-problema."
+        avaliacao = "Avaliação formativa e processual, observando a participação, a resolução dos exercícios dirigidos e a assimilação dos cálculos."
 
-    # Marketing, Sales, Business Communication
+    # Marketing, Sales, Business Communication (Total: 50 min)
     elif "marketing" in disc_lower or "vendas" in disc_lower or "comunicação" in disc_lower or "negócios" in disc_lower:
         estrategias = (
-            f"• Momento Inicial (10 min): Acolhimento e apresentação de um 'Gancho Inicial' (Hook) com um case real ou exemplo prático do mercado relacionado a {tema_clean}, despertando a curiosidade e o interesse da turma.\n\n"
-            f"• Desenvolvimento (Mediação e Prática - 60 min): Explanação dialogada dos conceitos teóricos. Em seguida, aplicação da técnica 'Vire e Converse' (Turn and Talk) em duplas para debater a solução do estudo de caso proposto, promovendo a troca de ideias e a formulação de estratégias de mercado.\n\n"
-            f"• Fechamento (10 min): Compartilhamento das conclusões das duplas, síntese dos pontos-chave pelo professor e alinhamento das competências técnicas trabalhadas."
+            f"• Momento Inicial (5 a 10 min): Acolhimento e apresentação de um 'Gancho Inicial' (Hook) com um exemplo prático ou case de mercado relacionado a {tema_clean}, despertando o interesse da turma.\n\n"
+            f"• Desenvolvimento (Mediação e Prática - 30 a 35 min): Explanação dialogada dos conceitos teóricos. Em seguida, aplicação da técnica 'Vire e Converse' (Turn and Talk) em duplas para debaterem rapidamente uma tomada de decisão sobre a situação-problema apresentada.\n\n"
+            f"• Fechamento (5 a 10 min): Compartilhamento das ideias principais das duplas, síntese do professor e alinhamento com a prática profissional."
         )
-        recursos = "Projetor multimídia, computadores do laboratório, estudos de casos empresariais e material de apoio impresso/digital."
-        avaliacao = "Avaliação processual baseada na participação ativa nas discussões, na clareza da argumentação técnica durante os debates e na entrega da análise de caso."
+        recursos = "Projetor multimídia, material de apoio impresso/digital e estudos de casos rápidos de mercado."
+        avaliacao = "Avaliação processual baseada na participação ativa nas discussões, na argumentação técnica em dupla e no engajamento na aula."
 
-    # Management, People, Legal & Operations
+    # Management, People, Legal & Operations (Total: 50 min)
     else:
         estrategias = (
-            f"• Momento Inicial (10 min): Acolhimento e contextualização da temática sobre {tema_clean}. Aplicação da técnica 'Faça Agora' (Do Now) com uma pergunta instigante sobre desafios reais da rotina corporativa.\n\n"
-            f"• Desenvolvimento (Mediação e Prática - 60 min): Mediação teórica pelo professor articulando a legislação e os procedimentos organizacionais. Aplicação da técnica 'Todos Escrevem' (Everybody Writes), onde os alunos estruturam individualmente respostas a situações simuladas da empresa antes da discussão plenária.\n\n"
-            f"• Fechamento (10 min): Retomada dos conceitos principais, esclarecimento de dúvidas e síntese das rotinas administrativas desenvolvidas."
+            f"• Momento Inicial (5 a 10 min): Acolhimento e contextualização rápida da temática sobre {tema_clean}. Aplicação da técnica 'Faça Agora' (Do Now) com uma pergunta problematizadora sobre a rotina da empresa.\n\n"
+            f"• Desenvolvimento (Mediação e Prática - 30 a 35 min): Mediação teórica pelo professor articulando a legislação e os procedimentos organizacionais. Aplicação da técnica 'Todos Escrevem' (Everybody Writes), com registro individual de 3 minutos para estruturar a solução antes do alinhamento coletivo.\n\n"
+            f"• Fechamento (5 a 10 min): Retomada dos conceitos principais trabalhados, esclarecimento pontual de dúvidas e sistematização da rotina administrativa."
         )
-        recursos = "Quadro, projetor multimídia, cenários simulados de rotinas administrativas, material de apoio e legislação comentada."
-        avaliacao = "Avaliação formativa, considerando a pontualidade, a postura profissional, o engajamento nas simulações e a precisão técnica nas produções escritas."
+        recursos = "Quadro, projetor multimídia, cenários simulados de rotinas administrativas e material de apoio."
+        avaliacao = "Avaliação formativa, considerando o foco, a participação no momento de escrita individual e a coerência nas discussões em sala."
 
     return {
         "estrategias": estrategias,
@@ -168,10 +168,10 @@ def compile_lesson_data(rows: List[Dict[str, str]], teacher: str, period: str, c
 
 
 def create_exact_school_document(lesson_data: Dict[str, str]) -> Document:
-    """Build exact school template document."""
+    """Build exact school template document with 50-min timing."""
     doc = Document()
 
-    # Exact School Header matching template.docx
+    # Header
     p_header = doc.add_paragraph()
     p_header.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r1 = p_header.add_run("GOVERNO DE ESTADO DE SÃO PAULO – SECRETÁRIA DA EDUCAÇÃO\n")

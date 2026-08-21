@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plano de Aula &bull; Gerador com Metodologias de Lemov</title>
-    <!-- Google Fonts Inter / Plus Jakarta Sans -->
+    <title>Plano de Aula Pro &bull; Gerador Inteligente</title>
+    <!-- Google Fonts Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -15,138 +15,252 @@
     <style>
         :root {
             --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --primary: #4338ca;
-            --primary-light: #e0e7ff;
-            --primary-hover: #3730a3;
+            --primary: #4f46e5;
+            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --lemov-gradient: linear-gradient(135deg, #ea580c 0%, #f59e0b 100%);
             --bg-body: #f8fafc;
             --surface: #ffffff;
             --border-color: #e2e8f0;
-            --text-primary: #0f172a;
-            --text-secondary: #64748b;
-            --radius-md: 0.75rem;
-            --radius-lg: 1rem;
-            --shadow-card: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --shadow-subtle: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+            --shadow-elevated: 0 20px 35px -10px rgba(15, 23, 42, 0.08), 0 1px 3px 0 rgba(15, 23, 42, 0.03);
+            --radius-md: 0.85rem;
+            --radius-lg: 1.25rem;
         }
 
         body {
             font-family: var(--font-family);
             background-color: var(--bg-body);
-            color: var(--text-primary);
+            color: var(--text-main);
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
+            background-image: radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.05) 0px, transparent 50%),
+                              radial-gradient(at 100% 0%, rgba(124, 58, 237, 0.04) 0px, transparent 50%);
+            background-attachment: fixed;
         }
 
-        .app-header {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1.1rem 0;
+        /* Glass Navbar */
+        .glass-navbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            padding: 0.9rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        .brand-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+        .brand-badge {
+            background: var(--primary-gradient);
             color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            box-shadow: 0 8px 16px -4px rgba(79, 70, 229, 0.35);
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            text-align: center;
+            padding: 2.5rem 1rem 1.5rem;
+        }
+
+        .hero-badge {
+            background: #eef2ff;
+            color: #4338ca;
+            border: 1px solid #c7d2fe;
+            padding: 0.35rem 0.9rem;
+            border-radius: 2rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Main Container Card */
+        .app-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-elevated);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Year Selection Big Cards */
+        .year-card {
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f8fafc;
+            position: relative;
+            user-select: none;
+        }
+
+        .year-card:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            background: #ffffff;
+        }
+
+        .year-card.active {
+            border-color: #4f46e5;
+            background: #f5f3ff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        .year-card.active .year-icon {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .year-icon {
+            width: 44px;
+            height: 44px;
             border-radius: 0.65rem;
+            background: #e2e8f0;
+            color: #475569;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.3rem;
+            transition: all 0.2s ease;
         }
 
-        .card-container {
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-card);
-            padding: 2.25rem;
-        }
-
-        .section-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--primary);
-            background: var(--primary-light);
-            padding: 0.3rem 0.75rem;
-            border-radius: 2rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .lemov-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #7c2d12;
-            background: #ffedd5;
-            border: 1px solid #fed7aa;
-            padding: 0.25rem 0.65rem;
-            border-radius: 1rem;
-        }
-
-        .form-label {
-            font-weight: 600;
-            font-size: 0.88rem;
+        /* Discipline Chips */
+        .discipline-chip {
+            border: 1.5px solid #e2e8f0;
+            background: #ffffff;
             color: #334155;
-            margin-bottom: 0.35rem;
+            padding: 0.65rem 1.1rem;
+            border-radius: 2rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            user-select: none;
+        }
+
+        .discipline-chip:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .discipline-chip.active {
+            background: #4f46e5;
+            border-color: #4f46e5;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        /* Form Inputs */
+        .form-label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #334155;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
 
         .form-control, .form-select {
             font-family: var(--font-family);
             border-radius: var(--radius-md);
-            border: 1.5px solid var(--border-color);
-            padding: 0.65rem 0.95rem;
-            font-size: 0.92rem;
-            color: var(--text-primary);
+            border: 1.5px solid #cbd5e1;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            color: var(--text-main);
             background-color: #ffffff;
             transition: all 0.2s ease;
         }
 
         .form-control:focus, .form-select:focus {
             border-color: #6366f1;
-            box-shadow: 0 0 0 3.5px rgba(99, 102, 241, 0.12);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
             outline: none;
         }
 
-        .btn-main {
-            background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+        /* Live Week Highlight Card */
+        .week-summary-card {
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            border: 1.5px solid #a7f3d0;
+            border-radius: var(--radius-md);
+            padding: 1.2rem 1.4rem;
+            margin-top: 1rem;
+        }
+
+        /* Lemov Spotlight Card */
+        .lemov-spotlight {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border: 1.5px solid #fed7aa;
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.4rem;
+            margin-top: 1.25rem;
+        }
+
+        .lemov-pill {
+            background: #ffffff;
+            border: 1px solid #fdba74;
+            color: #9a3412;
+            font-size: 0.76rem;
+            font-weight: 700;
+            padding: 0.3rem 0.7rem;
+            border-radius: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin: 0.2rem 0.2rem 0.2rem 0;
+        }
+
+        /* Action Buttons */
+        .btn-gradient-primary {
+            background: var(--primary-gradient);
             color: #ffffff;
             border: none;
             border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 0.75rem 1.6rem;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.9rem 1.8rem;
+            transition: all 0.25s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.6rem;
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
             cursor: pointer;
         }
 
-        .btn-main:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px -3px rgba(79, 70, 229, 0.35);
+        .btn-gradient-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px -5px rgba(79, 70, 229, 0.5);
             color: #ffffff;
         }
 
-        .btn-outline-clean {
-            background: var(--surface);
+        .btn-clean-secondary {
+            background: #ffffff;
             color: #334155;
-            border: 1.5px solid var(--border-color);
+            border: 1.5px solid #cbd5e1;
             border-radius: var(--radius-md);
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.95rem;
-            padding: 0.75rem 1.4rem;
+            padding: 0.9rem 1.5rem;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
@@ -155,278 +269,303 @@
             cursor: pointer;
         }
 
-        .btn-outline-clean:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
+        .btn-clean-secondary:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
             color: #0f172a;
+            transform: translateY(-1px);
         }
 
-        .integration-pill {
-            background: #ecfdf5;
-            border: 1px solid #a7f3d0;
-            color: #065f46;
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 0.35rem 0.85rem;
-            border-radius: 2rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .preview-paper {
-            background: var(--surface);
+        /* Executive Paper Preview */
+        .executive-paper {
+            background: #ffffff;
             border-radius: var(--radius-lg);
             border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-card);
-            padding: 2.5rem;
-            margin-top: 1.5rem;
+            box-shadow: var(--shadow-elevated);
+            padding: 3rem;
+            margin-top: 2rem;
+            position: relative;
         }
 
-        .preview-header-school {
+        .school-badge-header {
             text-align: center;
             border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 1.25rem;
-            margin-bottom: 1.75rem;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .preview-header-school h6 {
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #475569;
-            margin-bottom: 0.2rem;
-            letter-spacing: 0.02em;
-        }
-
-        .preview-header-school p {
-            color: #64748b;
-            font-size: 0.78rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .preview-header-school h4 {
+        .school-badge-header h5 {
+            font-size: 0.92rem;
             font-weight: 800;
-            color: #0f172a;
-            margin-top: 0.75rem;
-            font-size: 1.2rem;
+            color: #334155;
+            margin-bottom: 0.25rem;
             letter-spacing: 0.03em;
         }
 
-        .info-pill-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .info-pill-item {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 0.75rem 1rem;
-        }
-
-        .info-pill-label {
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            color: #64748b;
-            margin-bottom: 0.15rem;
-        }
-
-        .info-pill-val {
-            font-size: 0.92rem;
-            font-weight: 600;
+        .school-badge-header h4 {
+            font-size: 1.3rem;
+            font-weight: 800;
             color: #0f172a;
+            margin-top: 0.85rem;
+            letter-spacing: 0.02em;
         }
 
-        .content-card {
+        .doc-section-card {
             background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-left: 3.5px solid var(--primary);
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid var(--primary);
             border-radius: var(--radius-md);
-            padding: 1.1rem 1.3rem;
-            margin-bottom: 1rem;
+            padding: 1.15rem 1.4rem;
+            margin-bottom: 1.1rem;
         }
 
-        .content-card-lemov {
-            border-left: 4px solid #ea580c;
+        .doc-section-card.lemov-highlight {
+            border-left-color: #ea580c;
             background: #fffaf5;
+            border-color: #fed7aa;
         }
 
-        .content-card-title {
+        .doc-section-label {
             font-size: 0.78rem;
-            font-weight: 700;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
             color: #475569;
             margin-bottom: 0.45rem;
         }
 
-        .content-card-body {
-            font-size: 0.92rem;
+        .doc-section-content {
+            font-size: 0.94rem;
             color: #1e293b;
             white-space: pre-line;
-            line-height: 1.6;
+            line-height: 1.65;
+        }
+
+        /* Toast notification */
+        .toast-custom {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #0f172a;
+            color: white;
+            padding: 0.85rem 1.4rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            z-index: 1000;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toast-custom.show {
+            transform: translateY(0);
+            opacity: 1;
         }
 
         @media (max-width: 768px) {
-            .card-container { padding: 1.5rem; }
-            .preview-paper { padding: 1.5rem; }
+            .app-card { padding: 1.5rem; }
+            .executive-paper { padding: 1.5rem; }
         }
 
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; }
-            .preview-paper { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
-            .content-card { border: 1px solid #cbd5e1 !important; border-left: 3px solid #000 !important; page-break-inside: avoid; }
+            .executive-paper { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+            .doc-section-card { border: 1px solid #cbd5e1 !important; border-left: 3px solid #000 !important; page-break-inside: avoid; }
         }
     </style>
 </head>
 <body>
 
     <!-- Header Navbar -->
-    <header class="app-header no-print">
+    <nav class="glass-navbar no-print">
         <div class="container d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-3">
-                <div class="brand-icon shadow-sm">
-                    <i class="bi bi-mortarboard"></i>
+                <div class="brand-badge">
+                    <i class="bi bi-mortarboard-fill"></i>
                 </div>
                 <div>
-                    <h1 class="h6 fw-bold mb-0 text-dark">Gerador de Plano de Aula &bull; Metodologias Ativas</h1>
-                    <small class="text-secondary">Técnicas de Doug Lemov (Aula Nota 10) &bull; Cursos Técnicos (2º e 3º Ano)</small>
+                    <span class="h6 fw-bold mb-0 text-dark d-block">Plano de Aula Pro</span>
+                    <small class="text-muted">EE. Prof. Dinora Marcondes Gomes &bull; Cursos Técnicos</small>
                 </div>
             </div>
             <div class="d-none d-md-flex align-items-center gap-2">
-                <span class="lemov-tag"><i class="bi bi-stars"></i> IA Lemov Ativa</span>
-                <span class="integration-pill"><i class="bi bi-check-circle-fill"></i> 2º e 3º Ano</span>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill">
+                    <i class="bi bi-stars me-1"></i> Metodologias de Lemov 3.0
+                </span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">
+                    <i class="bi bi-check-circle-fill me-1"></i> 2º e 3º Ano Integrados
+                </span>
             </div>
         </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-banner container no-print" style="max-width: 800px;">
+        <span class="hero-badge"><i class="bi bi-magic me-1"></i> Planejamento Pedagógico Automatizado</span>
+        <h1 class="display-6 fw-bold text-dark mb-2">Gerador Inteligente de Plano de Aula</h1>
+        <p class="text-secondary mb-0">Selecione o ano e a disciplina técnica. O sistema estrutura as <strong>habilidades, conteúdos oficiais e as melhores técnicas ativas de Doug Lemov</strong> para a sua aula.</p>
     </header>
 
-    <main class="container my-4 my-md-5" style="max-width: 920px;">
+    <main class="container my-3 mb-5" style="max-width: 960px;">
         <!-- Configuration Card -->
-        <section class="card-container no-print">
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4 pb-3 border-bottom">
-                <div>
-                    <span class="section-tag"><i class="bi bi-stars"></i> Metodologias Inteligentes de Lemov</span>
-                    <h2 class="h4 fw-bold text-dark mb-1">Criar Novo Plano de Aula</h2>
-                    <p class="text-muted small mb-0">Selecione o ano e a disciplina. As habilidades e as <strong>técnicas pedagógicas de Lemov</strong> são estruturadas automaticamente.</p>
+        <section class="app-card no-print">
+            <!-- 1. Ano do Curso Técnico (Big Cards) -->
+            <div class="mb-4">
+                <label class="form-label text-primary mb-2"><i class="bi bi-layers-fill me-1"></i> 1. Selecione o Ano do Curso</label>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="year-card active d-flex align-items-center gap-3" id="card2Ano" onclick="selectYear('2º Ano (MTEC)')">
+                            <div class="year-icon">
+                                <i class="bi bi-briefcase-fill"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0 text-dark">2º Ano MTEC</h6>
+                                <small class="text-muted">Administração &bull; Legislação, RH e Matemática Aplicada</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="year-card d-flex align-items-center gap-3" id="card3Ano" onclick="selectYear('3º Ano (MTEC)')">
+                            <div class="year-icon">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0 text-dark">3º Ano MTEC</h6>
+                                <small class="text-muted">Administração & Vendas &bull; Marketing, Finanças e Operações</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <form id="planForm" onsubmit="event.preventDefault(); downloadDocument();">
-                <div class="row g-3">
-                    <!-- 1. Ano do Curso Técnico (Seletor Principal) -->
-                    <div class="col-md-6">
-                        <label for="courseYear" class="form-label text-primary">
-                            <i class="bi bi-mortarboard-fill me-1"></i> Ano do Curso Técnico
-                        </label>
-                        <select class="form-select border-primary" id="courseYear" onchange="onYearChange()">
-                            <option value="2º Ano (MTEC)" selected>2º Ano (MTEC - Administração & Vendas)</option>
-                            <option value="3º Ano (MTEC)">3º Ano (MTEC - Administração & Vendas)</option>
-                        </select>
-                    </div>
+            <!-- 2. Disciplinas (Interactive Chips) -->
+            <div class="mb-4">
+                <label class="form-label text-primary mb-2"><i class="bi bi-book-half me-1"></i> 2. Selecione a Disciplina (Componente Curricular)</label>
+                <div class="d-flex flex-wrap gap-2" id="disciplineChipsContainer">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
 
-                    <!-- 2. Disciplina (Filtrada pelo Ano) -->
-                    <div class="col-md-6">
-                        <label for="discipline" class="form-label text-primary">
-                            <i class="bi bi-book-fill me-1"></i> Disciplina (Componente Curricular)
-                        </label>
-                        <select class="form-select border-primary" id="discipline" name="discipline" onchange="updateWeeksDropdown()">
-                            <!-- Pre-filled dynamically -->
-                        </select>
-                    </div>
+            <hr class="my-4 border-slate-200">
 
-                    <!-- 3. Nome do Professor -->
-                    <div class="col-md-6">
-                        <label for="teacher" class="form-label">
-                            <i class="bi bi-person me-1 text-primary"></i> Nome do(a) Professor(a)
-                        </label>
-                        <input type="text" class="form-control" id="teacher" name="teacher" placeholder="Ex: Prof. Thamy Oliveira" value="Prof. Thamy Oliveira" required>
-                    </div>
-
-                    <!-- 4. Período / Data -->
-                    <div class="col-md-6">
-                        <label for="period" class="form-label">
-                            <i class="bi bi-calendar3 me-1 text-primary"></i> Período de Realização / Data
-                        </label>
-                        <input type="text" class="form-control" id="period" name="period" placeholder="Ex: Semana de 24 a 28 de Fevereiro" value="Semana de 24 a 28 de Fevereiro" required>
-                    </div>
-
-                    <!-- 5. Turma -->
-                    <div class="col-md-6">
-                        <label for="classroom" class="form-label">
-                            <i class="bi bi-people me-1 text-primary"></i> Ano / Série / Turma
-                        </label>
-                        <input type="text" class="form-control" id="classroom" name="classroom" placeholder="Ex: 2º MTEC - Administração" value="2º MTEC - Administração" required>
-                    </div>
-
-                    <!-- 6. Semana -->
-                    <div class="col-md-6">
-                        <label for="week" class="form-label">
-                            <i class="bi bi-calendar-week me-1 text-primary"></i> Semana do Curso
-                        </label>
-                        <select class="form-select" id="week" name="week" required>
-                            <!-- Pre-filled dynamically -->
-                        </select>
-                    </div>
+            <!-- 3. Form Data Inputs -->
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="teacher" class="form-label"><i class="bi bi-person-circle me-1 text-primary"></i> Nome do(a) Professor(a)</label>
+                    <input type="text" class="form-control" id="teacher" placeholder="Ex: Prof. Thamy Oliveira" value="Prof. Thamy Oliveira" required>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="d-flex flex-wrap gap-2 mt-4 pt-3 border-top">
-                    <button type="button" class="btn-main" id="btnDownload" onclick="downloadDocument()">
-                        <i class="bi bi-file-earmark-word"></i> Baixar Word (.doc / .docx)
-                    </button>
-                    <button type="button" class="btn-outline-clean" id="btnPreview" onclick="generatePreview()">
-                        <i class="bi bi-eye"></i> Pré-visualizar na Tela
-                    </button>
+                <div class="col-md-6">
+                    <label for="period" class="form-label"><i class="bi bi-calendar-event me-1 text-primary"></i> Período de Realização / Data</label>
+                    <input type="text" class="form-control" id="period" placeholder="Ex: Semana de 24 a 28 de Fevereiro" value="Semana de 24 a 28 de Fevereiro" required>
                 </div>
-            </form>
-        </section>
 
-        <!-- Alert messages -->
-        <div id="alertBox" class="alert d-none no-print my-3" role="alert"></div>
-
-        <!-- Preview Document Area -->
-        <section id="previewArea" class="preview-paper d-none">
-            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom no-print">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-primary px-3 py-2 rounded-pill"><i class="bi bi-check2-circle me-1"></i> Pré-visualização Pronta</span>
-                    <span class="lemov-tag"><i class="bi bi-stars"></i> Metodologias de Lemov Aplicadas</span>
+                <div class="col-md-6">
+                    <label for="classroom" class="form-label"><i class="bi bi-mortarboard me-1 text-primary"></i> Ano / Série / Turma</label>
+                    <input type="text" class="form-control" id="classroom" placeholder="Ex: 2º MTEC - Administração" value="2º MTEC - Administração" required>
                 </div>
-                <button class="btn btn-sm btn-dark px-3 py-2 rounded-3" onclick="window.print()">
-                    <i class="bi bi-printer me-1"></i> Imprimir / Salvar em PDF
+
+                <div class="col-md-6">
+                    <label for="weekSelect" class="form-label"><i class="bi bi-calendar3 me-1 text-primary"></i> Semana do Curso</label>
+                    <select class="form-select" id="weekSelect" onchange="onWeekChange()">
+                        <!-- Populated dynamically (1 to 28) -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Live Week Topic Card -->
+            <div class="week-summary-card d-flex align-items-center justify-content-between flex-wrap gap-2" id="weekSummaryBox">
+                <div>
+                    <span class="badge bg-success text-white px-2 py-1 rounded-pill small me-1"><i class="bi bi-check2"></i> Conteúdo Localizado</span>
+                    <strong class="text-success-emphasis" id="weekTopicTitle">Carregando tema da semana...</strong>
+                    <div class="text-muted small mt-1" id="weekLessonsCount">4 aulas planejadas para esta semana</div>
+                </div>
+            </div>
+
+            <!-- Lemov Active Methodology Spotlight -->
+            <div class="lemov-spotlight">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-warning text-dark px-2 py-1 rounded-pill"><i class="bi bi-stars"></i> IA Pedagógica</span>
+                        <strong class="text-dark">Estratégia Recomendada de Doug Lemov (Aula Nota 10)</strong>
+                    </div>
+                </div>
+                <div id="lemovPillsContainer" class="d-flex flex-wrap gap-1">
+                    <!-- Lemov Pills populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex flex-wrap align-items-center gap-3 mt-4 pt-3 border-top">
+                <button type="button" class="btn-gradient-primary" id="btnDownload" onclick="downloadDocument()">
+                    <i class="bi bi-file-earmark-word-fill fs-5"></i> Baixar Word (.docx / .doc)
+                </button>
+                <button type="button" class="btn-clean-secondary" id="btnPreview" onclick="generatePreview()">
+                    <i class="bi bi-eye-fill"></i> Pré-visualizar na Tela
+                </button>
+                <button type="button" class="btn-clean-secondary" id="btnCopy" onclick="copyPlanToClipboard()">
+                    <i class="bi bi-clipboard-check-fill"></i> Copiar Texto Completo
                 </button>
             </div>
+        </section>
 
-            <!-- School Header -->
-            <div class="preview-header-school">
-                <h6>GOVERNO DO ESTADO DE SÃO PAULO – SECRETARIA DA EDUCAÇÃO</h6>
-                <h6>DIRETORIA DE ENSINO - REGIÃO DE ARARAQUARA</h6>
-                <h6>EE. PROF. DINORA MARCONDES GOMES</h6>
-                <p>RUA EMILIA GALLI, 549 - CENTRO - AMÉRICO BRASILIENSE - SP | TEL: (16) 3392-1335</p>
-                <h4>PLANO DE AULA - 2026</h4>
+        <!-- Executive Paper Preview Area -->
+        <section id="previewArea" class="executive-paper d-none">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 pb-3 border-bottom no-print">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary px-3 py-2 rounded-pill"><i class="bi bi-check2-circle me-1"></i> Documento Oficial Formatado</span>
+                    <span class="lemov-pill"><i class="bi bi-stars"></i> Técnicas de Lemov Inclusas</span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary px-3 py-2 rounded-3" onclick="copyPlanToClipboard()">
+                        <i class="bi bi-clipboard me-1"></i> Copiar
+                    </button>
+                    <button class="btn btn-sm btn-dark px-3 py-2 rounded-3" onclick="window.print()">
+                        <i class="bi bi-printer me-1"></i> Imprimir / Salvar em PDF
+                    </button>
+                </div>
             </div>
 
-            <!-- Header Info Pills Grid -->
-            <div class="info-pill-grid">
-                <div class="info-pill-item">
-                    <div class="info-pill-label">Professor(a)</div>
-                    <div class="info-pill-val" id="prevTeacher">-</div>
+            <!-- School Header Letterhead -->
+            <div class="school-badge-header">
+                <h5>GOVERNO DO ESTADO DE SÃO PAULO – SECRETARIA DA EDUCAÇÃO</h5>
+                <h5>DIRETORIA DE ENSINO - REGIÃO DE ARARAQUARA</h5>
+                <h5>EE. PROF. DINORA MARCONDES GOMES</h5>
+                <p class="text-muted small mb-0">RUA EMILIA GALLI, 549 - CENTRO - AMÉRICO BRASILIENSE - SP | TEL: (16) 3392-1335</p>
+                <h4 id="docTitlePreview">PLANO DE AULA - 2026</h4>
+            </div>
+
+            <!-- Info Pills Grid -->
+            <div class="row g-2 mb-3">
+                <div class="col-md-6">
+                    <div class="p-2 border rounded bg-light">
+                        <strong class="text-secondary small text-uppercase d-block">Professor(a)</strong>
+                        <span id="prevTeacher" class="fw-semibold text-dark">-</span>
+                    </div>
                 </div>
-                <div class="info-pill-item">
-                    <div class="info-pill-label">Componente Curricular</div>
-                    <div class="info-pill-val" id="prevDiscipline">-</div>
+                <div class="col-md-6">
+                    <div class="p-2 border rounded bg-light">
+                        <strong class="text-secondary small text-uppercase d-block">Componente Curricular</strong>
+                        <span id="prevDiscipline" class="fw-semibold text-dark">-</span>
+                    </div>
                 </div>
-                <div class="info-pill-item">
-                    <div class="info-pill-label">Ano / Série / Turma</div>
-                    <div class="info-pill-val" id="prevClassroom">-</div>
+                <div class="col-md-6">
+                    <div class="p-2 border rounded bg-light">
+                        <strong class="text-secondary small text-uppercase d-block">Ano / Série / Turma</strong>
+                        <span id="prevClassroom" class="fw-semibold text-dark">-</span>
+                    </div>
                 </div>
-                <div class="info-pill-item">
-                    <div class="info-pill-label">Período de Realização</div>
-                    <div class="info-pill-val" id="prevPeriod">-</div>
+                <div class="col-md-6">
+                    <div class="p-2 border rounded bg-light">
+                        <strong class="text-secondary small text-uppercase d-block">Período de Realização</strong>
+                        <span id="prevPeriod" class="fw-semibold text-dark">-</span>
+                    </div>
                 </div>
             </div>
 
@@ -435,52 +574,64 @@
         </section>
     </main>
 
-    <footer class="text-center text-muted py-4 no-print border-top mt-5">
+    <!-- Floating Copy Toast -->
+    <div id="toastMessage" class="toast-custom">
+        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+        <span id="toastText">Plano de aula copiado com sucesso!</span>
+    </div>
+
+    <footer class="text-center text-muted py-4 no-print border-top">
         <div class="container">
-            <small>Plano de Aula Automático &bull; Metodologias Ativas & Técnicas de Doug Lemov (Aula Nota 10)</small>
+            <small>Plano de Aula Pro &bull; Desenvolvido para Cursos Técnicos MTEC / Novotec &bull; SEDUC-SP</small>
         </div>
     </footer>
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Load Curriculum Dataset -->
+    <!-- Load Local Curriculum Dataset -->
     <script src="/curriculum_data.js"></script>
 
     <script>
-        const DEFAULT_YEARS = {
+        const DISCIPLINES_BY_YEAR = {
             "2º Ano (MTEC)": [
-                "Introdução à Administração, Legislação e Pessoas",
-                "Matemática Aplicada à Administração"
+                { name: "Introdução à Administração, Legislação e Pessoas", icon: "bi-people-fill" },
+                { name: "Matemática Aplicada à Administração", icon: "bi-calculator-fill" }
             ],
             "3º Ano (MTEC)": [
-                "Marketing Estratégico",
-                "Comunicação Empresarial",
-                "Gestão Financeira e Contabilidade",
-                "Gestão de Operações",
-                "Empreendedorismo e Desenvolvimento de Negócios"
+                { name: "Marketing Estratégico", icon: "bi-megaphone-fill" },
+                { name: "Comunicação Empresarial", icon: "bi-chat-dots-fill" },
+                { name: "Gestão Financeira e Contabilidade", icon: "bi-cash-coin" },
+                { name: "Gestão de Operações", icon: "bi-gear-wide-connected" },
+                { name: "Empreendedorismo e Desenvolvimento de Negócios", icon: "bi-rocket-takeoff-fill" }
             ]
         };
 
-        // --- Lemov Pedagogical Selection Engine in JS ---
+        let currentYear = "2º Ano (MTEC)";
+        let currentDiscipline = "Introdução à Administração, Legislação e Pessoas";
+
+        // --- Lemov Pedagogical Selection Engine ---
         function getLemovMethodology(discipline, titles, objectives) {
             const discLower = (discipline || "").toLowerCase();
             const textContent = (titles.join(" ") + " " + objectives.join(" ")).toLowerCase();
 
             if (discLower.includes("matemática") || discLower.includes("financeira") || discLower.includes("contabilidade") || textContent.includes("cálculo")) {
                 return {
+                    pills: ["⏱️ Faça Agora (Do Now)", "🎯 Modelagem Gradual (Eu Faço, Nós Fazemos, Você Faz)", "📐 Padronize o Formato", "👀 Circule pela Sala", "🎫 Bilhete de Saída (Exit Ticket)"],
                     estrategia: "Metodologia Ativa Central:\nModelagem Gradual (Eu Faço, Nós Fazemos, Você Faz) e Aprendizagem Baseada em Problemas (PBL)\n\nTécnicas de Ensino Estruturadas (Doug Lemov - Aula Nota 10):\n• Faça Agora (Do Now): Exercício rápido de aquecimento de 3 a 5 min para ativar o raciocínio lógico.\n• Modelagem Gradual (I Do, We Do, You Do): Demonstração passo a passo do cálculo na lousa, resolução conjunta e prática autônoma individual.\n• Padronize o Formato: Organização estruturada do raciocínio matemático no caderno.\n• Circule pela Sala: Monitoramento ativo das etapas de cálculo com intervenções pontuais.\n• Bilhete de Saída (Exit Ticket): Mini-desafio final de 3 minutos para checagem imediata de retenção.",
                     recursos: "Lousa interativa/quadro, folhas de atividades práticas dirigidas, calculadoras e formulários de exercícios estruturados.",
                     avaliacao: "Avaliação formativa processual com aplicação do 'Certo é Certo' (correção de etapas) e conferência do 'Bilhete de Saída'."
                 };
             } else if (discLower.includes("marketing") || discLower.includes("vendas") || discLower.includes("comunicação") || discLower.includes("negócios")) {
                 return {
+                    pills: ["🎣 Gancho Inicial (Hook)", "💬 Vire e Converse (Turn & Talk)", "🚀 Puxe Mais (Stretch It)", "📢 Mostre e Conte (Show Call)", "👔 Formato Importa"],
                     estrategia: "Metodologia Ativa Central:\nEstudo de Casos Empresariais Reais (PBL), Aprendizagem por Pares e Design de Estratégias\n\nTécnicas de Ensino Estruturadas (Doug Lemov - Aula Nota 10):\n• Gancho Inicial (Hook): Apresentação de um case ou campanha de mercado instigante nos primeiros minutos.\n• Vire e Converse (Turn and Talk): Debate rápido em duplas para gerar hipóteses de mercado antes da discussão plenária.\n• Puxe Mais (Stretch It): Perguntas de aprofundamento aos alunos que respondem corretamente para expandir a visão crítica.\n• Mostre e Conte (Show Call): Projeção de soluções e pitches dos alunos para análise construtiva coletiva.\n• Formato Importa: Estímulo à comunicação oral e escrita com vocabulário técnico de marketing e negócios.",
                     recursos: "Projetor multimídia, computadores do laboratório com acesso a estudos de casos reais, material de apoio e ambiente virtual.",
                     avaliacao: "Avaliação contínua por rubricas: análise crítica nos estudos de caso, qualidade da argumentação técnica e participação cooperativa."
                 };
             } else {
                 return {
+                    pills: ["⏱️ Faça Agora (Do Now)", "✍️ Todos Escrevem (Everybody Writes)", "🎯 Sem Escapatória (No Opt Out)", "❄️ Chamada Fria (Cold Call)", "✔️ Certo é Certo"],
                     estrategia: "Metodologia Ativa Central:\nSimulação de Rotinas Organizacionais, Análise Crítica de Cenários e Sala de Aula Invertida\n\nTécnicas de Ensino Estruturadas (Doug Lemov - Aula Nota 10):\n• Faça Agora (Do Now): Situação-problema inicial sobre dilemas da rotina empresarial/jurídica.\n• Todos Escrevem (Everybody Writes): Tempo individual cronometrado para os alunos registrarem soluções antes do debate.\n• Sem Escapatória (No Opt Out): Garantir que todo aluno participe ativamente e reformule a resposta até atingir o rigor técnico.\n• Chamada Fria (Cold Call): Perguntas dirigidas de forma acolhedora para manter o foco e engajamento uniforme de toda a turma.\n• Certo é Certo (Right is Right): Exigência de conformidade às normas legais (ex: CLT, LGPD) e procedimentos organizacionais.",
                     recursos: "Lousa digital, cenários simulados de departamento de RH e gestão, legislação comentada e formulários administrativos.",
                     avaliacao: "Acompanhamento formativo diário, verificação das produções escritas individuais e assertividade na aplicação das rotinas administrativas."
@@ -488,54 +639,96 @@
             }
         }
 
-        function onYearChange() {
-            const yearSelect = document.getElementById('courseYear');
-            const discSelect = document.getElementById('discipline');
+        function selectYear(year) {
+            currentYear = year;
+            document.getElementById('card2Ano').classList.toggle('active', year.includes('2º'));
+            document.getElementById('card3Ano').classList.toggle('active', year.includes('3º'));
+
             const classroomInput = document.getElementById('classroom');
-            const selectedYear = yearSelect.value;
-
-            const disciplines = DEFAULT_YEARS[selectedYear] || [];
-            discSelect.innerHTML = '';
-            disciplines.forEach(d => {
-                const opt = document.createElement('option');
-                opt.value = d;
-                opt.textContent = d;
-                discSelect.appendChild(opt);
-            });
-
-            if (selectedYear.includes("3º")) {
+            if (year.includes('3º')) {
                 classroomInput.value = "3º MTEC - Administração";
             } else {
                 classroomInput.value = "2º MTEC - Administração";
             }
 
-            updateWeeksDropdown();
+            renderDisciplineChips();
         }
 
-        function updateWeeksDropdown() {
-            const weekSelect = document.getElementById('week');
-            const currentWeek = weekSelect.value || "1";
-            weekSelect.innerHTML = '';
+        function renderDisciplineChips() {
+            const container = document.getElementById('disciplineChipsContainer');
+            container.innerHTML = '';
 
+            const list = DISCIPLINES_BY_YEAR[currentYear] || [];
+            if (list.length > 0) {
+                currentDiscipline = list[0].name;
+            }
+
+            list.forEach(item => {
+                const chip = document.createElement('div');
+                chip.className = `discipline-chip ${item.name === currentDiscipline ? 'active' : ''}`;
+                chip.innerHTML = `<i class="bi ${item.icon}"></i> <span>${item.name}</span>`;
+                chip.onclick = () => {
+                    document.querySelectorAll('.discipline-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    currentDiscipline = item.name;
+                    updateLiveSummary();
+                };
+                container.appendChild(chip);
+            });
+
+            updateLiveSummary();
+        }
+
+        function populateWeeks() {
+            const weekSelect = document.getElementById('weekSelect');
+            weekSelect.innerHTML = '';
             for (let i = 1; i <= 28; i++) {
                 const opt = document.createElement('option');
                 opt.value = String(i);
                 opt.textContent = `Semana ${i}`;
-                if (String(i) === currentWeek) opt.selected = true;
                 weekSelect.appendChild(opt);
             }
         }
 
-        function getLessonDataFromForm() {
+        function onWeekChange() {
+            updateLiveSummary();
+        }
+
+        function updateLiveSummary() {
+            const week = document.getElementById('weekSelect').value || '1';
+            const data = getLessonData();
+
+            // Update Topic Title
+            const topicBox = document.getElementById('weekTopicTitle');
+            const lessonsCount = document.getElementById('weekLessonsCount');
+            
+            const firstLine = data.conteudo.split('\n')[0] || `Semana ${week}`;
+            topicBox.textContent = `${currentDiscipline} &bull; ${firstLine}`;
+            
+            const lessonLines = data.conteudo.split('\n').filter(l => l.startsWith('•'));
+            lessonsCount.textContent = `${lessonLines.length || 4} aulas programadas com habilidades oficiais`;
+
+            // Update Lemov Pills
+            const lemovPills = document.getElementById('lemovPillsContainer');
+            lemovPills.innerHTML = '';
+            const lemov = getLemovMethodology(currentDiscipline, lessonLines, []);
+            lemov.pills.forEach(p => {
+                const pill = document.createElement('span');
+                pill.className = 'lemov-pill';
+                pill.textContent = p;
+                lemovPills.appendChild(pill);
+            });
+        }
+
+        function getLessonData() {
             const teacher = document.getElementById('teacher').value.trim() || "Prof. Thamy Oliveira";
             const period = document.getElementById('period').value.trim() || "Semana de 24 a 28 de Fevereiro";
             const classroom = document.getElementById('classroom').value.trim() || "2º MTEC - Administração";
-            const discipline = document.getElementById('discipline').value;
-            const week = document.getElementById('week').value;
+            const week = document.getElementById('weekSelect').value || '1';
 
             let rows = [];
             if (window.CURRICULUM_DATA && Array.isArray(window.CURRICULUM_DATA)) {
-                const dTarget = discipline.toLowerCase().trim();
+                const dTarget = currentDiscipline.toLowerCase().trim();
                 const wTarget = String(week).trim();
 
                 rows = window.CURRICULUM_DATA.filter(r => {
@@ -572,16 +765,16 @@
             const temaStr = Array.from(temas).join(' | ') || `Semana ${week}`;
             const conteudoStr = aulasTitles.length ? `Tema da Semana: ${temaStr}\n\nAulas Previstas:\n${aulasTitles.join('\n')}` : `Tema: ${temaStr}`;
             
-            let habStr = habTecnicas.size ? `Habilidades Técnicas:\n${Array.from(habTecnicas).join('\n')}` : `Desenvolver as competências técnicas previstas no currículo do componente.`;
+            let habStr = habTecnicas.size ? `Habilidades Técnicas:\n${Array.from(habTecnicas).join('\n')}` : `Desenvolver competências técnicas da área profissional.`;
             if (habSocio.size) {
                 habStr += `\n\nHabilidades Socioemocionais:\n${Array.from(habSocio).join('\n')}`;
             }
 
-            const lemov = getLemovMethodology(discipline, aulasTitles, objetivos);
+            const lemov = getLemovMethodology(currentDiscipline, aulasTitles, objetivos);
 
             return {
                 professor: teacher,
-                disciplina: discipline,
+                disciplina: currentDiscipline,
                 turma: classroom,
                 periodo: period,
                 semana: week,
@@ -597,8 +790,9 @@
         }
 
         function generatePreview() {
-            const data = getLessonDataFromForm();
+            const data = getLessonData();
 
+            document.getElementById('docTitlePreview').textContent = `PLANO DE AULA - 2026 - SEMANA ${data.semana}`;
             document.getElementById('prevTeacher').textContent = data.professor;
             document.getElementById('prevDiscipline').textContent = data.disciplina;
             document.getElementById('prevClassroom').textContent = data.turma;
@@ -620,13 +814,13 @@
 
             sections.forEach(sec => {
                 const card = document.createElement('div');
-                card.className = `content-card ${sec.isLemov ? 'content-card-lemov' : ''}`;
+                card.className = `doc-section-card ${sec.isLemov ? 'lemov-highlight' : ''}`;
                 card.innerHTML = `
-                    <div class="content-card-title ${sec.isLemov ? 'text-warning-emphasis' : ''}">
+                    <div class="doc-section-label ${sec.isLemov ? 'text-warning-emphasis' : ''}">
                         ${sec.isLemov ? '<i class="bi bi-stars me-1 text-warning"></i>' : ''}
                         ${sec.label}
                     </div>
-                    <div class="content-card-body">${sec.value}</div>
+                    <div class="doc-section-content">${sec.value}</div>
                 `;
                 fieldsDiv.appendChild(card);
             });
@@ -636,11 +830,11 @@
             prevArea.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Direct Word Document Generator in pure HTML/Office format (Opens in MS Word, Google Docs, Apple Pages)
         function downloadDocument() {
-            const data = getLessonDataFromForm();
+            const data = getLessonData();
             const btn = document.getElementById('btnDownload');
-            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Gerando...`;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Baixando...`;
 
             setTimeout(() => {
                 const docHtml = `
@@ -690,10 +884,7 @@
                 </html>
                 `;
 
-                const blob = new Blob(['\ufeff', docHtml], {
-                    type: 'application/msword'
-                });
-
+                const blob = new Blob(['\ufeff', docHtml], { type: 'application/msword' });
                 const cleanDisc = data.disciplina.replace(/[^a-zA-Z0-9]/g, '_');
                 const filename = `Plano_de_Aula_Semana_${data.semana}_${cleanDisc}.doc`;
 
@@ -704,12 +895,63 @@
                 link.click();
                 document.body.removeChild(link);
 
-                btn.innerHTML = `<i class="bi bi-file-earmark-word"></i> Baixar Word (.doc / .docx)`;
+                btn.innerHTML = originalText;
+                showToast("Documento Word baixado com sucesso!");
             }, 300);
         }
 
+        function copyPlanToClipboard() {
+            const data = getLessonData();
+            const textToCopy = `GOVERNO DO ESTADO DE SÃO PAULO – SECRETARIA DA EDUCAÇÃO
+EE. PROF. DINORA MARCONDES GOMES
+PLANO DE AULA - 2026 - SEMANA ${data.semana}
+
+1. Professor(a): ${data.professor}
+2. Componente Curricular: ${data.disciplina}
+3. Ano/Série/Turma: ${data.turma}
+4. Período de Realização: ${data.periodo}
+
+5. HABILIDADES:
+${data.habilidades}
+
+6. OBJETOS DE CONHECIMENTO:
+${data.objetos}
+
+7. CONTEÚDO:
+${data.conteudo}
+
+8. OBJETIVOS:
+${data.objetivos}
+
+9. ESTRATÉGIAS (METODOLOGIAS ATIVAS & TÉCNICAS DE LEMOV):
+${data.estrategias}
+
+10. RECURSOS DIDÁTICOS:
+${data.recursos}
+
+11. CRITÉRIOS DE AVALIAÇÃO:
+${data.avaliacao}
+
+12. REFERÊNCIAS:
+${data.referencias}`;
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast("Texto do plano copiado para a área de transferência!");
+            }).catch(() => {
+                showToast("Selecione e copie manualmente.");
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toastMessage');
+            document.getElementById('toastText').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
-            onYearChange();
+            populateWeeks();
+            selectYear("2º Ano (MTEC)");
         });
     </script>
 </body>

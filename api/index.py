@@ -2,7 +2,7 @@
 """
 Flask Web Application for Lesson Plan Generator
 Entrypoint for Vercel Serverless Function: api/index.py
-Matches exact EE. Prof. Dinora Marcondes Gomes school template format with 50-minute lesson periods.
+Matches exact EE. Prof. Dinora Marcondes Gomes school template format, 50-min periods, and real school infrastructure.
 """
 
 import io
@@ -35,45 +35,46 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
 
 
-# --- Pedagogical Engine: 50-minute lesson structure & 1-2 Lemov Techniques ---
+# --- Pedagogical Engine: 50-min lesson, 1-2 Lemov Techniques & Real School Resources ---
 
 def build_coherent_lesson_development(discipline: str, titles: List[str], objectives: List[str], tema: str) -> Dict[str, str]:
     """
-    Generate coherent 50-minute lesson development with 1 or 2 tailored Doug Lemov techniques.
+    Generate coherent 50-minute lesson development using exact school infrastructure:
+    quadro branco, TV, netbooks, auditório e sala especializada do curso técnico.
     """
     disc_lower = (discipline or "").lower()
     text_content = " ".join(titles + objectives).lower()
     tema_clean = tema or "o conteúdo previsto"
 
     # Math / Calculation / Financial (Total: 50 min)
-    if "matemática" in disc_lower or "financeira" in disc_lower or "contabilidade" in disc_lower or "cálculo" in text_content:
+    if "matemática" in disc_lower or "financeira" in disc_lower or "contabilidade" in disc_lower or "cálculo" in text_content or "investimentos" in disc_lower:
         estrategias = (
-            f"• Momento Inicial (5 a 10 min): Acolhimento e aplicação da técnica 'Faça Agora' (Do Now), com um exercício rápido de 3 a 5 minutos na lousa envolvendo situações cotidianas para ativar o raciocínio matemático dos alunos.\n\n"
-            f"• Desenvolvimento (Mediação e Prática - 30 a 35 min): Apresentação do conceito pelo professor e demonstração prática do cálculo através da 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz). Em seguida, os alunos realizam exercícios dirigidos com apoio do professor.\n\n"
-            f"• Fechamento (5 a 10 min): Correção de dúvidas recorrentes, síntese da fórmula/procedimento utilizado e checagem rápida de retenção da turma."
+            f"• Momento Inicial (5 a 10 min): Acolhimento e aplicação da técnica 'Faça Agora' (Do Now), com um exercício rápido projetado na TV/quadro branco envolvendo situações cotidianas para ativar o raciocínio matemático e financeiro dos alunos.\n\n"
+            f"• Desenvolvimento (Mediação e Prática - 30 a 35 min): Apresentação dos conceitos no quadro branco e na TV. Demonstração prática do cálculo através da 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz). Em seguida, os alunos realizam exercícios dirigidos individualmente ou com auxílio dos netbooks para cálculos aplicados à administração e vendas.\n\n"
+            f"• Fechamento (5 a 10 min): Correção no quadro branco de dúvidas recorrentes, síntese da fórmula/procedimento utilizado e checagem rápida de retenção da turma."
         )
-        recursos = "Lousa, projetor multimídia, folha de atividades dirigidas, calculadoras e material didático."
-        avaliacao = "Avaliação formativa e processual, observando a participação, a resolução dos exercícios dirigidos e a assimilação dos cálculos."
+        recursos = "Quadro branco, TV para projeção de fórmulas e tabelas, netbooks para cálculos e planilhas eletrônicas, calculadoras e folhas de atividades dirigidas."
+        avaliacao = "Avaliação formativa e contínua, observando a participação nas atividades, a resolução correta dos cálculos e a aplicação prática nos netbooks/caderno."
 
-    # Marketing, Sales, Business Communication (Total: 50 min)
-    elif "marketing" in disc_lower or "vendas" in disc_lower or "comunicação" in disc_lower or "negócios" in disc_lower:
+    # Marketing, Sales, Business Communication & Projects (Total: 50 min)
+    elif "marketing" in disc_lower or "vendas" in disc_lower or "comunicação" in disc_lower or "negócios" in disc_lower or "prospecção" in disc_lower or "comercial" in disc_lower or "projeto" in disc_lower:
         estrategias = (
-            f"• Momento Inicial (5 a 10 min): Acolhimento e apresentação de um 'Gancho Inicial' (Hook) com um exemplo prático ou case de mercado relacionado a {tema_clean}, despertando o interesse da turma.\n\n"
-            f"• Desenvolvimento (Mediação e Prática - 30 a 35 min): Explanação dialogada dos conceitos teóricos. Em seguida, aplicação da técnica 'Vire e Converse' (Turn and Talk) em duplas para debaterem rapidamente uma tomada de decisão sobre a situação-problema apresentada.\n\n"
-            f"• Fechamento (5 a 10 min): Compartilhamento das ideias principais das duplas, síntese do professor e alinhamento com a prática profissional."
+            f"• Momento Inicial (5 a 10 min): Acolhimento e apresentação de um 'Gancho Inicial' (Hook) na TV com um vídeo/exemplo de case de mercado relacionado a {tema_clean}, despertando o interesse da turma.\n\n"
+            f"• Desenvolvimento (Mediação e Prática - 30 a 35 min): Explanação dialogada pelo professor com suporte da TV. Em seguida, na sala especializada do curso técnico ou com uso de netbooks, aplicação da técnica 'Vire e Converse' (Turn and Talk) em duplas para debaterem a estratégia comercial ou prototiparem a solução prática/estudo de caso.\n\n"
+            f"• Fechamento (5 a 10 min): Compartilhamento das propostas das duplas, síntese do professor no quadro branco e alinhamento com as práticas reais do mercado (utilizando o auditório quando houver apresentação de pitches/seminários)."
         )
-        recursos = "Projetor multimídia, material de apoio impresso/digital e estudos de casos rápidos de mercado."
-        avaliacao = "Avaliação processual baseada na participação ativa nas discussões, na argumentação técnica em dupla e no engajamento na aula."
+        recursos = "Quadro branco, TV para exibição de cases e campanhas, netbooks para pesquisas e criação de propostas, sala especializada do curso técnico para dinâmicas práticas e auditório para apresentações de projetos."
+        avaliacao = "Avaliação processual baseada na participação ativa nas discussões, na clareza da argumentação técnica durante os debates e na produção prática em equipe."
 
-    # Management, People, Legal & Operations (Total: 50 min)
+    # Management, People, Legal, Operations & Self-Knowledge (Total: 50 min)
     else:
         estrategias = (
-            f"• Momento Inicial (5 a 10 min): Acolhimento e contextualização rápida da temática sobre {tema_clean}. Aplicação da técnica 'Faça Agora' (Do Now) com uma pergunta problematizadora sobre a rotina da empresa.\n\n"
-            f"• Desenvolvimento (Mediação e Prática - 30 a 35 min): Mediação teórica pelo professor articulando a legislação e os procedimentos organizacionais. Aplicação da técnica 'Todos Escrevem' (Everybody Writes), com registro individual de 3 minutos para estruturar a solução antes do alinhamento coletivo.\n\n"
-            f"• Fechamento (5 a 10 min): Retomada dos conceitos principais trabalhados, esclarecimento pontual de dúvidas e sistematização da rotina administrativa."
+            f"• Momento Inicial (5 a 10 min): Acolhimento e contextualização rápida da temática sobre {tema_clean} com pergunta disparadora na TV/quadro branco. Aplicação da técnica 'Faça Agora' (Do Now) sobre desafios da rotina corporativa.\n\n"
+            f"• Desenvolvimento (Mediação e Prática - 30 a 35 min): Mediação teórica pelo professor articulando a legislação e os procedimentos organizacionais. Na sala especializada do curso técnico, aplicação da técnica 'Todos Escrevem' (Everybody Writes), com registro individual de 3 minutos para estruturar a solução de rotinas administrativas/simulações antes do debate coletivo.\n\n"
+            f"• Fechamento (5 a 10 min): Retomada dos conceitos principais no quadro branco, esclarecimento pontual de dúvidas e sistematização da rotina desenvolvida."
         )
-        recursos = "Quadro, projetor multimídia, cenários simulados de rotinas administrativas e material de apoio."
-        avaliacao = "Avaliação formativa, considerando o foco, a participação no momento de escrita individual e a coerência nas discussões em sala."
+        recursos = "Quadro branco, TV para projeção de fluxogramas e normas regulatórias, netbooks para consulta de legislações/documentos empresariais e sala especializada do curso técnico para simulação de rotinas organizacionais."
+        avaliacao = "Avaliação formativa, considerando a pontualidade, a postura profissional, o engajamento nas simulações e a precisão técnica nas produções escritas."
 
     return {
         "estrategias": estrategias,
@@ -106,7 +107,7 @@ def filter_rows(rows: List[Dict[str, str]], week: str, discipline: str = "") -> 
 
     for r in rows:
         r_week = str(r.get("Semana", "")).strip()
-        r_disc = str(r.get("Nome do componente", "")).strip().lower()
+        r_disc = str(r.get("Nome do componente", "") or r.get("Unidade curricular", "")).strip().lower()
 
         if r_week == w_target:
             if not d_target or d_target in r_disc or r_disc in d_target:
@@ -132,10 +133,10 @@ def compile_lesson_data(rows: List[Dict[str, str]], teacher: str, period: str, c
         ht = r.get("Habilidades técnicas", "").strip() or r.get("Habilidade técnica", "").strip()
         if ht: hab_tecnicas.add(f"• {ht}")
 
-        hs = r.get("Habildades socioemocionais", "").strip() or r.get("Competências Socioemocionais ", "").strip() or r.get("Competências Socioemocionais", "").strip()
+        hs = r.get("Habildades socioemocionais", "").strip() or r.get("Competências Socioemocionais ", "").strip() or r.get("Competências Socioemocionais", "").strip() or r.get("Habilidades socioemocionais", "").strip()
         if hs: hab_socio.add(f"• {hs}")
 
-        oc = r.get("Objeto de conhecimento", "").strip()
+        oc = r.get("Objeto de conhecimento", "").strip() or r.get("Objeto de conhecimento – macro", "").strip()
         if oc: obj_conhecimento.add(f"• {oc}")
 
         obj = r.get("Objetivo da aula", "").strip() or r.get("Objetivos da aula", "").strip()
@@ -144,7 +145,7 @@ def compile_lesson_data(rows: List[Dict[str, str]], teacher: str, period: str, c
     tema_str = " | ".join(temas) if temas else f"Semana {week}"
     conteudo_str = f"Tema: {tema_str}\n\n" + "\n".join(aulas_titles) if aulas_titles else tema_str
     
-    habilidades_str = "Habilidades Técnicas:\n" + "\n".join(hab_tecnicas) if hab_tecnicas else "Desenvolver as competências técnicas previstas no currículo."
+    habilidades_str = "Habilidades Técnicas:\n" + "\n".join(hab_tecnicas) if hab_tecnicas else "Desenvolver as competências técnicas previstas no currículo do curso técnico."
     if hab_socio:
         habilidades_str += "\n\nHabilidades Socioemocionais:\n" + "\n".join(hab_socio)
 
@@ -159,7 +160,7 @@ def compile_lesson_data(rows: List[Dict[str, str]], teacher: str, period: str, c
         "habilidades": habilidades_str,
         "objetos": "\n".join(obj_conhecimento) if obj_conhecimento else "Conceitos fundamentais e aplicados da disciplina.",
         "conteudo": conteudo_str,
-        "objetivos": "\n".join(objetivos) if objetivos else "Compreender e aplicar os conhecimentos técnicos abordados.",
+        "objetivos": "\n".join(objetivos) if objetivos else "Compreender e aplicar os conhecimentos técnicos abordados na prática.",
         "estrategias": pedagogy["estrategias"],
         "recursos": pedagogy["recursos"],
         "avaliacao": pedagogy["avaliacao"],
@@ -168,10 +169,10 @@ def compile_lesson_data(rows: List[Dict[str, str]], teacher: str, period: str, c
 
 
 def create_exact_school_document(lesson_data: Dict[str, str]) -> Document:
-    """Build exact school template document with 50-min timing."""
+    """Build exact school template document."""
     doc = Document()
 
-    # Header
+    # Exact School Header matching template.docx
     p_header = doc.add_paragraph()
     p_header.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r1 = p_header.add_run("GOVERNO DE ESTADO DE SÃO PAULO – SECRETÁRIA DA EDUCAÇÃO\n")

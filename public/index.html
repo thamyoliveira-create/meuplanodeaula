@@ -440,7 +440,12 @@
 
                 <!-- Calendário Interativo para Escolha dos Dias -->
                 <div class="col-12">
-                    <label class="form-label text-primary"><i class="bi bi-calendar3 me-1"></i> Período de Realização (Escolha os Dias no Calendário)</label>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label text-primary mb-0"><i class="bi bi-calendar3 me-1"></i> Período de Realização (Escolha os Dias no Calendário)</label>
+                        <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 small" onclick="setCurrentWeekDates()" title="Definir para a semana atual">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Data Atual
+                        </button>
+                    </div>
                     <div class="row g-2 align-items-center">
                         <div class="col-md-5">
                             <div class="input-group">
@@ -712,26 +717,30 @@
             if (savedYear) currentYear = savedYear;
             if (savedCourse) currentCourse = savedCourse;
 
-            const savedStart = localStorage.getItem("doc_start_date");
-            const savedEnd = localStorage.getItem("doc_end_date");
-            if (savedStart && savedEnd) {
-                document.getElementById("startDate").value = savedStart;
-                document.getElementById("endDate").value = savedEnd;
-                onDateRangeChange();
-            } else {
-                // Default to today and Friday
-                const now = new Date();
-                const dayOfWeek = now.getDay();
-                const monday = new Date(now);
-                monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
-                const friday = new Date(monday);
-                friday.setDate(monday.getDate() + 4);
+            // Always initialize calendar to current real week (Monday to Friday of today)
+            setCurrentWeekDates();
+        }
 
-                const formatDate = d => d.toISOString().split('T')[0];
-                document.getElementById("startDate").value = formatDate(monday);
-                document.getElementById("endDate").value = formatDate(friday);
-                onDateRangeChange();
-            }
+        function setCurrentWeekDates() {
+            const now = new Date();
+            const dayOfWeek = now.getDay(); // 0 is Sunday, 1 is Monday...
+            const monday = new Date(now);
+            const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+            monday.setDate(now.getDate() + diffToMonday);
+
+            const friday = new Date(monday);
+            friday.setDate(monday.getDate() + 4);
+
+            const formatDate = d => {
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            document.getElementById("startDate").value = formatDate(monday);
+            document.getElementById("endDate").value = formatDate(friday);
+            onDateRangeChange();
         }
 
         function saveTeacherPreferences() {
@@ -739,8 +748,6 @@
             localStorage.setItem("doc_teacher_name", teacher);
             localStorage.setItem("doc_saved_year", currentYear);
             localStorage.setItem("doc_saved_course", currentCourse);
-            localStorage.setItem("doc_start_date", document.getElementById("startDate").value);
-            localStorage.setItem("doc_end_date", document.getElementById("endDate").value);
         }
 
         function buildCoherentDevelopment(discipline, tema, withInclusion = false) {

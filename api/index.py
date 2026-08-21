@@ -2,6 +2,7 @@
 """
 Flask Web Application for Lesson Plan Generator
 Entrypoint for Vercel Serverless Function: api/index.py
+Supports 1º Ano and 2º Ano technical courses (Administração e Vendas).
 """
 
 import io
@@ -14,7 +15,7 @@ from typing import Union, List, Dict, Any
 
 from flask import Flask, request, send_file, jsonify, render_template_string
 from docx import Document
-from docx.shared import Pt, Inches, RGBColor
+from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
 
@@ -28,17 +29,19 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
 
 # --- File Path Resolvers ---
 
-def get_default_schedule_path() -> pathlib.Path:
+def get_schedule_paths() -> List[pathlib.Path]:
+    """Find schedule files for 1º and 2º ano."""
+    files = []
     candidates = [
         pathlib.Path(__file__).parent / "schedule.csv",
         BASE_DIR / "data" / "schedule.csv",
-        BASE_DIR / "api" / "schedule.csv",
-        BASE_DIR / "schedule.csv"
+        pathlib.Path(__file__).parent / "schedule_2ano.csv",
+        BASE_DIR / "data" / "schedule_2ano.csv"
     ]
     for p in candidates:
-        if p.exists():
-            return p
-    return candidates[0]
+        if p.exists() and p not in files:
+            files.append(p)
+    return files
 
 
 def get_default_template_path() -> pathlib.Path:
@@ -54,40 +57,69 @@ def get_default_template_path() -> pathlib.Path:
     return candidates[0]
 
 
-# --- Data Processing Helpers ---
+# --- Data Parsing & Normalization ---
+
+def normalize_row_dict(row: Dict[str, str]) -> Dict[str, str]:
+    """Clean keys and values for robust column lookup."""
+    clean = {}
+    for k, v in row.items():
+        if k:
+            norm_key = k.replace("\n", " ").strip()
+            clean[norm_key] = (v or "").strip()
+    return clean
+
 
 def parse_schedule_rows(source: Union[str, pathlib.Path, io.BytesIO], filename: str = "") -> List[Dict[str, str]]:
-    """Parse CSV file and return list of dict rows."""
+    """Parse CSV and return list of normalized dict rows."""
     if isinstance(source, (str, pathlib.Path)):
         p = pathlib.Path(source)
         if not p.exists():
             return []
         with open(str(p), "r", encoding="utf-8", errors="replace") as f:
             reader = csv.DictReader(f)
-            return [dict(row) for row in reader]
+            return [normalize_row_dict(row) for row in reader]
     else:
         text = source.read().decode("utf-8", errors="replace")
         delimiter = ";" if ";" in text.split("\n")[0] else ","
         reader = csv.DictReader(io.StringIO(text), delimiter=delimiter)
-        return [dict(row) for row in reader]
+        return [normalize_row_dict(row) for row in reader]
 
 
-def get_schedule_metadata(rows: List[Dict[str, str]]) -> Dict[str, Any]:
-    disciplines = set()
+def load_all_schedules() -> List[Dict[str, str]]:
+    """Load rows from all available schedule CSVs."""
+    all_rows = []
+    for p in get_schedule_paths():
+        all_rows.extend(parse_schedule_rows(p))
+    return all_rows
+
+
+def get_organized_metadata(rows: List[Dict[str, str]]) -> Dict[str, Any]:
+    """Organize disciplines and weeks by 1º Ano and 2º Ano."""
+    year_1_disciplines = [
+        "Marketing Estratégico",
+        "Comunicação Empresarial",
+        "Gestão Financeira e Contabilidade",
+        "Gestão de Operações",
+        "Empreendedorismo e Desenvolvimento de Negócios"
+    ]
+    year_2_disciplines = [
+        "Introdução à Administração, Legislação e Pessoas",
+        "Matemática Aplicada à Administração"
+    ]
+
+    # Dynamically find any extra disciplines
+    all_disc_found = set()
     discipline_weeks = {}
-    all_weeks = set()
 
     for r in rows:
         disc = r.get("Nome do componente", "").strip()
         week = r.get("Semana", "").strip()
         if disc:
-            disciplines.add(disc)
+            all_disc_found.add(disc)
             if disc not in discipline_weeks:
                 discipline_weeks[disc] = set()
             if week:
                 discipline_weeks[disc].add(week)
-        if week:
-            all_weeks.add(week)
 
     def sort_weeks(w_list):
         try:
@@ -95,23 +127,24 @@ def get_schedule_metadata(rows: List[Dict[str, str]]) -> Dict[str, Any]:
         except Exception:
             return sorted(list(w_list))
 
-    sorted_disciplines = sorted(list(disciplines)) if disciplines else [
-        "Marketing Estratégico",
-        "Comunicação Empresarial",
-        "Gestão Financeira e Contabilidade",
-        "Gestão de Operações",
-        "Empreendedorismo e Desenvolvimento de Negócios"
-    ]
-    
-    sorted_disc_weeks = {d: sort_weeks(discipline_weeks[d]) for d in sorted_disciplines} if discipline_weeks else {
-        d: [str(i) for i in range(1, 29)] for d in sorted_disciplines
-    }
-    sorted_all_weeks = sort_weeks(all_weeks) if all_weeks else [str(i) for i in range(1, 29)]
+    # Build year mapping
+    y1_final = [d for d in year_1_disciplines if d in all_disc_found] or year_1_disciplines
+    y2_final = [d for d in year_2_disciplines if d in all_disc_found] or year_2_disciplines
+
+    # Include any remaining
+    for d in sorted(list(all_disc_found)):
+        if d not in y1_final and d not in y2_final:
+            y2_final.append(d)
+
+    sorted_disc_weeks = {d: sort_weeks(discipline_weeks.get(d, [str(i) for i in range(1, 29)])) for d in all_disc_found}
 
     return {
-        "disciplines": sorted_disciplines,
+        "years": {
+            "1º Ano (MTEC)": y1_final,
+            "2º Ano (MTEC)": y2_final
+        },
         "discipline_weeks": sorted_disc_weeks,
-        "all_weeks": sorted_all_weeks
+        "all_weeks": [str(i) for i in range(1, 29)]
     }
 
 
@@ -122,7 +155,7 @@ def filter_rows(rows: List[Dict[str, str]], week: str, discipline: str = "") -> 
         r_disc = str(r.get("Nome do componente", "")).strip()
 
         if r_week == str(week).strip():
-            if not discipline or r_disc == discipline.strip() or not r_disc:
+            if not discipline or r_disc.lower() == discipline.strip().lower():
                 results.append(r)
     return results
 
@@ -159,16 +192,16 @@ def compile_lesson_data(rows: List[Dict[str, str]], teacher: str, period: str, c
         titulo = r.get("Título da aula", "").strip()
         if titulo: aulas_titles.append(f"• {titulo}")
 
-        ht = r.get("Habilidades técnicas", "").strip()
+        ht = r.get("Habilidades técnicas", "").strip() or r.get("Habilidade técnica", "").strip()
         if ht: hab_tecnicas.add(f"• {ht}")
 
-        hs = r.get("Habildades socioemocionais", "").strip()
+        hs = r.get("Habildades socioemocionais", "").strip() or r.get("Competências Socioemocionais", "").strip()
         if hs: hab_socio.add(f"• {hs}")
 
         oc = r.get("Objeto de conhecimento", "").strip()
         if oc: obj_conhecimento.add(f"• {oc}")
 
-        obj = r.get("Objetivo da aula", "").strip()
+        obj = r.get("Objetivo da aula", "").strip() or r.get("Objetivos da aula", "").strip()
         if obj: objetivos.append(f"• {obj}")
 
     tema_str = " | ".join(temas) if temas else f"Semana {week}"
@@ -242,7 +275,6 @@ def create_clean_document_from_scratch(lesson_data: Dict[str, str]) -> Document:
         r_lbl.bold = True
         r_lbl.font.size = Pt(10)
         
-        # If multiline, add newline before content
         if "\n" in val or len(val) > 40:
             p.add_run("\n")
         r_val = p.add_run(val)
@@ -252,7 +284,6 @@ def create_clean_document_from_scratch(lesson_data: Dict[str, str]) -> Document:
 
 
 def generate_filled_docx(lesson_data: Dict[str, str], custom_template: io.BytesIO = None) -> io.BytesIO:
-    """Fill the template document with lesson plan fields or build from scratch."""
     doc = None
     if custom_template:
         try:
@@ -270,10 +301,8 @@ def generate_filled_docx(lesson_data: Dict[str, str], custom_template: io.BytesI
                 pass
 
     if doc is None:
-        # Fallback to pristine programmatic document
         doc = create_clean_document_from_scratch(lesson_data)
     else:
-        # Fill existing docx
         placeholders = {
             "Professor": lesson_data["professor"],
             "Nome do componente": lesson_data["disciplina"],
@@ -345,7 +374,6 @@ def generate_filled_docx(lesson_data: Dict[str, str], custom_template: io.BytesI
 @app.route("/", methods=["GET"])
 @app.route("/api", methods=["GET"])
 def index():
-    # Return static index.html if present
     static_html = BASE_DIR / "public" / "index.html"
     if static_html.exists():
         with open(str(static_html), "r", encoding="utf-8") as f:
@@ -363,18 +391,23 @@ def health():
 @app.route("/initial-data", methods=["GET"])
 def initial_data():
     try:
-        schedule_path = get_default_schedule_path()
-        rows = parse_schedule_rows(schedule_path)
-        meta = get_schedule_metadata(rows)
+        rows = load_all_schedules()
+        meta = get_organized_metadata(rows)
         return jsonify({"success": True, **meta})
     except Exception as e:
-        return jsonify({"success": True, "disciplines": [
-            "Marketing Estratégico",
-            "Comunicação Empresarial",
-            "Gestão Financeira e Contabilidade",
-            "Gestão de Operações",
-            "Empreendedorismo e Desenvolvimento de Negócios"
-        ], "all_weeks": [str(i) for i in range(1, 29)]})
+        return jsonify({"success": True, "years": {
+            "1º Ano (MTEC)": [
+                "Marketing Estratégico",
+                "Comunicação Empresarial",
+                "Gestão Financeira e Contabilidade",
+                "Gestão de Operações",
+                "Empreendedorismo e Desenvolvimento de Negócios"
+            ],
+            "2º Ano (MTEC)": [
+                "Introdução à Administração, Legislação e Pessoas",
+                "Matemática Aplicada à Administração"
+            ]
+        }, "all_weeks": [str(i) for i in range(1, 29)]})
 
 
 @app.route("/api/preview-plan", methods=["POST"])
@@ -392,8 +425,7 @@ def preview_plan():
             f = request.files["custom_spreadsheet"]
             rows = parse_schedule_rows(io.BytesIO(f.read()), filename=f.filename)
         else:
-            schedule_path = get_default_schedule_path()
-            rows = parse_schedule_rows(schedule_path)
+            rows = load_all_schedules()
 
         filtered = filter_rows(rows, week, discipline)
         lesson_data = compile_lesson_data(filtered, teacher, period, classroom, discipline, week)
@@ -417,8 +449,7 @@ def generate():
             f = request.files["custom_spreadsheet"]
             rows = parse_schedule_rows(io.BytesIO(f.read()), filename=f.filename)
         else:
-            schedule_path = get_default_schedule_path()
-            rows = parse_schedule_rows(schedule_path)
+            rows = load_all_schedules()
 
         custom_tpl = None
         if "custom_template" in request.files and request.files["custom_template"].filename:

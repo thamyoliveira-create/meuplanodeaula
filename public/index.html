@@ -329,6 +329,52 @@
             margin-top: 1rem;
         }
 
+        /* Holiday / SEDUC Event Alert Banner */
+        .seduc-event-banner {
+            border-radius: var(--radius-lg);
+            padding: 0.9rem 1.25rem;
+            margin-top: 0.85rem;
+            font-size: 0.86rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .seduc-event-banner.feriado {
+            background: rgba(245, 158, 11, 0.12);
+            border: 1.5px solid rgba(245, 158, 11, 0.4);
+            color: #b45309;
+        }
+
+        .seduc-event-banner.avaliacao {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1.5px solid rgba(59, 130, 246, 0.4);
+            color: #1d4ed8;
+        }
+
+        .seduc-event-banner.regular {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1.5px solid rgba(16, 185, 129, 0.25);
+            color: #047857;
+        }
+
+        [data-bs-theme="dark"] .seduc-event-banner.feriado {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fcd34d;
+        }
+
+        [data-bs-theme="dark"] .seduc-event-banner.avaliacao {
+            background: rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+        }
+
+        [data-bs-theme="dark"] .seduc-event-banner.regular {
+            background: rgba(16, 185, 129, 0.12);
+            color: #6ee7b7;
+        }
+
         /* Action Buttons */
         .btn-main {
             background: var(--primary-gradient);
@@ -521,14 +567,15 @@
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2">
+                <!-- SEDUC Calendar Guide Button -->
+                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 fw-semibold small" data-bs-toggle="modal" data-bs-target="#seducCalendarModal">
+                    <i class="bi bi-calendar-event me-1"></i> Calendário SEDUC 2026
+                </button>
                 <!-- Theme Toggle Button -->
                 <button type="button" class="theme-toggle-btn" onclick="toggleThemeMode()" id="themeToggleBtn">
                     <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
                     <span id="themeLabel">Modo Escuro</span>
                 </button>
-                <span class="badge bg-primary text-white border-0 px-3 py-2 rounded-pill shadow-sm d-none d-md-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
-                    <i class="bi bi-patch-check-fill"></i> Modelo Oficial .DOC
-                </span>
             </div>
         </div>
     </nav>
@@ -540,14 +587,14 @@
         <div class="hero-banner no-print d-flex align-items-center justify-content-between flex-wrap gap-3">
             <div>
                 <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill small fw-bold mb-2 d-inline-flex align-items-center gap-1">
-                    <i class="bi bi-stars"></i> Inteligência Pedagógica MTEC
+                    <i class="bi bi-stars"></i> Inteligência Pedagógica MTEC &bull; 200 Dias Letivos
                 </span>
                 <h1 class="h3 fw-bold mb-1">Crie seus Planos de Aula em Segundos</h1>
                 <p class="text-muted mb-0 small" style="max-width: 600px;">
-                    Integrado ao currículo paulista, com 50 min de aula, metodologias ativas e os recursos da escola Dinora.
+                    Integrado ao currículo paulista, com detecção de feriados, provas externas SEDUC e recursos da escola Dinora.
                 </p>
             </div>
-            <div>
+            <div class="d-flex gap-2">
                 <button type="button" class="btn btn-sm btn-dark rounded-pill px-3 py-2 shadow-sm d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#batchModal">
                     <i class="bi bi-collection-fill text-warning"></i> <span>Gerar Bimestre Inteiro</span>
                 </button>
@@ -683,10 +730,10 @@
 
             <hr class="my-4 border-slate-200">
 
-            <!-- Step 4: Informações do Professor e Datas -->
+            <!-- Step 4: Informações do Professor, Datas & Feriados SEDUC -->
             <div class="d-flex align-items-center gap-2 mb-3">
                 <span class="section-step-badge">4</span>
-                <h2 class="h5 fw-bold mb-0">Dados do Professor e Período</h2>
+                <h2 class="h5 fw-bold mb-0">Dados do Professor, Período e Feriados</h2>
             </div>
 
             <div class="row g-3">
@@ -725,6 +772,18 @@
                     </div>
                     <input type="hidden" id="period" name="period" value="">
                 </div>
+            </div>
+
+            <!-- Intelligent Holiday & SEDUC Event Detector Banner -->
+            <div id="seducEventBanner" class="seduc-event-banner regular">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-check-circle-fill fs-5" id="seducEventIcon"></i>
+                    <div>
+                        <strong class="d-block" id="seducEventTitle">Semana Letiva Regular (5 dias úteis)</strong>
+                        <small class="opacity-75" id="seducEventSubtitle">Sem feriados ou interrupções letivas nesta semana &bull; Carga horária integral.</small>
+                    </div>
+                </div>
+                <div id="seducEventActionContainer"></div>
             </div>
 
             <!-- Inclusão e Adaptação Curricular (PEI) Toggle -->
@@ -886,6 +945,76 @@
         </section>
     </main>
 
+    <!-- Modal: Calendário Oficial SEDUC-SP 2026 (200 Dias Letivos) -->
+    <div class="modal fade no-print" id="seducCalendarModal" tabindex="-1" aria-labelledby="seducCalendarModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg); background: var(--surface);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark" id="seducCalendarModalLabel">
+                        <i class="bi bi-calendar-check-fill text-primary me-2"></i> Calendário Escolar SEDUC-SP 2026 (200 Dias Letivos)
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <!-- Bimestres -->
+                    <h6 class="fw-bold text-primary mb-2"><i class="bi bi-clock-history me-1"></i> Estrutura dos 4 Bimestres (2026):</h6>
+                    <div class="row g-2 mb-4">
+                        <div class="col-md-3 col-6">
+                            <div class="p-2 border rounded-3 bg-light">
+                                <strong class="d-block small text-dark">1º Bimestre</strong>
+                                <span class="text-muted" style="font-size: 0.75rem;">Fev a 24 de Abril (50 dias)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="p-2 border rounded-3 bg-light">
+                                <strong class="d-block small text-dark">2º Bimestre</strong>
+                                <span class="text-muted" style="font-size: 0.75rem;">27 Abr a 10 de Julho (50 dias)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="p-2 border rounded-3 bg-light">
+                                <strong class="d-block small text-dark">3º Bimestre</strong>
+                                <span class="text-muted" style="font-size: 0.75rem;">27 Jul a 02 de Outubro (50 dias)</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="p-2 border rounded-3 bg-light">
+                                <strong class="d-block small text-dark">4º Bimestre</strong>
+                                <span class="text-muted" style="font-size: 0.75rem;">05 Out a 18 de Dezembro (50 dias)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feriados e Recessos -->
+                    <h6 class="fw-bold text-primary mb-2"><i class="bi bi-cup-hot-fill me-1"></i> Principais Feriados e Recessos Letivos:</h6>
+                    <ul class="small text-muted mb-4 ps-3" style="line-height: 1.6;">
+                        <li><strong>16 a 18/02:</strong> Carnaval e Quarta-feira de Cinzas</li>
+                        <li><strong>03/04:</strong> Sexta-feira Santa (Paixão de Cristo)</li>
+                        <li><strong>21/04:</strong> Tiradentes</li>
+                        <li><strong>01/05:</strong> Dia do Trabalho</li>
+                        <li><strong>04/06:</strong> Corpus Christi</li>
+                        <li><strong>11 a 26/07:</strong> Recesso Escolar / Férias Docentes de Julho (inclui 09/07)</li>
+                        <li><strong>07/09:</strong> Independência do Brasil</li>
+                        <li><strong>12/10:</strong> N. Sra. Aparecida</li>
+                        <li><strong>15/10:</strong> Dia dos Professores</li>
+                        <li><strong>02/11:</strong> Finados &bull; <strong>15/11:</strong> Proclamação &bull; <strong>20/11:</strong> Consciência Negra</li>
+                    </ul>
+
+                    <!-- Avaliações Externas -->
+                    <h6 class="fw-bold text-primary mb-2"><i class="bi bi-pencil-square me-1"></i> Avaliações Externas SEDUC-SP:</h6>
+                    <ul class="small text-muted mb-0 ps-3" style="line-height: 1.6;">
+                        <li><strong>ADE (Avaliação Diagnóstica de Entrada):</strong> Fev/Março</li>
+                        <li><strong>Prova Paulista (1º, 2º, 3º e 4º Bimestres):</strong> Finais de cada bimestre</li>
+                        <li><strong>SARESP e Provão Paulista (3º Ano MTEC):</strong> Novembro</li>
+                    </ul>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: Gerador em Lote / Bimestral -->
     <div class="modal fade no-print" id="batchModal" tabindex="-1" aria-labelledby="batchModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -944,6 +1073,28 @@
     <script src="/curriculum_data.js"></script>
 
     <script>
+        // --- SEDUC-SP 2026 Official Holidays & External Assessment Database ---
+        const SEDUC_EVENTS_2026 = [
+            { start: "2026-02-16", end: "2026-02-18", type: "feriado", title: "Recesso de Carnaval & Quarta-Feira de Cinzas", reduction: 1 },
+            { start: "2026-02-23", end: "2026-03-06", type: "avaliacao", title: "ADE (Avaliação Diagnóstica de Entrada - SEDUC-SP)", reduction: 0 },
+            { start: "2026-04-03", end: "2026-04-03", type: "feriado", title: "Sexta-Feira Santa (Paixão de Cristo)", reduction: 1 },
+            { start: "2026-04-13", end: "2026-04-24", type: "avaliacao", title: "Semana da Prova Paulista (1º Bimestre)", reduction: 0 },
+            { start: "2026-04-21", end: "2026-04-21", type: "feriado", title: "Feriado de Tiradentes", reduction: 1 },
+            { start: "2026-05-01", end: "2026-05-01", type: "feriado", title: "Feriado do Dia do Trabalho", reduction: 1 },
+            { start: "2026-06-04", end: "2026-06-04", type: "feriado", title: "Feriado de Corpus Christi", reduction: 1 },
+            { start: "2026-06-15", end: "2026-06-26", type: "avaliacao", title: "Semana da Prova Paulista (2º Bimestre)", reduction: 0 },
+            { start: "2026-07-09", end: "2026-07-09", type: "feriado", title: "Revolução Constitucionalista (Recesso de Julho)", reduction: 1 },
+            { start: "2026-09-07", end: "2026-09-07", type: "feriado", title: "Feriado da Independência do Brasil", reduction: 1 },
+            { start: "2026-09-21", end: "2026-10-02", type: "avaliacao", title: "Semana da Prova Paulista (3º Bimestre)", reduction: 0 },
+            { start: "2026-10-12", end: "2026-10-12", type: "feriado", title: "Feriado de N. Sra. Aparecida", reduction: 1 },
+            { start: "2026-10-15", end: "2026-10-15", type: "feriado", title: "Dia dos Professores (Recesso Escolar)", reduction: 1 },
+            { start: "2026-10-28", end: "2026-10-28", type: "feriado", title: "Dia do Servidor Público", reduction: 1 },
+            { start: "2026-11-02", end: "2026-11-02", type: "feriado", title: "Feriado de Finados", reduction: 1 },
+            { start: "2026-11-15", end: "2026-11-15", type: "feriado", title: "Proclamação da República", reduction: 1 },
+            { start: "2026-11-16", end: "2026-11-27", type: "avaliacao", title: "Prova Paulista / SARESP / Provão Paulista MTEC", reduction: 0 },
+            { start: "2026-11-20", end: "2026-11-20", type: "feriado", title: "Feriado da Consciência Negra", reduction: 1 }
+        ];
+
         const CURRICULUM_MATRIX = {
             "2º Ano (MTEC)": {
                 "Administração": [
@@ -981,6 +1132,8 @@
         let currentCourse = "Administração";
         let currentDiscipline = "Introdução à Administração, Legislação e Pessoas";
         let currentLessonStyle = "interativa";
+        let currentReduction = 0; // Number of classes reduced due to holiday
+        let currentDetectedEvent = null;
 
         // --- Theme Toggle (Dark Mode / Light Mode) ---
         function initThemeMode() {
@@ -1067,6 +1220,67 @@
             localStorage.setItem("doc_saved_course", currentCourse);
         }
 
+        // --- Holiday and SEDUC Event Detection ---
+        function detectSeducEvents(startStr, endStr) {
+            if (!startStr) return null;
+            const s = new Date(startStr);
+            const e = new Date(endStr || startStr);
+
+            for (const ev of SEDUC_EVENTS_2026) {
+                const evS = new Date(ev.start);
+                const evE = new Date(ev.end);
+                // Check date overlap
+                if (s <= evE && e >= evS) {
+                    return ev;
+                }
+            }
+            return null;
+        }
+
+        function updateSeducBanner() {
+            const startVal = document.getElementById('startDate').value;
+            const endVal = document.getElementById('endDate').value;
+            const banner = document.getElementById('seducEventBanner');
+            const icon = document.getElementById('seducEventIcon');
+            const title = document.getElementById('seducEventTitle');
+            const subtitle = document.getElementById('seducEventSubtitle');
+            const actionContainer = document.getElementById('seducEventActionContainer');
+
+            const detected = detectSeducEvents(startVal, endVal);
+            currentDetectedEvent = detected;
+
+            if (detected) {
+                if (detected.type === 'feriado') {
+                    banner.className = 'seduc-event-banner feriado';
+                    icon.className = 'bi bi-calendar-x-fill text-warning fs-5';
+                    title.textContent = `Feriado / Recesso Escolar: ${detected.title}`;
+                    subtitle.textContent = `Semana com interrupção letiva. Sugestão: carga horária ajustada (-1 aula de 50 min).`;
+                    actionContainer.innerHTML = `
+                        <span class="badge bg-warning text-dark px-2 py-1 rounded-pill small fw-bold">
+                            <i class="bi bi-dash-circle me-1"></i> -1 Aula (-50 min)
+                        </span>`;
+                    currentReduction = 1;
+                } else if (detected.type === 'avaliacao') {
+                    banner.className = 'seduc-event-banner avaliacao';
+                    icon.className = 'bi bi-pencil-square text-primary fs-5';
+                    title.textContent = `Avaliação Externa SEDUC: ${detected.title}`;
+                    subtitle.textContent = `Período oficial de aplicação e diagnósticos da SEDUC-SP &bull; Foco em revisão e apoio pedagógico.`;
+                    actionContainer.innerHTML = `
+                        <span class="badge bg-primary text-white px-2 py-1 rounded-pill small fw-bold">
+                            <i class="bi bi-file-earmark-check me-1"></i> Semana de Prova
+                        </span>`;
+                    currentReduction = 0;
+                }
+            } else {
+                banner.className = 'seduc-event-banner regular';
+                icon.className = 'bi bi-check-circle-fill text-success fs-5';
+                title.textContent = 'Semana Letiva Regular (5 dias úteis)';
+                subtitle.textContent = 'Sem feriados ou interrupções letivas nesta semana &bull; Carga horária integral dos 200 dias letivos.';
+                actionContainer.innerHTML = '';
+                currentReduction = 0;
+            }
+        }
+
         // --- Recent Plans History ---
         function saveToRecentPlans(data) {
             try {
@@ -1149,8 +1363,8 @@
             showToast("Histórico de planos limpo!");
         }
 
-        // --- Pedagogical Strategy Engine (Adapts by Lesson Style & Infrastructure) ---
-        function buildCoherentDevelopment(discipline, tema, withInclusion = false, lessonStyle = "interativa") {
+        // --- Pedagogical Strategy Engine (Adapts by Lesson Style, Infrastructure & SEDUC Events) ---
+        function buildCoherentDevelopment(discipline, tema, withInclusion = false, lessonStyle = "interativa", eventInfo = null) {
             const discLower = (discipline || "").toLowerCase();
             const temaClean = tema || "o conteúdo previsto";
 
@@ -1161,10 +1375,19 @@
                 inclusionRecurso = ", materiais com fonte ampliada/leitura facilitada e suporte individualizado";
             }
 
+            let eventContext = "";
+            if (eventInfo) {
+                if (eventInfo.type === 'feriado') {
+                    eventContext = `\n\n• Observação de Calendário (SEDUC-SP): Carga horária semanal flexibilizada em virtude do ${eventInfo.title}, priorizando os objetivos essenciais do componente curricular.`;
+                } else if (eventInfo.type === 'avaliacao') {
+                    eventContext = `\n\n• Alinhamento com Avaliação Externa SEDUC-SP: Estratégias integradas à preparação e aplicação da ${eventInfo.title}, com foco na consolidação das habilidades avaliadas.`;
+                }
+            }
+
             // 1. Aula Prática & Mão na Massa
             if (lessonStyle === "pratica") {
                 return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e apresentação da missão prática da aula projetada na TV/quadro branco, contextualizando uma situação real de mercado sobre ${temaClean}.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Na sala especializada do curso técnico e utilizando os netbooks, os alunos realizam uma simulação prática das rotinas corporativas (como elaboração de propostas comerciais, planilhas técnicas de cálculo ou confecção de documentos organizacionais). O professor circula orientando e aplicando a técnica de 'Prática Guiada'.\n\n• Fechamento (5 a 10 min): Validação das entregas práticas, arquivamento/envio das produções e síntese dos procedimentos técnicos realizados.${inclusionText}`,
+                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e apresentação da missão prática da aula projetada na TV/quadro branco, contextualizando uma situação real de mercado sobre ${temaClean}.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Na sala especializada do curso técnico e utilizando os netbooks, os alunos realizam uma simulação prática das rotinas corporativas (como elaboração de propostas comerciais, planilhas técnicas de cálculo ou confecção de documentos organizacionais). O professor circula orientando e aplicando a técnica de 'Prática Guiada'.\n\n• Fechamento (5 a 10 min): Validação das entregas práticas, arquivamento/envio das produções e síntese dos procedimentos técnicos realizados.${inclusionText}${eventContext}`,
                     recursos: `Sala especializada do curso técnico para dinâmicas práticas, netbooks escolares para planilhas e sistemas, TV para instruções, formulários/modelos empresariais e quadro branco${inclusionRecurso}.`,
                     avaliacao: `Avaliação processual e de desempenho prático, considerando a precisão na execução das tarefas, a organização nos netbooks e a postura profissional.`
                 };
@@ -1173,7 +1396,7 @@
             // 2. Aula Tradicional & Expositiva Estruturada
             else if (lessonStyle === "tradicional") {
                 return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e ativação prévia com pergunta conceitual projetada na TV/quadro branco para situar a turma em relação a ${temaClean}.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Aula expositiva dialogada pelo professor com apoio da TV e registros no quadro branco. Demonstração detalhada dos conceitos através da 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz). Em seguida, os alunos realizam individualmente exercícios dirigidos de fixação no caderno/netbooks.\n\n• Fechamento (5 a 10 min): Correção coletiva dos principais pontos na lousa, esclarecimento pontual de dúvidas conceituais e sistematização final.${inclusionText}`,
+                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e ativação prévia com pergunta conceitual projetada na TV/quadro branco para situar a turma em relação a ${temaClean}.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Aula expositiva dialogada pelo professor com apoio da TV e registros no quadro branco. Demonstração detalhada dos conceitos através da 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz). Em seguida, os alunos realizam individualmente exercícios dirigidos de fixação no caderno/netbooks.\n\n• Fechamento (5 a 10 min): Correção coletiva dos principais pontos na lousa, esclarecimento pontual de dúvidas conceituais e sistematização final.${inclusionText}${eventContext}`,
                     recursos: `Quadro branco, TV para exibição de esquemas e conceitos teóricos, apostilas, cadernos e folhas de exercícios dirigidos${inclusionRecurso}.`,
                     avaliacao: `Avaliação formativa e contínua, observando a atenção, a resolução correta dos exercícios dirigidos e a compreensão dos conceitos fundamentais.`
                 };
@@ -1182,7 +1405,7 @@
             // 3. Aula de Revisão, Fixação & Feedback
             else if (lessonStyle === "revisao") {
                 return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e aplicação da técnica 'Faça Agora' (Do Now) com uma questão diagnóstica rápida no quadro/TV sobre os tópicos de ${temaClean}.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Aplicação da técnica Lemov 'Ache o Erro' (Find the Mistake) projetada na TV, na qual os alunos identificam e corrigem falhas em cenários organizacionais simulados. Atendimento individualizado pelo professor para esclarecimento de dúvidas pontuais com apoio dos netbooks.\n\n• Fechamento (5 a 10 min): Aplicação de 'Ticket de Saída' (Exit Ticket) de 3 minutos para checagem rápida de retenção e diagnóstico da aprendizagem da turma.${inclusionText}`,
+                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e aplicação da técnica 'Faça Agora' (Do Now) com uma questão diagnóstica rápida no quadro/TV sobre os tópicos de ${temaClean}.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Aplicação da técnica Lemov 'Ache o Erro' (Find the Mistake) projetada na TV, na qual os alunos identificam e corrigem falhas em cenários organizacionais simulados. Atendimento individualizado pelo professor para esclarecimento de dúvidas pontuais com apoio dos netbooks.\n\n• Fechamento (5 a 10 min): Aplicação de 'Ticket de Saída' (Exit Ticket) de 3 minutos para checagem rápida de retenção e diagnóstico da aprendizagem da turma.${inclusionText}${eventContext}`,
                     recursos: `Quadro branco, TV para projeção de exercícios diagnósticos, netbooks para consulta de resumos e fichas de avaliação formativa${inclusionRecurso}.`,
                     avaliacao: `Avaliação diagnóstica e formativa, com foco na superação de dúvidas recorrentes, na identificação de erros conceituais e na evolução individual.`
                 };
@@ -1191,7 +1414,7 @@
             // 4. Aula Interativa & Metodologias Ativas (Default)
             else {
                 return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e apresentação de um 'Gancho Inicial' (Hook) na TV com um vídeo/case de mercado relacionado a ${temaClean}, despertando o interesse da turma.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Explanação dialogada pelo professor com suporte da TV. Em seguida, na sala especializada do curso técnico ou com uso de netbooks, aplicação da técnica 'Vire e Converse' (Turn and Talk) em duplas para debaterem a estratégia e formularem soluções práticas.\n\n• Fechamento (5 a 10 min): Compartilhamento das propostas das duplas, síntese do professor no quadro branco e alinhamento com as práticas reais do mercado (utilizando o auditório quando houver apresentação de projetos).${inclusionText}`,
+                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e apresentação de um 'Gancho Inicial' (Hook) na TV com um vídeo/case de mercado relacionado a ${temaClean}, despertando o interesse da turma.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Explanação dialogada pelo professor com suporte da TV. Em seguida, na sala especializada do curso técnico ou com uso de netbooks, aplicação da técnica 'Vire e Converse' (Turn and Talk) em duplas para debaterem a estratégia e formularem soluções práticas.\n\n• Fechamento (5 a 10 min): Compartilhamento das propostas das duplas, síntese do professor no quadro branco e alinhamento com as práticas reais do mercado (utilizando o auditório quando houver apresentação de projetos).${inclusionText}${eventContext}`,
                     recursos: `Quadro branco, TV para exibição de cases e campanhas, netbooks para pesquisas e propostas, sala especializada do curso técnico para dinâmicas e auditório para apresentações${inclusionRecurso}.`,
                     avaliacao: `Avaliação processual baseada na participação ativa nas discussões, na clareza da argumentação técnica durante os debates e na produção em equipe.`
                 };
@@ -1282,7 +1505,10 @@
                 const sParts = startVal.split('-');
                 periodInput.value = `${sParts[2]}/${sParts[1]}/${sParts[0]}`;
             }
+
+            updateSeducBanner();
             saveTeacherPreferences();
+            updateLiveSummary();
         }
 
         function updateLiveSummary() {
@@ -1296,11 +1522,12 @@
             const firstLine = data.conteudo.split('\n')[0] || `Semana ${week}`;
             topicBox.innerHTML = `<span class="text-primary fw-bold">${currentDiscipline}</span> &bull; ${firstLine}`;
             
-            // Carga Horária
+            // Carga Horária com Ajuste de Feriado
             const list = (CURRICULUM_MATRIX[currentYear] && CURRICULUM_MATRIX[currentYear][currentCourse]) || [];
             const discItem = list.find(d => d.name === currentDiscipline);
-            const numAulas = discItem ? discItem.aulas : 4;
-            const totalMin = numAulas * 50;
+            const baseAulas = discItem ? discItem.aulas : 4;
+            const finalAulas = Math.max(1, baseAulas - currentReduction);
+            const totalMin = finalAulas * 50;
 
             const styleLabels = {
                 'interativa': 'Metodologias Ativas',
@@ -1309,9 +1536,10 @@
                 'revisao': 'Revisão & Feedback'
             };
 
+            const reductionNote = currentReduction > 0 ? ' (Feriado na semana: -1 aula)' : '';
             const lessonLines = data.conteudo.split('\n').filter(l => l.startsWith('•'));
-            lessonsCount.textContent = `${lessonLines.length || numAulas} aulas planejadas de 50 min (${styleLabels[currentLessonStyle]})`;
-            workloadBadge.innerHTML = `<i class="bi bi-clock-history me-1"></i> Carga: ${numAulas} aulas (${totalMin} min/semana)`;
+            lessonsCount.textContent = `${lessonLines.length || finalAulas} aulas planejadas de 50 min (${styleLabels[currentLessonStyle]})${reductionNote}`;
+            workloadBadge.innerHTML = `<i class="bi bi-clock-history me-1"></i> Carga: ${finalAulas} aulas (${totalMin} min/semana)`;
         }
 
         function getLessonData(targetWeek = null) {
@@ -1365,7 +1593,7 @@
                 habStr += `\n\nHabilidades Socioemocionais:\n${Array.from(habSocio).join('\n')}`;
             }
 
-            const pedagogy = buildCoherentDevelopment(currentDiscipline, temaStr, withInclusion, currentLessonStyle);
+            const pedagogy = buildCoherentDevelopment(currentDiscipline, temaStr, withInclusion, currentLessonStyle, currentDetectedEvent);
 
             return {
                 professor: teacher,

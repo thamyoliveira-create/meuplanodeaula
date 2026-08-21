@@ -427,20 +427,37 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label for="period" class="form-label"><i class="bi bi-calendar3 me-1 text-primary"></i> Período de Realização / Data</label>
-                    <input type="text" class="form-control" id="period" placeholder="Ex: Semana de 02/02 a 06/02/2026" oninput="saveTeacherPreferences()" required>
-                </div>
-
-                <div class="col-md-6">
                     <label for="classroom" class="form-label"><i class="bi bi-people-fill me-1 text-primary"></i> Ano / Série / Turma</label>
                     <input type="text" class="form-control" id="classroom" placeholder="Ex: 2º MTEC - Administração" oninput="saveTeacherPreferences()" required>
                 </div>
 
                 <div class="col-md-6">
-                    <label for="weekSelect" class="form-label"><i class="bi bi-calendar-week-fill me-1 text-primary"></i> Semana do Curso (1 a 28)</label>
-                    <select class="form-select" id="weekSelect" onchange="onWeekChange()">
-                        <!-- Populated dynamically (1 to 28) with dates -->
+                    <label for="weekSelect" class="form-label"><i class="bi bi-calendar-week-fill me-1 text-primary"></i> Semana do Curso</label>
+                    <select class="form-select" id="weekSelect" onchange="updateLiveSummary()">
+                        <!-- Populated dynamically (Semana 1 a 28) -->
                     </select>
+                </div>
+
+                <!-- Calendário Interativo para Escolha dos Dias -->
+                <div class="col-12">
+                    <label class="form-label text-primary"><i class="bi bi-calendar3 me-1"></i> Período de Realização (Escolha os Dias no Calendário)</label>
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted small"><i class="bi bi-calendar-event me-1"></i> Data Inicial:</span>
+                                <input type="date" class="form-control" id="startDate" onchange="onDateRangeChange()" title="Data Inicial da Aula">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted small"><i class="bi bi-calendar-check me-1"></i> Data Final:</span>
+                                <input type="date" class="form-control" id="endDate" onchange="onDateRangeChange()" title="Data Final da Aula">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" class="form-control form-control-sm text-center fw-semibold text-secondary bg-light" id="period" name="period" readonly placeholder="Período" title="Período formatado automaticamente">
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -694,6 +711,27 @@
             const savedCourse = localStorage.getItem("doc_saved_course");
             if (savedYear) currentYear = savedYear;
             if (savedCourse) currentCourse = savedCourse;
+
+            const savedStart = localStorage.getItem("doc_start_date");
+            const savedEnd = localStorage.getItem("doc_end_date");
+            if (savedStart && savedEnd) {
+                document.getElementById("startDate").value = savedStart;
+                document.getElementById("endDate").value = savedEnd;
+                onDateRangeChange();
+            } else {
+                // Default to today and Friday
+                const now = new Date();
+                const dayOfWeek = now.getDay();
+                const monday = new Date(now);
+                monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+                const friday = new Date(monday);
+                friday.setDate(monday.getDate() + 4);
+
+                const formatDate = d => d.toISOString().split('T')[0];
+                document.getElementById("startDate").value = formatDate(monday);
+                document.getElementById("endDate").value = formatDate(friday);
+                onDateRangeChange();
+            }
         }
 
         function saveTeacherPreferences() {
@@ -701,6 +739,8 @@
             localStorage.setItem("doc_teacher_name", teacher);
             localStorage.setItem("doc_saved_year", currentYear);
             localStorage.setItem("doc_saved_course", currentCourse);
+            localStorage.setItem("doc_start_date", document.getElementById("startDate").value);
+            localStorage.setItem("doc_end_date", document.getElementById("endDate").value);
         }
 
         function buildCoherentDevelopment(discipline, tema, withInclusion = false) {
@@ -793,19 +833,33 @@
             for (let i = 1; i <= 28; i++) {
                 const opt = document.createElement('option');
                 opt.value = String(i);
-                const dateStr = WEEK_DATES_2026[i] || "";
-                opt.textContent = `Semana ${i} (${dateStr})`;
+                opt.textContent = `Semana ${i}`;
                 weekSelect.appendChild(opt);
             }
-            onWeekChange();
+            updateLiveSummary();
         }
 
-        function onWeekChange() {
-            const week = parseInt(document.getElementById('weekSelect').value || '1');
+        function onDateRangeChange() {
+            const startVal = document.getElementById('startDate').value;
+            const endVal = document.getElementById('endDate').value;
             const periodInput = document.getElementById('period');
-            const dateStr = WEEK_DATES_2026[week] || `Semana ${week}`;
-            periodInput.value = `Semana de ${dateStr}`;
-            updateLiveSummary();
+
+            if (startVal && endVal) {
+                const sParts = startVal.split('-');
+                const eParts = endVal.split('-');
+                const sFormatted = `${sParts[2]}/${sParts[1]}/${sParts[0]}`;
+                const eFormatted = `${eParts[2]}/${eParts[1]}/${eParts[0]}`;
+
+                if (startVal === endVal) {
+                    periodInput.value = sFormatted;
+                } else {
+                    periodInput.value = `Semana de ${sFormatted} a ${eFormatted}`;
+                }
+            } else if (startVal) {
+                const sParts = startVal.split('-');
+                periodInput.value = `${sParts[2]}/${sParts[1]}/${sParts[0]}`;
+            }
+            saveTeacherPreferences();
         }
 
         function updateLiveSummary() {
@@ -826,8 +880,7 @@
             const teacher = document.getElementById('teacher').value.trim() || "Prof. Thamy Oliveira";
             const classroom = document.getElementById('classroom').value.trim() || "2º MTEC - Administração";
             const week = targetWeek || document.getElementById('weekSelect').value || '1';
-            const dateStr = WEEK_DATES_2026[parseInt(week)] || `Semana ${week}`;
-            const period = targetWeek ? `Semana de ${dateStr}` : (document.getElementById('period').value.trim() || `Semana de ${dateStr}`);
+            const period = document.getElementById('period').value.trim() || "Semana de Aulas";
             const withInclusion = document.getElementById('toggleInclusion').checked;
 
             let rows = [];

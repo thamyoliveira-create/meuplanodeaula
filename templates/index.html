@@ -157,7 +157,7 @@
             box-shadow: 0 3px 8px rgba(79, 70, 229, 0.3);
         }
 
-        /* Selection Cards (Year & Course) */
+        /* Selection Cards (Year, Course & Lesson Style) */
         .select-card {
             border: 2px solid var(--border-color);
             border-radius: var(--radius-lg);
@@ -200,6 +200,49 @@
             justify-content: center;
         }
 
+        /* Style Card specifically for Lesson Type */
+        .style-card {
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 0.95rem 1rem;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            background: var(--surface-secondary);
+            user-select: none;
+            position: relative;
+            height: 100%;
+        }
+
+        .style-card:hover {
+            border-color: var(--primary-light);
+            background: var(--surface);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .style-card.active {
+            border-color: #6366f1;
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+        }
+
+        .style-card.active::after {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            background: #6366f1;
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .card-icon {
             width: 42px;
             height: 42px;
@@ -213,7 +256,7 @@
             transition: all 0.2s ease;
         }
 
-        .select-card.active .card-icon {
+        .select-card.active .card-icon, .style-card.active .card-icon {
             background: var(--primary-gradient);
             color: white;
             box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
@@ -501,7 +544,7 @@
                 </span>
                 <h1 class="h3 fw-bold mb-1">Crie seus Planos de Aula em Segundos</h1>
                 <p class="text-muted mb-0 small" style="max-width: 600px;">
-                    Integrado ao currículo paulista, com 50 min de aula, metodologias Lemov e os recursos reais da escola Dinora.
+                    Integrado ao currículo paulista, com 50 min de aula, metodologias ativas e os recursos da escola Dinora.
                 </p>
             </div>
             <div>
@@ -586,9 +629,63 @@
 
             <hr class="my-4 border-slate-200">
 
-            <!-- Step 3: Informações do Professor e Datas -->
+            <!-- Step 3: Tipo / Estilo Metodológico da Aula -->
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="section-step-badge">3</span>
+                    <h2 class="h5 fw-bold mb-0">Estilo Metodológico da Aula</h2>
+                </div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle small">Adaptação Inteligente</span>
+            </div>
+            <p class="text-muted small mb-3">Escolha o foco pedagógico desta semana para estruturar os 50 minutos de aula de acordo com seu objetivo:</p>
+
+            <div class="row g-2 mb-4">
+                <div class="col-md-3 col-6">
+                    <div class="style-card active d-flex flex-column justify-content-between" id="styleInterativa" onclick="selectLessonStyle('interativa')">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-chat-left-dots-fill"></i></div>
+                            <strong class="small text-dark">Interativa</strong>
+                        </div>
+                        <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Metodologias ativas, Lemov (Turn & Talk), debates e estudos de casos.</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="style-card d-flex flex-column justify-content-between" id="stylePratica" onclick="selectLessonStyle('pratica')">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-tools"></i></div>
+                            <strong class="small text-dark">Prática / Mão na Massa</strong>
+                        </div>
+                        <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Simulação na sala técnica, netbooks, planilhas e rotinas de mercado.</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="style-card d-flex flex-column justify-content-between" id="styleTradicional" onclick="selectLessonStyle('tradicional')">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-easel-fill"></i></div>
+                            <strong class="small text-dark">Expositiva Dialogada</strong>
+                        </div>
+                        <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Fundamentação conceitual, modelagem gradual e exercícios dirigidos.</small>
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="style-card d-flex flex-column justify-content-between" id="styleRevisao" onclick="selectLessonStyle('revisao')">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-check2-all"></i></div>
+                            <strong class="small text-dark">Revisão & Feedback</strong>
+                        </div>
+                        <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Análise de erros (Ache o Erro), ticket de saída e fixação diagnóstica.</small>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4 border-slate-200">
+
+            <!-- Step 4: Informações do Professor e Datas -->
             <div class="d-flex align-items-center gap-2 mb-3">
-                <span class="section-step-badge">3</span>
+                <span class="section-step-badge">4</span>
                 <h2 class="h5 fw-bold mb-0">Dados do Professor e Período</h2>
             </div>
 
@@ -883,6 +980,7 @@
         let currentYear = "2º Ano (MTEC)";
         let currentCourse = "Administração";
         let currentDiscipline = "Introdução à Administração, Legislação e Pessoas";
+        let currentLessonStyle = "interativa";
 
         // --- Theme Toggle (Dark Mode / Light Mode) ---
         function initThemeMode() {
@@ -908,6 +1006,22 @@
                 icon.className = "bi bi-moon-stars-fill";
                 label.textContent = "Modo Escuro";
             }
+        }
+
+        // --- Lesson Style Selection ---
+        function selectLessonStyle(style) {
+            currentLessonStyle = style;
+            document.querySelectorAll('.style-card').forEach(c => c.classList.remove('active'));
+            const map = {
+                'interativa': 'styleInterativa',
+                'pratica': 'stylePratica',
+                'tradicional': 'styleTradicional',
+                'revisao': 'styleRevisao'
+            };
+            if (map[style]) {
+                document.getElementById(map[style]).classList.add('active');
+            }
+            updateLiveSummary();
         }
 
         // --- Preferences & LocalStorage ---
@@ -957,7 +1071,6 @@
         function saveToRecentPlans(data) {
             try {
                 let list = JSON.parse(localStorage.getItem("recent_lesson_plans") || "[]");
-                // Avoid exact duplicate on top
                 list = list.filter(p => !(p.semana === data.semana && p.disciplina === data.disciplina && p.ano === currentYear && p.curso === currentCourse));
                 list.unshift({
                     id: Date.now(),
@@ -967,6 +1080,7 @@
                     semana: data.semana,
                     periodo: data.periodo,
                     turma: data.turma,
+                    estilo: currentLessonStyle,
                     data_salva: new Date().toLocaleDateString('pt-BR')
                 });
                 if (list.length > 8) list = list.slice(0, 8);
@@ -1005,7 +1119,7 @@
                             <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;">${p.turma} &bull; ${p.periodo}</small>
                         </div>
                         <div class="mt-2 pt-2 border-top d-flex gap-1">
-                            <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2 flex-grow-1" style="font-size: 0.75rem;" onclick="loadRecentPlan('${p.ano}', '${p.curso}', '${p.disciplina}', '${p.semana}')">
+                            <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2 flex-grow-1" style="font-size: 0.75rem;" onclick="loadRecentPlan('${p.ano}', '${p.curso}', '${p.disciplina}', '${p.semana}', '${p.estilo || 'interativa'}')">
                                 <i class="bi bi-arrow-repeat me-1"></i> Abrir
                             </button>
                         </div>
@@ -1015,9 +1129,10 @@
             });
         }
 
-        function loadRecentPlan(year, course, disc, week) {
+        function loadRecentPlan(year, course, disc, week, style = 'interativa') {
             selectYear(year);
             selectCourse(course);
+            selectLessonStyle(style);
             currentDiscipline = disc;
             document.querySelectorAll('.discipline-chip').forEach(c => {
                 c.classList.toggle('active', c.innerText.trim().includes(disc));
@@ -1034,8 +1149,8 @@
             showToast("Histórico de planos limpo!");
         }
 
-        // --- Pedagogical Strategy Engine ---
-        function buildCoherentDevelopment(discipline, tema, withInclusion = false) {
+        // --- Pedagogical Strategy Engine (Adapts by Lesson Style & Infrastructure) ---
+        function buildCoherentDevelopment(discipline, tema, withInclusion = false, lessonStyle = "interativa") {
             const discLower = (discipline || "").toLowerCase();
             const temaClean = tema || "o conteúdo previsto";
 
@@ -1046,23 +1161,39 @@
                 inclusionRecurso = ", materiais com fonte ampliada/leitura facilitada e suporte individualizado";
             }
 
-            if (discLower.includes("matemática") || discLower.includes("financeira") || discLower.includes("contabilidade") || discLower.includes("investimentos") || discLower.includes("cálculo")) {
+            // 1. Aula Prática & Mão na Massa
+            if (lessonStyle === "pratica") {
                 return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e aplicação da técnica 'Faça Agora' (Do Now), com um exercício rápido projetado na TV/quadro branco envolvendo situações cotidianas para ativar o raciocínio matemático e financeiro dos alunos.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Apresentação dos conceitos no quadro branco e na TV. Demonstração prática do cálculo através da 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz). Em seguida, os alunos realizam exercícios dirigidos individualmente ou com auxílio dos netbooks para cálculos aplicados à administração e vendas.\n\n• Fechamento (5 a 10 min): Correção no quadro branco de dúvidas recorrentes, síntese da fórmula/procedimento utilizado e checagem rápida de retenção da turma.${inclusionText}`,
-                    recursos: `Quadro branco, TV para projeção de fórmulas e tabelas, netbooks para cálculos e planilhas eletrônicas, calculadoras e folhas de atividades dirigidas${inclusionRecurso}.`,
-                    avaliacao: `Avaliação formativa e contínua, observando a participação nas atividades, a resolução correta dos cálculos e a aplicação prática nos netbooks/caderno.`
+                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e apresentação da missão prática da aula projetada na TV/quadro branco, contextualizando uma situação real de mercado sobre ${temaClean}.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Na sala especializada do curso técnico e utilizando os netbooks, os alunos realizam uma simulação prática das rotinas corporativas (como elaboração de propostas comerciais, planilhas técnicas de cálculo ou confecção de documentos organizacionais). O professor circula orientando e aplicando a técnica de 'Prática Guiada'.\n\n• Fechamento (5 a 10 min): Validação das entregas práticas, arquivamento/envio das produções e síntese dos procedimentos técnicos realizados.${inclusionText}`,
+                    recursos: `Sala especializada do curso técnico para dinâmicas práticas, netbooks escolares para planilhas e sistemas, TV para instruções, formulários/modelos empresariais e quadro branco${inclusionRecurso}.`,
+                    avaliacao: `Avaliação processual e de desempenho prático, considerando a precisão na execução das tarefas, a organização nos netbooks e a postura profissional.`
                 };
-            } else if (discLower.includes("marketing") || discLower.includes("vendas") || discLower.includes("comunicação") || discLower.includes("negócios") || discLower.includes("prospecção") || discLower.includes("comercial") || discLower.includes("projeto")) {
+            }
+
+            // 2. Aula Tradicional & Expositiva Estruturada
+            else if (lessonStyle === "tradicional") {
                 return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e apresentação de um 'Gancho Inicial' (Hook) na TV com um vídeo/exemplo de case de mercado relacionado a ${temaClean}, despertando o interesse da turma.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Explanação dialogada pelo professor com suporte da TV. Em seguida, na sala especializada do curso técnico ou com uso de netbooks, aplicação da técnica 'Vire e Converse' (Turn and Talk) em duplas para debaterem a estratégia comercial ou prototiparem a solução prática/estudo de caso.\n\n• Fechamento (5 a 10 min): Compartilhamento das propostas das duplas, síntese do professor no quadro branco e alinhamento com as práticas reais do mercado (utilizando o auditório quando houver apresentação de pitches/seminários).${inclusionText}`,
-                    recursos: `Quadro branco, TV para exibição de cases e campanhas, netbooks para pesquisas e criação de propostas, sala especializada do curso técnico para dinâmicas práticas e auditório para apresentações de projetos${inclusionRecurso}.`,
-                    avaliacao: `Avaliação processual baseada na participação ativa nas discussões, na clareza da argumentação técnica durante os debates e na produção prática em equipe.`
+                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e ativação prévia com pergunta conceitual projetada na TV/quadro branco para situar a turma em relação a ${temaClean}.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Aula expositiva dialogada pelo professor com apoio da TV e registros no quadro branco. Demonstração detalhada dos conceitos através da 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz). Em seguida, os alunos realizam individualmente exercícios dirigidos de fixação no caderno/netbooks.\n\n• Fechamento (5 a 10 min): Correção coletiva dos principais pontos na lousa, esclarecimento pontual de dúvidas conceituais e sistematização final.${inclusionText}`,
+                    recursos: `Quadro branco, TV para exibição de esquemas e conceitos teóricos, apostilas, cadernos e folhas de exercícios dirigidos${inclusionRecurso}.`,
+                    avaliacao: `Avaliação formativa e contínua, observando a atenção, a resolução correta dos exercícios dirigidos e a compreensão dos conceitos fundamentais.`
                 };
-            } else {
+            }
+
+            // 3. Aula de Revisão, Fixação & Feedback
+            else if (lessonStyle === "revisao") {
                 return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e contextualização rápida da temática sobre ${temaClean} com pergunta disparadora na TV/quadro branco. Aplicação da técnica 'Faça Agora' (Do Now) sobre desafios da rotina corporativa.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Mediação teórica pelo professor articulando a legislação e os procedimentos organizacionais. Na sala especializada do curso técnico, aplicação da técnica 'Todos Escrevem' (Everybody Writes), com registro individual de 3 minutos para estruturar a solução de rotinas administrativas/simulações antes do debate coletivo.\n\n• Fechamento (5 a 10 min): Retomada dos conceitos principais no quadro branco, esclarecimento pontual de dúvidas e sistematização da rotina desenvolvida.${inclusionText}`,
-                    recursos: `Quadro branco, TV para projeção de fluxogramas e normas regulatórias, netbooks para consulta de legislações/documentos empresariais e sala especializada do curso técnico para simulação de rotinas organizacionais${inclusionRecurso}.`,
-                    avaliacao: `Avaliação formativa, considerando a pontualidade, a postura profissional, o engajamento nas simulações e a precisão técnica nas produções escritas.`
+                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e aplicação da técnica 'Faça Agora' (Do Now) com uma questão diagnóstica rápida no quadro/TV sobre os tópicos de ${temaClean}.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Aplicação da técnica Lemov 'Ache o Erro' (Find the Mistake) projetada na TV, na qual os alunos identificam e corrigem falhas em cenários organizacionais simulados. Atendimento individualizado pelo professor para esclarecimento de dúvidas pontuais com apoio dos netbooks.\n\n• Fechamento (5 a 10 min): Aplicação de 'Ticket de Saída' (Exit Ticket) de 3 minutos para checagem rápida de retenção e diagnóstico da aprendizagem da turma.${inclusionText}`,
+                    recursos: `Quadro branco, TV para projeção de exercícios diagnósticos, netbooks para consulta de resumos e fichas de avaliação formativa${inclusionRecurso}.`,
+                    avaliacao: `Avaliação diagnóstica e formativa, com foco na superação de dúvidas recorrentes, na identificação de erros conceituais e na evolução individual.`
+                };
+            }
+
+            // 4. Aula Interativa & Metodologias Ativas (Default)
+            else {
+                return {
+                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e apresentação de um 'Gancho Inicial' (Hook) na TV com um vídeo/case de mercado relacionado a ${temaClean}, despertando o interesse da turma.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Explanação dialogada pelo professor com suporte da TV. Em seguida, na sala especializada do curso técnico ou com uso de netbooks, aplicação da técnica 'Vire e Converse' (Turn and Talk) em duplas para debaterem a estratégia e formularem soluções práticas.\n\n• Fechamento (5 a 10 min): Compartilhamento das propostas das duplas, síntese do professor no quadro branco e alinhamento com as práticas reais do mercado (utilizando o auditório quando houver apresentação de projetos).${inclusionText}`,
+                    recursos: `Quadro branco, TV para exibição de cases e campanhas, netbooks para pesquisas e propostas, sala especializada do curso técnico para dinâmicas e auditório para apresentações${inclusionRecurso}.`,
+                    avaliacao: `Avaliação processual baseada na participação ativa nas discussões, na clareza da argumentação técnica durante os debates e na produção em equipe.`
                 };
             }
         }
@@ -1171,8 +1302,15 @@
             const numAulas = discItem ? discItem.aulas : 4;
             const totalMin = numAulas * 50;
 
+            const styleLabels = {
+                'interativa': 'Metodologias Ativas',
+                'pratica': 'Mão na Massa / Sala Técnica',
+                'tradicional': 'Expositiva Dialogada',
+                'revisao': 'Revisão & Feedback'
+            };
+
             const lessonLines = data.conteudo.split('\n').filter(l => l.startsWith('•'));
-            lessonsCount.textContent = `${lessonLines.length || numAulas} aulas planejadas de 50 min com infraestrutura escolar`;
+            lessonsCount.textContent = `${lessonLines.length || numAulas} aulas planejadas de 50 min (${styleLabels[currentLessonStyle]})`;
             workloadBadge.innerHTML = `<i class="bi bi-clock-history me-1"></i> Carga: ${numAulas} aulas (${totalMin} min/semana)`;
         }
 
@@ -1227,7 +1365,7 @@
                 habStr += `\n\nHabilidades Socioemocionais:\n${Array.from(habSocio).join('\n')}`;
             }
 
-            const pedagogy = buildCoherentDevelopment(currentDiscipline, temaStr, withInclusion);
+            const pedagogy = buildCoherentDevelopment(currentDiscipline, temaStr, withInclusion, currentLessonStyle);
 
             return {
                 professor: teacher,
@@ -1257,7 +1395,7 @@
             document.getElementById('prevHabilidades').innerText = data.habilidades;
             document.getElementById('prevObjetos').innerText = data.objetos;
             document.getElementById('prevConteudo').innerText = data.conteudo;
-            document.getElementById('prevObjetivos').innerText = data.objetivos;
+            document.getElementById('prevObjetivos').innerText = data.objetos;
             document.getElementById('prevEstrategias').innerText = data.estrategias;
             document.getElementById('prevRecursos').innerText = data.recursos;
             document.getElementById('prevAvaliacao').innerText = data.avaliacao;

@@ -1,47 +1,67 @@
-# Lesson Plan Generator
+# 🎓 Gerador de Plano de Aula Web
 
-A small **CLI** tool (Python) that reads a spreadsheet with the schedule of a technical course and generates a **Lesson Plan PDF** for a given week using a Word (`.docx`) template you provide.
+Aplicação web moderna para gerar **Planos de Aula** semanais de cursos técnicos a partir de planilhas (Excel / CSV) e modelos Word (`.docx`).
 
-## Features
-- Reads **CSV** or **Excel** (`.xlsx`) files with `pandas`.
-- Filters rows by the `Semana` (week) column.
-- Replaces placeholders in the template (`{{ColumnName}}`) with data from the sheet.
-- Produces a PDF via `docx2pdf` (macOS/Windows).
-- Simple command‑line interface.
+Pronto para deploy gratuito na **Vercel** ou execução local com Python/Flask.
 
-## Installation
+---
+
+## 🚀 Como fazer Deploy na Vercel
+
+1. Acesse o painel da [Vercel](https://vercel.com).
+2. Clique em **"Add New..."** ➔ **"Project"**.
+3. Importe o repositório `meuplanodeaula`.
+4. Deixe as configurações padrão e clique em **"Deploy"**.
+5. Em poucos segundos seu site estará no ar com link público!
+
+---
+
+## 💻 Como rodar Localmente no computador
+
 ```bash
-# Inside the project folder
+# 1. Clone o repositório
+git clone https://github.com/thamyoliveira-create/meuplanodeaula.git
+cd meuplanodeaula
+
+# 2. Crie e ative o ambiente virtual
 python -m venv .venv
-source .venv/bin/activate  # macOS/Linux
+source .venv/bin/activate   # macOS / Linux
 # Windows: .venv\Scripts\activate
+
+# 3. Instale as dependências
 pip install -r requirements.txt
+
+# 4. Inicie o servidor web
+python app.py
 ```
 
-## Usage
-```bash
-python -m lesson_plan_generator.main \
-    --spreadsheet /caminho/para/planilha.xlsx \
-    --week 3 \
-    --output lesson_plan_semana_3.pdf
+Abra o navegador em: **http://127.0.0.1:5000**
+
+---
+
+## ✨ Funcionalidades
+
+- 📤 **Upload de Planilha:** Suporte a arquivos `.xlsx`, `.xls` e `.csv`.
+- 🔍 **Detecção Automática:** Identifica automaticamente as semanas disponíveis na planilha.
+- 👁️ **Pré-visualização Online:** Veja os dados do plano antes de baixar.
+- 📥 **Download Word (.docx):** Documento formatado pronto para edição ou impressão.
+- 🖨️ **Impressão / Salvar em PDF:** Botão de impressão com layout otimizado.
+- 🎨 **Modelo Customizável:** Permite usar o modelo padrão ou enviar seu próprio `.docx` com tags `{{NomeDaColuna}}`.
+
+---
+
+## 📄 Estrutura de Arquivos
+
 ```
-- `--spreadsheet` – path to the CSV/Excel file containing the schedule.
-- `--week` – week identifier (must match exactly the value in the `Semana` column).
-- `--output` – optional; defaults to `lesson_plan_week_<week>.pdf`.
-
-The generated PDF will be saved at the location you specify.
-
-## Template format
-The template (`template/template.docx`) should contain placeholders in the form `{{ColumnName}}`. Example:
+├── api/
+│   └── index.py            # Servidor Flask e rotas serverless da Vercel
+├── templates/
+│   └── index.html          # Interface visual web (Bootstrap 5)
+├── lesson_plan_generator/
+│   ├── plan_generator.py   # Processamento de planilhas e Word
+│   └── template/
+│       └── template.docx   # Modelo padrão do plano
+├── app.py                  # Executável para testes locais
+├── vercel.json             # Configuração de build e rotas da Vercel
+└── requirements.txt        # Dependências Python
 ```
-Título da aula: {{Título da aula}}
-Objetivo da aula: {{Objetivo da aula}}
-```
-When the script runs, each placeholder is replaced with the corresponding value from the spreadsheet for the selected week.
-
-## Limitations
-- `docx2pdf` works only on macOS or Windows; on Linux you would need an alternative conversion method.
-- The script expects a column that contains the week identifier (e.g., `Semana`). If your sheet uses a different name, adjust the code in `plan_generator.py` accordingly.
-
-## License
-MIT – feel free to adapt and extend.

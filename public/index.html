@@ -4,57 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plano de Aula Pro &bull; EE. Prof. Dinora Marcondes Gomes</title>
-    <!-- Google Fonts Plus Jakarta Sans & Outfit -->
+    <!-- Google Fonts Manrope & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root {
-            --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --heading-font: 'Outfit', var(--font-family);
-            --primary: #4f46e5;
-            --primary-light: #818cf8;
-            --primary-dark: #3730a3;
-            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
-            --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-            --bg-body: #f8fafc;
-            --bg-mesh: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
-                       radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.08) 0px, transparent 50%),
-                       radial-gradient(at 50% 100%, rgba(6, 182, 212, 0.05) 0px, transparent 50%);
+            --font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --heading-font: 'Manrope', var(--font-family);
+            
+            /* Pousada da Serra Luxury Color Palette */
+            --primary: #1e3d2b;
+            --primary-light: #2d5a40;
+            --primary-dark: #12261b;
+            --primary-gradient: linear-gradient(135deg, #1e3d2b 0%, #2b553d 50%, #3a7050 100%);
+            
+            --gold-accent: #c49746;
+            --gold-light: #dfb76c;
+            --gold-gradient: linear-gradient(135deg, #c49746 0%, #dfb76c 100%);
+            
+            --bg-body: #f7f5f0;
+            --bg-mesh: radial-gradient(at 0% 0%, rgba(30, 61, 43, 0.05) 0px, transparent 50%),
+                       radial-gradient(at 100% 0%, rgba(196, 151, 70, 0.06) 0px, transparent 50%),
+                       radial-gradient(at 50% 100%, rgba(30, 61, 43, 0.03) 0px, transparent 50%);
+            
             --surface: #ffffff;
-            --surface-secondary: #f8fafc;
-            --surface-hover: #f1f5f9;
-            --border-color: #e2e8f0;
-            --border-glow: rgba(99, 102, 241, 0.25);
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
-            --shadow-card: 0 20px 35px -8px rgba(15, 23, 42, 0.08), 0 4px 8px -4px rgba(15, 23, 42, 0.03);
-            --shadow-glow: 0 10px 25px -4px rgba(79, 70, 229, 0.35);
+            --surface-secondary: #f2efe9;
+            --surface-hover: #eae6dd;
+            --border-color: #e5e0d5;
+            --border-focus: #1e3d2b;
+            
+            --text-main: #181f1b;
+            --text-muted: #69736c;
+            --text-gold: #9e7428;
+            
+            --shadow-subtle: 0 2px 4px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow-card: 0 12px 32px -4px rgba(24, 31, 27, 0.06), 0 4px 12px -2px rgba(24, 31, 27, 0.03);
+            --shadow-glow: 0 8px 24px -4px rgba(30, 61, 43, 0.25);
+            
             --radius-sm: 0.5rem;
             --radius-md: 0.85rem;
             --radius-lg: 1.25rem;
-            --radius-xl: 1.75rem;
+            --radius-xl: 1.65rem;
         }
 
         [data-bs-theme="dark"] {
-            --bg-body: #090d16;
-            --bg-mesh: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                       radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.12) 0px, transparent 50%),
-                       radial-gradient(at 50% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
-            --surface: #111827;
-            --surface-secondary: #172136;
-            --surface-hover: #1f2d48;
-            --border-color: #243049;
-            --border-glow: rgba(99, 102, 241, 0.4);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --shadow-card: 0 20px 40px -8px rgba(0, 0, 0, 0.5);
-            --shadow-glow: 0 10px 25px -4px rgba(99, 102, 241, 0.4);
+            --bg-body: #0d1410;
+            --bg-mesh: radial-gradient(at 0% 0%, rgba(30, 61, 43, 0.2) 0px, transparent 50%),
+                       radial-gradient(at 100% 0%, rgba(196, 151, 70, 0.1) 0px, transparent 50%);
+            
+            --surface: #141e18;
+            --surface-secondary: #1a2720;
+            --surface-hover: #22332a;
+            --border-color: #273b30;
+            --border-focus: #c49746;
+            
+            --text-main: #f3f5f3;
+            --text-muted: #95a399;
+            --text-gold: #dfb76c;
+            
+            --shadow-card: 0 16px 36px -4px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 8px 24px -4px rgba(196, 151, 70, 0.2);
         }
 
         body {
@@ -70,15 +84,16 @@
 
         h1, h2, h3, h4, h5, h6, .brand-title {
             font-family: var(--heading-font);
+            letter-spacing: -0.02em;
         }
 
-        /* Glass Navbar */
+        /* Glass Navbar (Hospitality Elegance) */
         .glass-navbar {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-color);
-            padding: 0.85rem 0;
+            padding: 0.95rem 0;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -86,34 +101,39 @@
         }
 
         [data-bs-theme="dark"] .glass-navbar {
-            background: rgba(17, 24, 39, 0.85);
+            background: rgba(20, 30, 24, 0.9);
         }
 
         .brand-badge {
             background: var(--primary-gradient);
-            color: white;
+            color: #ffffff;
             width: 44px;
             height: 44px;
             border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.35rem;
-            box-shadow: var(--shadow-glow);
-            transition: transform 0.3s ease;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 14px rgba(30, 61, 43, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .brand-badge:hover {
-            transform: rotate(-5deg) scale(1.05);
+        .eyebrow-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 800;
+            color: var(--text-gold);
         }
 
         /* Hero Banner */
         .hero-banner {
-            background: linear-gradient(135deg, rgba(79, 70, 229, 0.07) 0%, rgba(168, 85, 247, 0.07) 100%);
+            background: var(--surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-xl);
-            padding: 2.2rem 2rem;
+            padding: 2.4rem 2.2rem;
             margin-bottom: 2rem;
+            box-shadow: var(--shadow-card);
             position: relative;
             overflow: hidden;
         }
@@ -121,14 +141,11 @@
         .hero-banner::before {
             content: '';
             position: absolute;
-            top: -40%;
-            right: -10%;
-            width: 300px;
-            height: 300px;
-            background: var(--primary-gradient);
-            opacity: 0.12;
-            filter: blur(70px);
-            border-radius: 50%;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 35%;
+            background: linear-gradient(135deg, transparent 0%, rgba(196, 151, 70, 0.05) 50%, rgba(30, 61, 43, 0.08) 100%);
             pointer-events: none;
         }
 
@@ -147,19 +164,19 @@
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: var(--primary-gradient);
-            color: white;
-            font-size: 0.8rem;
+            background: var(--primary);
+            color: #ffffff;
+            font-size: 0.78rem;
             font-weight: 800;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 3px 8px rgba(79, 70, 229, 0.3);
+            box-shadow: 0 2px 6px rgba(30, 61, 43, 0.2);
         }
 
-        /* Selection Cards (Year, Course & Lesson Style) */
+        /* Selection Cards (Year, Course & Style) */
         .select-card {
-            border: 2px solid var(--border-color);
+            border: 1.5px solid var(--border-color);
             border-radius: var(--radius-lg);
             padding: 1.1rem 1.25rem;
             cursor: pointer;
@@ -178,20 +195,20 @@
         }
 
         .select-card.active {
-            border-color: #6366f1;
+            border-color: var(--primary);
             background: var(--surface);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18), var(--shadow-subtle);
+            box-shadow: 0 0 0 3px rgba(30, 61, 43, 0.12), var(--shadow-subtle);
         }
 
         .select-card.active::after {
             content: '✓';
             position: absolute;
-            top: 10px;
-            right: 12px;
-            font-size: 0.75rem;
+            top: 12px;
+            right: 14px;
+            font-size: 0.72rem;
             font-weight: 800;
-            background: #6366f1;
-            color: white;
+            background: var(--primary);
+            color: #ffffff;
             width: 20px;
             height: 20px;
             border-radius: 50%;
@@ -200,11 +217,11 @@
             justify-content: center;
         }
 
-        /* Style Card specifically for Lesson Type */
+        /* Style Card */
         .style-card {
-            border: 2px solid var(--border-color);
+            border: 1.5px solid var(--border-color);
             border-radius: var(--radius-lg);
-            padding: 0.95rem 1rem;
+            padding: 1rem;
             cursor: pointer;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             background: var(--surface-secondary);
@@ -221,20 +238,20 @@
         }
 
         .style-card.active {
-            border-color: #6366f1;
+            border-color: var(--primary);
             background: var(--surface);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+            box-shadow: 0 0 0 3px rgba(30, 61, 43, 0.12);
         }
 
         .style-card.active::after {
             content: '✓';
             position: absolute;
-            top: 8px;
-            right: 8px;
-            font-size: 0.7rem;
+            top: 10px;
+            right: 10px;
+            font-size: 0.68rem;
             font-weight: 800;
-            background: #6366f1;
-            color: white;
+            background: var(--primary);
+            color: #ffffff;
             width: 18px;
             height: 18px;
             border-radius: 50%;
@@ -244,22 +261,22 @@
         }
 
         .card-icon {
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
             border-radius: var(--radius-md);
             background: var(--surface-hover);
             color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             transition: all 0.2s ease;
         }
 
         .select-card.active .card-icon, .style-card.active .card-icon {
             background: var(--primary-gradient);
-            color: white;
-            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(30, 61, 43, 0.25);
         }
 
         /* Discipline Interactive Chips */
@@ -280,7 +297,7 @@
         }
 
         .discipline-chip:hover {
-            border-color: #6366f1;
+            border-color: var(--primary-light);
             background: var(--surface-hover);
             transform: translateY(-1px);
         }
@@ -296,9 +313,10 @@
         /* Form Inputs */
         .form-label {
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.84rem;
             color: var(--text-main);
             margin-bottom: 0.4rem;
+            letter-spacing: -0.01em;
         }
 
         .form-control, .form-select {
@@ -313,8 +331,8 @@
         }
 
         .form-control:focus, .form-select:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(30, 61, 43, 0.12);
             outline: none;
             background-color: var(--surface);
             color: var(--text-main);
@@ -322,17 +340,17 @@
 
         /* Live Preview Highlight Box */
         .live-preview-pill {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
-            border: 1.5px solid rgba(16, 185, 129, 0.35);
+            background: var(--surface-secondary);
+            border: 1.5px solid var(--border-color);
             border-radius: var(--radius-lg);
-            padding: 1.1rem 1.4rem;
+            padding: 1.15rem 1.4rem;
             margin-top: 1rem;
         }
 
         /* Holiday / SEDUC Event Alert Banner */
         .seduc-event-banner {
             border-radius: var(--radius-lg);
-            padding: 0.9rem 1.25rem;
+            padding: 0.95rem 1.3rem;
             margin-top: 0.85rem;
             font-size: 0.86rem;
             display: flex;
@@ -343,47 +361,42 @@
         }
 
         .seduc-event-banner.feriado {
-            background: rgba(245, 158, 11, 0.12);
-            border: 1.5px solid rgba(245, 158, 11, 0.4);
-            color: #b45309;
+            background: rgba(196, 151, 70, 0.12);
+            border: 1.5px solid rgba(196, 151, 70, 0.35);
+            color: #8c6317;
         }
 
         .seduc-event-banner.avaliacao {
-            background: rgba(59, 130, 246, 0.12);
-            border: 1.5px solid rgba(59, 130, 246, 0.4);
-            color: #1d4ed8;
+            background: rgba(30, 61, 43, 0.08);
+            border: 1.5px solid rgba(30, 61, 43, 0.25);
+            color: #1e3d2b;
         }
 
         .seduc-event-banner.regular {
-            background: rgba(16, 185, 129, 0.08);
-            border: 1.5px solid rgba(16, 185, 129, 0.25);
-            color: #047857;
+            background: var(--surface-secondary);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-muted);
         }
 
         [data-bs-theme="dark"] .seduc-event-banner.feriado {
-            background: rgba(245, 158, 11, 0.15);
-            color: #fcd34d;
+            background: rgba(196, 151, 70, 0.15);
+            color: #dfb76c;
         }
 
         [data-bs-theme="dark"] .seduc-event-banner.avaliacao {
-            background: rgba(59, 130, 246, 0.15);
-            color: #93c5fd;
+            background: rgba(45, 90, 64, 0.2);
+            color: #81c79f;
         }
 
-        [data-bs-theme="dark"] .seduc-event-banner.regular {
-            background: rgba(16, 185, 129, 0.12);
-            color: #6ee7b7;
-        }
-
-        /* Action Buttons */
+        /* Action Buttons (Luxury Forest & Gold) */
         .btn-main {
             background: var(--primary-gradient);
             color: #ffffff;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--radius-md);
             font-family: var(--heading-font);
             font-weight: 700;
-            font-size: 0.98rem;
+            font-size: 0.96rem;
             padding: 0.9rem 1.6rem;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             display: inline-flex;
@@ -396,8 +409,9 @@
 
         .btn-main:hover {
             transform: translateY(-2px);
-            box-shadow: 0 14px 28px -4px rgba(79, 70, 229, 0.45);
+            box-shadow: 0 12px 26px -4px rgba(30, 61, 43, 0.35);
             color: #ffffff;
+            background: linear-gradient(135deg, #162c1f 0%, #234632 100%);
         }
 
         .btn-clean {
@@ -419,7 +433,7 @@
 
         .btn-clean:hover {
             background: var(--surface-hover);
-            border-color: #94a3b8;
+            border-color: #b5ada0;
             color: var(--text-main);
             transform: translateY(-1px);
         }
@@ -430,9 +444,9 @@
             border: 1px solid var(--border-color);
             color: var(--text-main);
             border-radius: 2rem;
-            padding: 0.45rem 0.9rem;
-            font-size: 0.84rem;
-            font-weight: 600;
+            padding: 0.45rem 0.95rem;
+            font-size: 0.82rem;
+            font-weight: 700;
             display: inline-flex;
             align-items: center;
             gap: 0.45rem;
@@ -441,8 +455,8 @@
         }
 
         .theme-toggle-btn:hover {
-            border-color: #6366f1;
-            color: #6366f1;
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         /* Recent Plans Cards */
@@ -450,20 +464,20 @@
             background: var(--surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            padding: 1rem 1.2rem;
+            padding: 1.1rem 1.25rem;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .recent-card:hover {
-            border-color: #6366f1;
+            border-color: var(--primary-light);
             transform: translateY(-3px);
             box-shadow: var(--shadow-card);
         }
 
         /* Inclusion Box */
         .inclusion-box {
-            background: linear-gradient(135deg, rgba(13, 148, 136, 0.07) 0%, rgba(14, 165, 233, 0.07) 100%);
-            border: 1.5px solid rgba(13, 148, 136, 0.3);
+            background: var(--surface-secondary);
+            border: 1.5px solid var(--border-color);
             border-radius: var(--radius-lg);
             padding: 1rem 1.3rem;
             margin-top: 1.1rem;
@@ -474,9 +488,9 @@
             background: #ffffff;
             color: #000000 !important;
             border-radius: var(--radius-lg);
-            border: 1px solid #cbd5e1;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            padding: 3rem;
+            border: 1px solid #d5cfc2;
+            box-shadow: 0 25px 50px -12px rgba(24, 31, 27, 0.15);
+            padding: 3.2rem;
             margin-top: 2.5rem;
             position: relative;
         }
@@ -490,7 +504,7 @@
         }
 
         .official-table td {
-            border: 1px solid #94a3b8;
+            border: 1px solid #78716c;
             padding: 0.85rem 1.1rem;
             vertical-align: top;
             font-size: 0.94rem;
@@ -514,8 +528,8 @@
         }
 
         .official-table .field-val:focus {
-            background-color: #eff6ff;
-            box-shadow: 0 0 0 2px #3b82f6;
+            background-color: #fefce8;
+            box-shadow: 0 0 0 2px #c49746;
         }
 
         /* Toast */
@@ -523,8 +537,8 @@
             position: fixed;
             bottom: 2rem;
             right: 2rem;
-            background: #0f172a;
-            color: white;
+            background: #181f1b;
+            color: #ffffff;
             padding: 0.9rem 1.4rem;
             border-radius: 1rem;
             box-shadow: 0 15px 30px rgba(0,0,0,0.3);
@@ -537,6 +551,7 @@
             transform: translateY(100px);
             opacity: 0;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .toast-custom.show {
@@ -559,17 +574,17 @@
         <div class="container d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-3">
                 <div class="brand-badge">
-                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <i class="bi bi-mortarboard-fill"></i>
                 </div>
                 <div>
-                    <span class="h6 fw-bold mb-0 d-block brand-title">Plano de Aula Pro</span>
-                    <small class="text-muted" style="font-size: 0.78rem;">EE. Prof. Dinora Marcondes Gomes &bull; Cursos Técnicos MTEC</small>
+                    <span class="eyebrow-label d-block">Sistema de Planejamento Docente</span>
+                    <span class="h6 fw-bold mb-0 d-block brand-title">EE. Prof. Dinora Marcondes Gomes</span>
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2">
                 <!-- SEDUC Calendar Guide Button -->
-                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 fw-semibold small" data-bs-toggle="modal" data-bs-target="#seducCalendarModal">
-                    <i class="bi bi-calendar-event me-1"></i> Calendário SEDUC 2026
+                <button type="button" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1 fw-bold small" data-bs-toggle="modal" data-bs-target="#seducCalendarModal" style="border-color: var(--border-color);">
+                    <i class="bi bi-calendar-check me-1 text-success"></i> <span>Calendário SEDUC 2026</span>
                 </button>
                 <!-- Theme Toggle Button -->
                 <button type="button" class="theme-toggle-btn" onclick="toggleThemeMode()" id="themeToggleBtn">
@@ -583,19 +598,19 @@
     <!-- Main Container -->
     <main class="container my-4 mb-5" style="max-width: 960px;">
         
-        <!-- Hero Header -->
+        <!-- Hero Header (Pousada da Serra Aesthetic) -->
         <div class="hero-banner no-print d-flex align-items-center justify-content-between flex-wrap gap-3">
             <div>
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill small fw-bold mb-2 d-inline-flex align-items-center gap-1">
-                    <i class="bi bi-stars"></i> Inteligência Pedagógica MTEC &bull; 200 Dias Letivos
+                <span class="eyebrow-label d-block mb-1">
+                    <i class="bi bi-stars text-warning me-1"></i> Diretoria de Ensino de Araraquara &bull; Cursos Técnicos MTEC
                 </span>
-                <h1 class="h3 fw-bold mb-1">Crie seus Planos de Aula em Segundos</h1>
+                <h1 class="h3 fw-bold mb-1">Elabore seus Planos de Aula com Precisão</h1>
                 <p class="text-muted mb-0 small" style="max-width: 600px;">
-                    Integrado ao currículo paulista, com detecção de feriados, provas externas SEDUC e recursos da escola Dinora.
+                    Alinhamento integral ao currículo SEDUC-SP, com 50 min de aula, metodologias ativas Lemov, detecção de feriados e infraestrutura escolar.
                 </p>
             </div>
-            <div class="d-flex gap-2">
-                <button type="button" class="btn btn-sm btn-dark rounded-pill px-3 py-2 shadow-sm d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#batchModal">
+            <div>
+                <button type="button" class="btn-main rounded-pill px-4 py-2 shadow-sm d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#batchModal">
                     <i class="bi bi-collection-fill text-warning"></i> <span>Gerar Bimestre Inteiro</span>
                 </button>
             </div>
@@ -613,13 +628,13 @@
             <div class="row g-3 mb-4">
                 <!-- Seletor de Ano -->
                 <div class="col-md-6">
-                    <label class="form-label text-muted small"><i class="bi bi-mortarboard-fill me-1 text-primary"></i> Série / Ano do Ensino Médio</label>
+                    <label class="form-label text-muted small"><i class="bi bi-mortarboard me-1 text-primary"></i> Série / Ano do Ensino Médio</label>
                     <div class="row g-2">
                         <div class="col-6">
                             <div class="select-card active d-flex align-items-center gap-3" id="card2Ano" onclick="selectYear('2º Ano (MTEC)')">
                                 <div class="card-icon"><i class="bi bi-mortarboard-fill"></i></div>
                                 <div>
-                                    <strong class="d-block text-dark">2º Ano</strong>
+                                    <strong class="d-block">2º Ano</strong>
                                     <small class="text-muted" style="font-size: 0.73rem;">3 Disciplinas</small>
                                 </div>
                             </div>
@@ -628,7 +643,7 @@
                             <div class="select-card d-flex align-items-center gap-3" id="card3Ano" onclick="selectYear('3º Ano (MTEC)')">
                                 <div class="card-icon"><i class="bi bi-graph-up-arrow"></i></div>
                                 <div>
-                                    <strong class="d-block text-dark">3º Ano</strong>
+                                    <strong class="d-block">3º Ano</strong>
                                     <small class="text-muted" style="font-size: 0.73rem;">6 Disciplinas</small>
                                 </div>
                             </div>
@@ -638,13 +653,13 @@
 
                 <!-- Seletor de Curso -->
                 <div class="col-md-6">
-                    <label class="form-label text-muted small"><i class="bi bi-briefcase-fill me-1 text-primary"></i> Habilitação Técnica</label>
+                    <label class="form-label text-muted small"><i class="bi bi-briefcase me-1 text-primary"></i> Habilitação Técnica</label>
                     <div class="row g-2">
                         <div class="col-6">
                             <div class="select-card active d-flex align-items-center gap-3" id="cardAdm" onclick="selectCourse('Administração')">
                                 <div class="card-icon"><i class="bi bi-building"></i></div>
                                 <div>
-                                    <strong class="d-block text-dark">Administração</strong>
+                                    <strong class="d-block">Administração</strong>
                                     <small class="text-muted" style="font-size: 0.73rem;">Técnico ADM</small>
                                 </div>
                             </div>
@@ -653,7 +668,7 @@
                             <div class="select-card d-flex align-items-center gap-3" id="cardVendas" onclick="selectCourse('Vendas')">
                                 <div class="card-icon"><i class="bi bi-cart-check-fill"></i></div>
                                 <div>
-                                    <strong class="d-block text-dark">Vendas</strong>
+                                    <strong class="d-block">Vendas</strong>
                                     <small class="text-muted" style="font-size: 0.73rem;">Técnico Vendas</small>
                                 </div>
                             </div>
@@ -674,7 +689,7 @@
                 <!-- Populated dynamically -->
             </div>
 
-            <hr class="my-4 border-slate-200">
+            <hr class="my-4 border-slate-200" style="border-color: var(--border-color);">
 
             <!-- Step 3: Tipo / Estilo Metodológico da Aula -->
             <div class="d-flex align-items-center justify-content-between mb-2">
@@ -682,16 +697,16 @@
                     <span class="section-step-badge">3</span>
                     <h2 class="h5 fw-bold mb-0">Estilo Metodológico da Aula</h2>
                 </div>
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle small">Adaptação Inteligente</span>
+                <span class="eyebrow-label"><i class="bi bi-sliders me-1"></i> Adaptação Pedagógica</span>
             </div>
-            <p class="text-muted small mb-3">Escolha o foco pedagógico desta semana para estruturar os 50 minutos de aula de acordo com seu objetivo:</p>
+            <p class="text-muted small mb-3">Escolha o foco pedagógico desta semana para estruturar os 50 minutos de aula:</p>
 
             <div class="row g-2 mb-4">
                 <div class="col-md-3 col-6">
                     <div class="style-card active d-flex flex-column justify-content-between" id="styleInterativa" onclick="selectLessonStyle('interativa')">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-chat-left-dots-fill"></i></div>
-                            <strong class="small text-dark">Interativa</strong>
+                            <strong class="small">Interativa</strong>
                         </div>
                         <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Metodologias ativas, Lemov (Turn & Talk), debates e estudos de casos.</small>
                     </div>
@@ -701,9 +716,9 @@
                     <div class="style-card d-flex flex-column justify-content-between" id="stylePratica" onclick="selectLessonStyle('pratica')">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-tools"></i></div>
-                            <strong class="small text-dark">Prática / Mão na Massa</strong>
+                            <strong class="small">Prática / Laboratório</strong>
                         </div>
-                        <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Simulação na sala técnica, netbooks, planilhas e rotinas de mercado.</small>
+                        <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Simulação na sala técnica, netbooks, planilhas e rotinas reais.</small>
                     </div>
                 </div>
 
@@ -711,7 +726,7 @@
                     <div class="style-card d-flex flex-column justify-content-between" id="styleTradicional" onclick="selectLessonStyle('tradicional')">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-easel-fill"></i></div>
-                            <strong class="small text-dark">Expositiva Dialogada</strong>
+                            <strong class="small">Expositiva Dialogada</strong>
                         </div>
                         <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Fundamentação conceitual, modelagem gradual e exercícios dirigidos.</small>
                     </div>
@@ -721,14 +736,14 @@
                     <div class="style-card d-flex flex-column justify-content-between" id="styleRevisao" onclick="selectLessonStyle('revisao')">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-check2-all"></i></div>
-                            <strong class="small text-dark">Revisão & Feedback</strong>
+                            <strong class="small">Revisão & Feedback</strong>
                         </div>
                         <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Análise de erros (Ache o Erro), ticket de saída e fixação diagnóstica.</small>
                     </div>
                 </div>
             </div>
 
-            <hr class="my-4 border-slate-200">
+            <hr class="my-4 border-slate-200" style="border-color: var(--border-color);">
 
             <!-- Step 4: Informações do Professor, Datas & Feriados SEDUC -->
             <div class="d-flex align-items-center gap-2 mb-3">
@@ -758,7 +773,7 @@
                 <div class="col-md-6">
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <label class="form-label text-primary mb-0"><i class="bi bi-calendar3 me-1"></i> Período de Realização (Calendário)</label>
-                        <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 small fw-semibold" onclick="setCurrentWeekDates()" title="Definir para a semana atual">
+                        <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 small fw-bold" onclick="setCurrentWeekDates()" title="Definir para a semana atual" style="color: var(--gold-accent);">
                             <i class="bi bi-arrow-clockwise me-1"></i> Data Atual
                         </button>
                     </div>
@@ -793,29 +808,29 @@
                         <input class="form-check-input" type="checkbox" role="switch" id="toggleInclusion" onchange="updateLiveSummary()" style="width: 2.2em; height: 1.2em; cursor: pointer;">
                     </div>
                     <div>
-                        <strong class="small d-block text-dark"><i class="bi bi-universal-access-circle me-1 text-teal"></i> Incluir Adaptações Curriculares e Acessibilidade (PEI / Ed. Especial)</strong>
+                        <strong class="small d-block"><i class="bi bi-universal-access-circle me-1" style="color: var(--gold-accent);"></i> Incluir Adaptações Curriculares e Acessibilidade (PEI / Ed. Especial)</strong>
                         <small class="text-muted" style="font-size: 0.78rem;">Insere mediação por pares, materiais com fonte ampliada e flexibilização de tempo na sala técnica.</small>
                     </div>
                 </div>
-                <span class="badge bg-teal text-white bg-dark px-2 py-1 rounded-pill small">Opcional</span>
+                <span class="badge bg-secondary text-white px-2 py-1 rounded-pill small">Opcional</span>
             </div>
 
             <!-- Live Week Topic Preview & Carga Horária -->
             <div class="live-preview-pill d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div>
-                    <span class="badge bg-success text-white px-2 py-1 rounded-pill small me-1"><i class="bi bi-check2-circle"></i> Conteúdo Localizado</span>
-                    <strong class="text-success-emphasis d-block mt-1" id="weekTopicTitle" style="font-size: 0.95rem;">Carregando tema da semana...</strong>
+                    <span class="badge px-2 py-1 rounded-pill small me-1" style="background: rgba(30, 61, 43, 0.12); color: var(--primary);"><i class="bi bi-check2-circle"></i> Conteúdo Localizado</span>
+                    <strong class="d-block mt-1" id="weekTopicTitle" style="font-size: 0.95rem;">Carregando tema da semana...</strong>
                     <div class="text-muted small mt-1" id="weekLessonsCount">4 aulas planejadas de 50 min com infraestrutura escolar</div>
                 </div>
                 <div>
-                    <span class="badge bg-primary text-white px-3 py-2 rounded-pill shadow-sm" id="workloadBadge">
+                    <span class="badge px-3 py-2 rounded-pill shadow-sm" id="workloadBadge" style="background: var(--primary); color: white;">
                         <i class="bi bi-clock-history me-1"></i> Carga: 4 aulas (200 min/semana)
                     </span>
                 </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="d-flex flex-wrap align-items-center gap-2 mt-4 pt-3 border-top">
+            <div class="d-flex flex-wrap align-items-center gap-2 mt-4 pt-3 border-top" style="border-color: var(--border-color);">
                 <button type="button" class="btn-main flex-grow-1" id="btnDownload" onclick="downloadDocument()">
                     <i class="bi bi-file-earmark-word-fill"></i> Baixar Word Oficial (.docx)
                 </button>
@@ -838,8 +853,8 @@
         <section class="app-card no-print py-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center gap-2">
-                    <i class="bi bi-clock-history text-primary fs-5"></i>
-                    <h3 class="h6 fw-bold mb-0 text-dark">Meus Planos Recentes Salvos</h3>
+                    <i class="bi bi-clock-history fs-5" style="color: var(--primary);"></i>
+                    <h3 class="h6 fw-bold mb-0">Meus Planos Recentes Salvos</h3>
                 </div>
                 <button type="button" class="btn btn-sm btn-link text-muted p-0 small text-decoration-none" onclick="clearRecentPlans()">
                     <i class="bi bi-trash3 me-1"></i> Limpar Histórico
@@ -857,8 +872,8 @@
         <section id="previewArea" class="school-paper-preview d-none">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-3 border-bottom no-print">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-primary px-3 py-2 rounded-pill"><i class="bi bi-check2-circle me-1"></i> Modelo Oficial EE. Prof. Dinora Marcondes Gomes</span>
-                    <span class="badge bg-warning text-dark border px-2 py-1 rounded-pill small"><i class="bi bi-pencil-square me-1"></i> Edição Direta Habilitada (Clique no texto para alterar)</span>
+                    <span class="badge px-3 py-2 rounded-pill text-white" style="background: var(--primary);"><i class="bi bi-check2-circle me-1"></i> Modelo Oficial EE. Prof. Dinora Marcondes Gomes</span>
+                    <span class="badge border px-2 py-1 rounded-pill small" style="background: rgba(196, 151, 70, 0.15); color: #8c6317;"><i class="bi bi-pencil-square me-1"></i> Edição Direta Habilitada (Clique no texto para alterar)</span>
                 </div>
                 <div class="d-flex gap-2">
                     <button class="btn btn-sm btn-outline-secondary px-3 py-2 rounded-3" onclick="copyPlanToClipboard()">
@@ -951,13 +966,13 @@
             <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg); background: var(--surface);">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold text-dark" id="seducCalendarModalLabel">
-                        <i class="bi bi-calendar-check-fill text-primary me-2"></i> Calendário Escolar SEDUC-SP 2026 (200 Dias Letivos)
+                        <i class="bi bi-calendar-check-fill me-2" style="color: var(--primary);"></i> Calendário Escolar SEDUC-SP 2026 (200 Dias Letivos)
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body py-4">
                     <!-- Bimestres -->
-                    <h6 class="fw-bold text-primary mb-2"><i class="bi bi-clock-history me-1"></i> Estrutura dos 4 Bimestres (2026):</h6>
+                    <h6 class="fw-bold mb-2" style="color: var(--primary);"><i class="bi bi-clock-history me-1"></i> Estrutura dos 4 Bimestres (2026):</h6>
                     <div class="row g-2 mb-4">
                         <div class="col-md-3 col-6">
                             <div class="p-2 border rounded-3 bg-light">
@@ -986,7 +1001,7 @@
                     </div>
 
                     <!-- Feriados e Recessos -->
-                    <h6 class="fw-bold text-primary mb-2"><i class="bi bi-cup-hot-fill me-1"></i> Principais Feriados e Recessos Letivos:</h6>
+                    <h6 class="fw-bold mb-2" style="color: var(--primary);"><i class="bi bi-cup-hot-fill me-1"></i> Principais Feriados e Recessos Letivos:</h6>
                     <ul class="small text-muted mb-4 ps-3" style="line-height: 1.6;">
                         <li><strong>16 a 18/02:</strong> Carnaval e Quarta-feira de Cinzas</li>
                         <li><strong>03/04:</strong> Sexta-feira Santa (Paixão de Cristo)</li>
@@ -1001,7 +1016,7 @@
                     </ul>
 
                     <!-- Avaliações Externas -->
-                    <h6 class="fw-bold text-primary mb-2"><i class="bi bi-pencil-square me-1"></i> Avaliações Externas SEDUC-SP:</h6>
+                    <h6 class="fw-bold mb-2" style="color: var(--primary);"><i class="bi bi-pencil-square me-1"></i> Avaliações Externas SEDUC-SP:</h6>
                     <ul class="small text-muted mb-0 ps-3" style="line-height: 1.6;">
                         <li><strong>ADE (Avaliação Diagnóstica de Entrada):</strong> Fev/Março</li>
                         <li><strong>Prova Paulista (1º, 2º, 3º e 4º Bimestres):</strong> Finais de cada bimestre</li>
@@ -1009,7 +1024,7 @@
                     </ul>
                 </div>
                 <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendido</button>
+                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Entendido</button>
                 </div>
             </div>
         </div>
@@ -1021,7 +1036,7 @@
             <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg); background: var(--surface);">
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold text-dark" id="batchModalLabel">
-                        <i class="bi bi-collection-fill text-primary me-2"></i> Gerar Plano por Bimestre / Lote
+                        <i class="bi bi-collection-fill me-2" style="color: var(--primary);"></i> Gerar Plano por Bimestre / Lote
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -1062,7 +1077,7 @@
 
     <!-- Toast Notification -->
     <div id="toastMessage" class="toast-custom">
-        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+        <i class="bi bi-check-circle-fill fs-5" style="color: var(--gold-accent);"></i>
         <span id="toastText">Plano de aula copiado com sucesso!</span>
     </div>
 
@@ -1132,7 +1147,7 @@
         let currentCourse = "Administração";
         let currentDiscipline = "Introdução à Administração, Legislação e Pessoas";
         let currentLessonStyle = "interativa";
-        let currentReduction = 0; // Number of classes reduced due to holiday
+        let currentReduction = 0;
         let currentDetectedEvent = null;
 
         // --- Theme Toggle (Dark Mode / Light Mode) ---
@@ -1229,7 +1244,6 @@
             for (const ev of SEDUC_EVENTS_2026) {
                 const evS = new Date(ev.start);
                 const evE = new Date(ev.end);
-                // Check date overlap
                 if (s <= evE && e >= evS) {
                     return ev;
                 }
@@ -1252,28 +1266,28 @@
             if (detected) {
                 if (detected.type === 'feriado') {
                     banner.className = 'seduc-event-banner feriado';
-                    icon.className = 'bi bi-calendar-x-fill text-warning fs-5';
+                    icon.className = 'bi bi-calendar-x-fill fs-5';
                     title.textContent = `Feriado / Recesso Escolar: ${detected.title}`;
                     subtitle.textContent = `Semana com interrupção letiva. Sugestão: carga horária ajustada (-1 aula de 50 min).`;
                     actionContainer.innerHTML = `
-                        <span class="badge bg-warning text-dark px-2 py-1 rounded-pill small fw-bold">
+                        <span class="badge text-white px-2 py-1 rounded-pill small fw-bold" style="background: var(--gold-accent);">
                             <i class="bi bi-dash-circle me-1"></i> -1 Aula (-50 min)
                         </span>`;
                     currentReduction = 1;
                 } else if (detected.type === 'avaliacao') {
                     banner.className = 'seduc-event-banner avaliacao';
-                    icon.className = 'bi bi-pencil-square text-primary fs-5';
+                    icon.className = 'bi bi-pencil-square fs-5';
                     title.textContent = `Avaliação Externa SEDUC: ${detected.title}`;
                     subtitle.textContent = `Período oficial de aplicação e diagnósticos da SEDUC-SP &bull; Foco em revisão e apoio pedagógico.`;
                     actionContainer.innerHTML = `
-                        <span class="badge bg-primary text-white px-2 py-1 rounded-pill small fw-bold">
+                        <span class="badge text-white px-2 py-1 rounded-pill small fw-bold" style="background: var(--primary);">
                             <i class="bi bi-file-earmark-check me-1"></i> Semana de Prova
                         </span>`;
                     currentReduction = 0;
                 }
             } else {
                 banner.className = 'seduc-event-banner regular';
-                icon.className = 'bi bi-check-circle-fill text-success fs-5';
+                icon.className = 'bi bi-check-circle-fill text-muted fs-5';
                 title.textContent = 'Semana Letiva Regular (5 dias úteis)';
                 subtitle.textContent = 'Sem feriados ou interrupções letivas nesta semana &bull; Carga horária integral dos 200 dias letivos.';
                 actionContainer.innerHTML = '';
@@ -1326,14 +1340,14 @@
                     <div class="recent-card h-100 d-flex flex-column justify-content-between">
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="badge bg-primary-subtle text-primary" style="font-size: 0.7rem;">Semana ${p.semana}</span>
+                                <span class="badge" style="background: rgba(30, 61, 43, 0.1); color: var(--primary); font-size: 0.7rem;">Semana ${p.semana}</span>
                                 <small class="text-muted" style="font-size: 0.7rem;">${p.data_salva}</small>
                             </div>
                             <strong class="d-block small text-truncate" title="${p.disciplina}">${p.disciplina}</strong>
                             <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;">${p.turma} &bull; ${p.periodo}</small>
                         </div>
-                        <div class="mt-2 pt-2 border-top d-flex gap-1">
-                            <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2 flex-grow-1" style="font-size: 0.75rem;" onclick="loadRecentPlan('${p.ano}', '${p.curso}', '${p.disciplina}', '${p.semana}', '${p.estilo || 'interativa'}')">
+                        <div class="mt-2 pt-2 border-top d-flex gap-1" style="border-color: var(--border-color);">
+                            <button type="button" class="btn btn-sm btn-outline-dark py-1 px-2 flex-grow-1" style="font-size: 0.75rem; border-color: var(--border-color);" onclick="loadRecentPlan('${p.ano}', '${p.curso}', '${p.disciplina}', '${p.semana}', '${p.estilo || 'interativa'}')">
                                 <i class="bi bi-arrow-repeat me-1"></i> Abrir
                             </button>
                         </div>
@@ -1363,7 +1377,7 @@
             showToast("Histórico de planos limpo!");
         }
 
-        // --- Pedagogical Strategy Engine (Adapts by Lesson Style, Infrastructure & SEDUC Events) ---
+        // --- Pedagogical Strategy Engine ---
         function buildCoherentDevelopment(discipline, tema, withInclusion = false, lessonStyle = "interativa", eventInfo = null) {
             const discLower = (discipline || "").toLowerCase();
             const temaClean = tema || "o conteúdo previsto";
@@ -1520,7 +1534,7 @@
             const workloadBadge = document.getElementById('workloadBadge');
             
             const firstLine = data.conteudo.split('\n')[0] || `Semana ${week}`;
-            topicBox.innerHTML = `<span class="text-primary fw-bold">${currentDiscipline}</span> &bull; ${firstLine}`;
+            topicBox.innerHTML = `<span class="fw-bold" style="color: var(--primary);">${currentDiscipline}</span> &bull; ${firstLine}`;
             
             // Carga Horária com Ajuste de Feriado
             const list = (CURRICULUM_MATRIX[currentYear] && CURRICULUM_MATRIX[currentYear][currentCourse]) || [];
@@ -1531,7 +1545,7 @@
 
             const styleLabels = {
                 'interativa': 'Metodologias Ativas',
-                'pratica': 'Mão na Massa / Sala Técnica',
+                'pratica': 'Laboratório / Sala Técnica',
                 'tradicional': 'Expositiva Dialogada',
                 'revisao': 'Revisão & Feedback'
             };

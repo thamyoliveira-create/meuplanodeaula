@@ -11,10 +11,17 @@ import os
 import csv
 import pathlib
 import sys
-import traceback
 from typing import Union, List, Dict, Any
 
+import logging
+
 from flask import Flask, request, send_file, jsonify
+
+try:
+    from flask_limiter import Limiter
+except Exception:  # pragma: no cover - fallback se a lib nao instalar
+    Limiter = None
+
 from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -34,6 +41,42 @@ except Exception:
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
+
+logging.basicConfig(level=logging.INFO)
+
+
+def _client_ip() -> str:
+    """IP real do cliente (Vercel fica atras de proxy e manda X-Forwarded-For)."""
+    xff = request.headers.get("X-Forwarded-For", "")
+    return xff.split(",")[0].strip() or (request.remote_addr or "anon")
+
+
+# Rate limit best-effort por IP (memoria; em serverless reseta a cada cold start,
+# mas ja segura um abusador batendo num mesmo container quente).
+if Limiter is not None:
+    limiter = Limiter(
+        key_func=_client_ip,
+        app=app,
+        default_limits=["120 per minute"],
+        storage_uri="memory://",
+    )
+else:
+    class _NoLimiter:
+        def limit(self, *_a, **_k):
+            def deco(fn):
+                return fn
+            return deco
+
+    limiter = _NoLimiter()
+
+
+@app.after_request
+def _security_headers(resp):
+    resp.headers["X-Content-Type-Options"] = "nosniff"
+    resp.headers["X-Frame-Options"] = "DENY"
+    resp.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    resp.headers["Content-Security-Policy"] = "frame-ancestors 'none'"
+    return resp
 
 
 # --- Pedagogical Engine: 50-min lesson, Lesson Styles, Lemov & Real School Resources ---
@@ -263,6 +306,7 @@ def health():
 
 @app.route("/api/preview-plan", methods=["POST"])
 @app.route("/preview-plan", methods=["POST"])
+@limiter.limit("20 per minute; 200 per hour")
 def preview_plan():
     try:
         teacher = request.form.get("teacher", "").strip()
@@ -277,12 +321,14 @@ def preview_plan():
         filtered = filter_rows(rows, week, discipline)
         lesson_data = compile_lesson_data(filtered, teacher, period, classroom, discipline, week, lesson_style, with_inclusion)
         return jsonify({"success": True, "data": lesson_data})
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
+    except Exception:
+        app.logger.exception("preview_plan failed")
+        return jsonify({"success": False, "error": "Não foi possível gerar a prévia. Tente novamente."}), 500
 
 
 @app.route("/api/generate", methods=["POST"])
 @app.route("/generate", methods=["POST"])
+@limiter.limit("15 per minute; 150 per hour")
 def generate():
     try:
         teacher = request.form.get("teacher", "").strip() or "Professor"
@@ -312,10 +358,10 @@ def generate():
             download_name=filename,
             mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
-    except Exception as e:
-        err_msg = traceback.format_exc()
-        return f"Erro ao gerar documento: {str(e)}\n\nDetalhes:\n{err_msg}", 500
+    except Exception:
+        app.logger.exception("generate failed")
+        return jsonify({"error": "Não foi possível gerar o documento. Tente novamente."}), 500
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1", port=5000)
+    app.run(debug=False, host="127.0.0.1", port=5000)

@@ -699,10 +699,10 @@
                 </div>
                 <span class="eyebrow-label"><i class="bi bi-sliders me-1"></i> Adaptação Pedagógica</span>
             </div>
-            <p class="text-muted small mb-3">Escolha o foco pedagógico desta semana para estruturar os 50 minutos de aula:</p>
+            <p class="text-muted small mb-3">Marque <strong>um ou mais</strong> formatos usados na semana. Pode combinar &mdash; ex.: Interativa + Laboratório (AVA), quando pelo menos uma aula é no laboratório pra resolver o AVA.</p>
 
             <div class="row g-2 mb-4">
-                <div class="col-md-3 col-6">
+                <div class="col-md col-6">
                     <div class="style-card active d-flex flex-column justify-content-between" id="styleInterativa" onclick="selectLessonStyle('interativa')">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-chat-left-dots-fill"></i></div>
@@ -712,17 +712,27 @@
                     </div>
                 </div>
 
-                <div class="col-md-3 col-6">
+                <div class="col-md col-6">
                     <div class="style-card d-flex flex-column justify-content-between" id="stylePratica" onclick="selectLessonStyle('pratica')">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-tools"></i></div>
-                            <strong class="small">Prática / Laboratório</strong>
+                            <strong class="small">Prática</strong>
                         </div>
                         <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Simulação na sala técnica, netbooks, planilhas e rotinas reais.</small>
                     </div>
                 </div>
 
-                <div class="col-md-3 col-6">
+                <div class="col-md col-6">
+                    <div class="style-card d-flex flex-column justify-content-between" id="styleLaboratorio" onclick="selectLessonStyle('laboratorio')">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-pc-display"></i></div>
+                            <strong class="small">Laboratório (AVA)</strong>
+                        </div>
+                        <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Aula no laboratório para resolver as atividades do AVA, com apoio individual.</small>
+                    </div>
+                </div>
+
+                <div class="col-md col-6">
                     <div class="style-card d-flex flex-column justify-content-between" id="styleTradicional" onclick="selectLessonStyle('tradicional')">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-easel-fill"></i></div>
@@ -732,7 +742,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3 col-6">
+                <div class="col-md col-6">
                     <div class="style-card d-flex flex-column justify-content-between" id="styleRevisao" onclick="selectLessonStyle('revisao')">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-check2-all"></i></div>
@@ -1165,7 +1175,8 @@
         let currentYear = "2º Ano (MTEC)";
         let currentCourse = "Administração";
         let currentDiscipline = "Introdução à Administração, Legislação e Pessoas";
-        let currentLessonStyle = "interativa";
+        let currentLessonStyles = ["interativa"];
+        const STYLE_ORDER = ['tradicional', 'interativa', 'pratica', 'laboratorio', 'revisao'];
         let currentReduction = 0;
         let currentDetectedEvent = null;
 
@@ -1196,18 +1207,30 @@
         }
 
         // --- Lesson Style Selection ---
+        const STYLE_CARD_ID = {
+            'interativa': 'styleInterativa',
+            'pratica': 'stylePratica',
+            'laboratorio': 'styleLaboratorio',
+            'tradicional': 'styleTradicional',
+            'revisao': 'styleRevisao'
+        };
+
+        function refreshStyleCards() {
+            Object.entries(STYLE_CARD_ID).forEach(([st, id]) => {
+                const el = document.getElementById(id);
+                if (el) el.classList.toggle('active', currentLessonStyles.includes(st));
+            });
+        }
+
         function selectLessonStyle(style) {
-            currentLessonStyle = style;
-            document.querySelectorAll('.style-card').forEach(c => c.classList.remove('active'));
-            const map = {
-                'interativa': 'styleInterativa',
-                'pratica': 'stylePratica',
-                'tradicional': 'styleTradicional',
-                'revisao': 'styleRevisao'
-            };
-            if (map[style]) {
-                document.getElementById(map[style]).classList.add('active');
+            const i = currentLessonStyles.indexOf(style);
+            if (i === -1) {
+                currentLessonStyles.push(style);
+            } else if (currentLessonStyles.length > 1) {
+                currentLessonStyles.splice(i, 1);
             }
+            currentLessonStyles.sort((a, b) => STYLE_ORDER.indexOf(a) - STYLE_ORDER.indexOf(b));
+            refreshStyleCards();
             updateLiveSummary();
         }
 
@@ -1327,7 +1350,7 @@
                     semana: data.semana,
                     periodo: data.periodo,
                     turma: data.turma,
-                    estilo: currentLessonStyle,
+                    estilo: currentLessonStyles.join(","),
                     data_salva: new Date().toLocaleDateString('pt-BR')
                 });
                 if (list.length > 8) list = list.slice(0, 8);
@@ -1379,7 +1402,10 @@
         function loadRecentPlan(year, course, disc, week, style = 'interativa') {
             selectYear(year);
             selectCourse(course);
-            selectLessonStyle(style);
+            currentLessonStyles = String(style).split(',').map(x => x.trim()).filter(x => PEDAGOGY_VARIANTS[x]);
+            if (!currentLessonStyles.length) currentLessonStyles = ['interativa'];
+            currentLessonStyles.sort((a, b) => STYLE_ORDER.indexOf(a) - STYLE_ORDER.indexOf(b));
+            refreshStyleCards();
             currentDiscipline = disc;
             document.querySelectorAll('.discipline-chip').forEach(c => {
                 c.classList.toggle('active', c.innerText.trim().includes(disc));
@@ -1487,14 +1513,41 @@
                     "Avaliação pelo desempenho no 'Faça Agora' comparado ao 'Ticket de Saída' da mesma aula, medindo o ganho no período."
                 ],
                 recursos: "Quadro branco, TV para projeção de exercícios diagnósticos, netbooks para consulta de resumos e fichas de avaliação formativa"
+            },
+            laboratorio: {
+                inicio: [
+                    "Acolhimento no laboratório de informática, retomada rápida do que precisa estar concluído no AVA sobre {T} e verificação de acesso de cada aluno.",
+                    "Acolhimento e orientação objetiva: qual atividade do AVA resolver hoje ({T}), o prazo e como pedir ajuda durante a aula.",
+                    "Acolhimento e demonstração pelo professor, na TV, de uma questão do tipo que aparece no AVA sobre {T}, resolvida passo a passo."
+                ],
+                dev: [
+                    "No laboratório, cada aluno acessa o AVA (Ambiente Virtual de Aprendizagem - SEDUC-SP) e resolve as atividades de {T}. O professor circula dando apoio individual, esclarece dúvidas pontuais e acompanha o progresso pela plataforma.",
+                    "Resolução das tarefas do AVA sobre {T}, em duplas produtivas quando possível; o professor prioriza o atendimento a quem está mais atrás e anota as dúvidas recorrentes para retomar com a turma.",
+                    "Trabalho individual no AVA com metas por bloco (checkpoint a cada 15 min): o professor confere a conclusão de cada parte antes de a turma seguir para a seguinte."
+                ],
+                fim: [
+                    "Conferência das conclusões no AVA, registro de quem finalizou e combinação de prazo e plantão para quem não terminou.",
+                    "Retomada coletiva das duas questões que a turma mais errou no AVA e orientação de estudo para fechar as pendências.",
+                    "Registro do percentual concluído pela turma e indicação individual do que falta para cada aluno."
+                ],
+                aval: [
+                    "Avaliação pelo percentual de conclusão e pelo desempenho nas atividades do AVA, com registro do acompanhamento individual feito durante a aula.",
+                    "Avaliação processual: engajamento na resolução, autonomia no uso da plataforma e conclusão das tarefas do AVA no prazo."
+                ],
+                recursos: "Laboratório de informática, acesso ao AVA (Ambiente Virtual de Aprendizagem - SEDUC-SP), netbooks/computadores e TV para exemplos"
             }
         };
 
-        function buildCoherentDevelopment(discipline, tema, withInclusion = false, lessonStyle = "interativa", eventInfo = null, week = 1) {
+        const STYLE_LABEL = {
+            interativa: 'Interativa', pratica: 'Prática', laboratorio: 'Laboratório (AVA)',
+            tradicional: 'Expositiva dialogada', revisao: 'Revisão e feedback'
+        };
+
+        function buildCoherentDevelopment(discipline, tema, withInclusion = false, lessonStyles = "interativa", eventInfo = null, week = 1) {
             const temaClean = tema || "o conteúdo previsto";
-            const v = PEDAGOGY_VARIANTS[lessonStyle] || PEDAGOGY_VARIANTS.interativa;
-            const seed = (parseInt(week, 10) || 1) - 1;
-            const pick = (arr) => arr[((seed % arr.length) + arr.length) % arr.length];
+            let styles = (Array.isArray(lessonStyles) ? lessonStyles : [lessonStyles]).filter(s => PEDAGOGY_VARIANTS[s]);
+            if (!styles.length) styles = ["interativa"];
+            const baseSeed = (parseInt(week, 10) || 1) - 1;
 
             let inclusionText = "";
             let inclusionRecurso = "";
@@ -1512,17 +1565,37 @@
                 }
             }
 
-            const estrategias =
-                `• Momento Inicial (5 a 10 min): ${pick(v.inicio).replace('{T}', temaClean)}\n\n` +
-                `• Desenvolvimento (Mediação e Prática - 30 a 35 min): ${pick(v.dev).replace('{T}', temaClean)}\n\n` +
-                `• Fechamento (5 a 10 min): ${pick(v.fim).replace('{T}', temaClean)}` +
-                inclusionText + eventContext;
-
-            return {
-                estrategias,
-                recursos: `${v.recursos}${inclusionRecurso}.`,
-                avaliacao: pick(v.aval)
+            const blockFor = (style, offset) => {
+                const v = PEDAGOGY_VARIANTS[style];
+                const seed = baseSeed + offset;
+                const pk = (arr) => arr[((seed % arr.length) + arr.length) % arr.length];
+                return {
+                    estr:
+                        `• Momento Inicial (5 a 10 min): ${pk(v.inicio).replace('{T}', temaClean)}\n\n` +
+                        `• Desenvolvimento (Mediação e Prática - 30 a 35 min): ${pk(v.dev).replace('{T}', temaClean)}\n\n` +
+                        `• Fechamento (5 a 10 min): ${pk(v.fim).replace('{T}', temaClean)}`,
+                    rec: v.recursos,
+                    av: pk(v.aval)
+                };
             };
+
+            if (styles.length === 1) {
+                const b = blockFor(styles[0], 0);
+                return {
+                    estrategias: b.estr + inclusionText + eventContext,
+                    recursos: `${b.rec}${inclusionRecurso}.`,
+                    avaliacao: b.av
+                };
+            }
+
+            const blocks = styles.map((st, i) => ({ st, ...blockFor(st, i) }));
+            const estrategias =
+                "As aulas da semana combinam mais de um formato:\n\n" +
+                blocks.map(b => `▸ ${STYLE_LABEL[b.st] || b.st}\n${b.estr}`).join("\n\n") +
+                inclusionText + eventContext;
+            const recursos = [...new Set(blocks.map(b => b.rec))].join("; ") + inclusionRecurso + ".";
+            const avaliacao = blocks.map(b => `${STYLE_LABEL[b.st] || b.st}: ${b.av}`).join("\n");
+            return { estrategias, recursos, avaliacao };
         }
 
         function selectYear(year) {
@@ -1635,14 +1708,15 @@
 
             const styleLabels = {
                 'interativa': 'Metodologias Ativas',
-                'pratica': 'Laboratório / Sala Técnica',
+                'pratica': 'Prática / Sala Técnica',
+                'laboratorio': 'Laboratório / AVA',
                 'tradicional': 'Expositiva Dialogada',
                 'revisao': 'Revisão & Feedback'
             };
 
             const reductionNote = currentReduction > 0 ? ' (Feriado na semana: -1 aula)' : '';
             const lessonLines = data.conteudo.split('\n').filter(l => l.startsWith('•'));
-            lessonsCount.textContent = `${lessonLines.length || finalAulas} aulas planejadas de 50 min (${styleLabels[currentLessonStyle]})${reductionNote}`;
+            lessonsCount.textContent = `${lessonLines.length || finalAulas} aulas planejadas de 50 min (${currentLessonStyles.map(x => styleLabels[x] || x).join(" + ")})${reductionNote}`;
             workloadBadge.innerHTML = `<i class="bi bi-clock-history me-1"></i> Carga: ${finalAulas} aulas (${totalMin} min/semana)`;
         }
 
@@ -1697,7 +1771,7 @@
                 habStr += `\n\nHabilidades Socioemocionais:\n${Array.from(habSocio).join('\n')}`;
             }
 
-            const pedagogy = buildCoherentDevelopment(currentDiscipline, temaStr, withInclusion, currentLessonStyle, currentDetectedEvent, week);
+            const pedagogy = buildCoherentDevelopment(currentDiscipline, temaStr, withInclusion, currentLessonStyles, currentDetectedEvent, week);
 
             return {
                 professor: teacher,

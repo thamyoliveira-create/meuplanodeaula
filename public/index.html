@@ -764,9 +764,14 @@
 
                 <div class="col-md-6">
                     <label for="weekSelect" class="form-label"><i class="bi bi-calendar-week-fill me-1 text-primary"></i> Semana do Curso</label>
-                    <select class="form-select" id="weekSelect" onchange="updateLiveSummary()">
-                        <!-- Populated dynamically (Semana 1 a 28) -->
-                    </select>
+                    <div class="d-flex gap-2">
+                        <select class="form-select" id="weekSelect" onchange="updateLiveSummary()">
+                            <!-- Populated dynamically (Semana 1 a 28) -->
+                        </select>
+                        <button type="button" class="btn btn-outline-secondary flex-shrink-0" onclick="nextWeek()" title="Avança uma semana (e os dias) e já gera o plano">
+                            <i class="bi bi-arrow-right-short"></i> Próxima
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Calendário Interativo para Escolha dos Dias -->
@@ -1084,8 +1089,22 @@
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Load Complete Curriculum Dataset -->
-    <script src="/curriculum_data.js"></script>
+    <!-- A base completa do currículo (~2 MB) é carregada sob demanda, não bloqueia a página. -->
+    <script>
+        let _curricPromise = null;
+        function ensureCurriculumLoaded() {
+            if (window.CURRICULUM_DATA && Array.isArray(window.CURRICULUM_DATA)) return Promise.resolve();
+            if (_curricPromise) return _curricPromise;
+            _curricPromise = new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = '/curriculum_data.js';
+                s.onload = () => resolve();
+                s.onerror = () => { _curricPromise = null; reject(new Error('curriculo')); };
+                document.head.appendChild(s);
+            });
+            return _curricPromise;
+        }
+    </script>
 
     <script>
         // --- SEDUC-SP 2026 Official Holidays & External Assessment Database ---
@@ -1378,9 +1397,104 @@
         }
 
         // --- Pedagogical Strategy Engine ---
-        function buildCoherentDevelopment(discipline, tema, withInclusion = false, lessonStyle = "interativa", eventInfo = null) {
-            const discLower = (discipline || "").toLowerCase();
+        // Fragmentos alternativos por estilo. A escolha é determinística pela semana
+        // (a mesma semana sempre gera o mesmo texto; semanas seguidas variam).
+        const PEDAGOGY_VARIANTS = {
+            interativa: {
+                inicio: [
+                    "Acolhimento e um 'Gancho Inicial' (Hook) na TV, com um vídeo ou case de mercado sobre {T}, para despertar o interesse da turma.",
+                    "Acolhimento e uma pergunta provocadora projetada na TV sobre {T}; a turma levanta hipóteses antes de qualquer explicação.",
+                    "Acolhimento e uma manchete ou dado real de mercado sobre {T} exibido na TV, com a turma reagindo em uma frase cada."
+                ],
+                dev: [
+                    "Explanação dialogada pelo professor com apoio da TV. Em seguida, na sala especializada ou nos netbooks, a técnica 'Vire e Converse' (Turn and Talk) em duplas para debater e formular soluções práticas.",
+                    "Roteiro guiado pelo professor com apoio da TV. Depois, os alunos se organizam em pequenos grupos (Aprendizagem entre Pares) para resolver um desafio aplicado, com o professor circulando e provocando o raciocínio.",
+                    "Mini-exposição pelo professor e, na sequência, um estudo de caso curto analisado em duplas: cada dupla apresenta uma decisão e a justificativa técnica para a turma."
+                ],
+                fim: [
+                    "Compartilhamento das propostas das duplas, síntese do professor no quadro branco e alinhamento com as práticas reais do mercado.",
+                    "Rodada rápida de conclusões ('o que mudou no que eu pensava'), sistematização no quadro e indicação do que observar até a próxima aula.",
+                    "Fechamento com um 'Ticket de Saída' de 3 minutos e devolutiva imediata dos pontos que a turma ainda precisa reforçar."
+                ],
+                aval: [
+                    "Avaliação processual, com base na participação nas discussões, na clareza da argumentação técnica e na produção em equipe.",
+                    "Avaliação formativa por observação: qualidade das perguntas feitas, aplicação dos conceitos no caso analisado e colaboração na dupla/grupo."
+                ],
+                recursos: "Quadro branco, TV para exibição de cases e campanhas, netbooks para pesquisas e propostas, sala especializada do curso técnico para dinâmicas e auditório para apresentações"
+            },
+            pratica: {
+                inicio: [
+                    "Acolhimento e apresentação da missão prática da aula na TV/quadro branco, contextualizando uma situação real de mercado sobre {T}.",
+                    "Acolhimento e demonstração rápida, pelo professor, do procedimento que a turma vai executar sobre {T}, deixando o resultado esperado à vista.",
+                    "Acolhimento e leitura conjunta do 'briefing' da tarefa prática de {T}: o que entregar, em quanto tempo e com quais critérios."
+                ],
+                dev: [
+                    "Na sala especializada e nos netbooks, os alunos executam uma simulação das rotinas corporativas (propostas comerciais, planilhas de cálculo ou documentos organizacionais). O professor circula aplicando a 'Prática Guiada'.",
+                    "Trabalho em estações (rodízio): em cada ponto os alunos realizam uma etapa do processo (levantamento, cálculo, redação do documento). O professor acompanha os erros mais comuns em cada estação.",
+                    "Produção individual nos netbooks a partir de um modelo empresarial fornecido; o professor faz devolutivas curtas de bancada enquanto a turma trabalha."
+                ],
+                fim: [
+                    "Validação das entregas práticas, arquivamento ou envio das produções e síntese dos procedimentos técnicos realizados.",
+                    "Troca de trabalhos entre colegas para conferência com uma lista de checagem, seguida de ajustes finais e salvamento do arquivo.",
+                    "Apresentação relâmpago de duas ou três produções, comentário técnico do professor e registro dos pontos a melhorar."
+                ],
+                aval: [
+                    "Avaliação de desempenho prático: precisão na execução, organização dos arquivos nos netbooks e postura profissional.",
+                    "Avaliação por rubrica da entrega prática (completude, correção técnica e apresentação), com autoavaliação do aluno ao final."
+                ],
+                recursos: "Sala especializada do curso técnico para dinâmicas práticas, netbooks escolares para planilhas e sistemas, TV para instruções, formulários/modelos empresariais e quadro branco"
+            },
+            tradicional: {
+                inicio: [
+                    "Acolhimento e ativação prévia com uma pergunta conceitual na TV/quadro branco para situar a turma em relação a {T}.",
+                    "Acolhimento e retomada rápida da aula anterior, conectando o que já foi visto ao conteúdo de {T} desta aula.",
+                    "Acolhimento e apresentação dos objetivos da aula sobre {T} na lousa, deixando claro o que a turma deve saber ao final."
+                ],
+                dev: [
+                    "Aula expositiva dialogada com apoio da TV e registros no quadro. Demonstração dos conceitos pela 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz) e, depois, exercícios dirigidos de fixação no caderno/netbooks.",
+                    "Exposição em blocos curtos: a cada conceito, o professor resolve um exemplo na lousa e a turma resolve um parecido em seguida, com verificação imediata.",
+                    "Explanação com esquema no quadro e um exemplo resolvido passo a passo; na sequência, lista dirigida em ordem crescente de dificuldade, corrigida ao longo da aula."
+                ],
+                fim: [
+                    "Correção coletiva dos principais pontos na lousa, esclarecimento de dúvidas conceituais e sistematização final.",
+                    "Resumo em tópicos construído com a turma no quadro e indicação dos exercícios para consolidar em casa.",
+                    "Verificação oral rápida ('me explique com suas palavras') com três alunos e recado dos pontos que serão retomados."
+                ],
+                aval: [
+                    "Avaliação formativa e contínua: atenção, resolução correta dos exercícios dirigidos e compreensão dos conceitos fundamentais.",
+                    "Avaliação pela correção da lista dirigida e por uma questão-síntese ao final da aula, registrada no caderno."
+                ],
+                recursos: "Quadro branco, TV para exibição de esquemas e conceitos teóricos, apostilas, cadernos e folhas de exercícios dirigidos"
+            },
+            revisao: {
+                inicio: [
+                    "Acolhimento e técnica 'Faça Agora' (Do Now): uma questão diagnóstica rápida no quadro/TV sobre os tópicos de {T}.",
+                    "Acolhimento e um quiz relâmpago de 5 perguntas sobre {T} para mapear, ali mesmo, o que a turma já domina e o que não.",
+                    "Acolhimento e retomada dos erros mais frequentes da última avaliação envolvendo {T}, listados na lousa."
+                ],
+                dev: [
+                    "Técnica 'Ache o Erro' (Find the Mistake) na TV: os alunos identificam e corrigem falhas em cenários organizacionais simulados, com atendimento individualizado do professor.",
+                    "Resolução comentada de questões-modelo em duplas, alternando quem explica; o professor recolhe as dúvidas recorrentes e resolve no quadro.",
+                    "Estações de revisão por tópico: a turma circula resolvendo blocos curtos e confere o gabarito ao final de cada bloco, com apoio dos netbooks."
+                ],
+                fim: [
+                    "'Ticket de Saída' (Exit Ticket) de 3 minutos para checar retenção e diagnosticar a aprendizagem da turma.",
+                    "Lista pessoal de 'o que ainda preciso revisar' feita por cada aluno, recolhida pelo professor para orientar a próxima aula.",
+                    "Devolutiva coletiva rápida dos acertos e erros do bloco e combinação do foco de estudo até a prova."
+                ],
+                aval: [
+                    "Avaliação diagnóstica e formativa: superação de dúvidas recorrentes, identificação de erros conceituais e evolução individual.",
+                    "Avaliação pelo desempenho no 'Faça Agora' comparado ao 'Ticket de Saída' da mesma aula, medindo o ganho no período."
+                ],
+                recursos: "Quadro branco, TV para projeção de exercícios diagnósticos, netbooks para consulta de resumos e fichas de avaliação formativa"
+            }
+        };
+
+        function buildCoherentDevelopment(discipline, tema, withInclusion = false, lessonStyle = "interativa", eventInfo = null, week = 1) {
             const temaClean = tema || "o conteúdo previsto";
+            const v = PEDAGOGY_VARIANTS[lessonStyle] || PEDAGOGY_VARIANTS.interativa;
+            const seed = (parseInt(week, 10) || 1) - 1;
+            const pick = (arr) => arr[((seed % arr.length) + arr.length) % arr.length];
 
             let inclusionText = "";
             let inclusionRecurso = "";
@@ -1398,41 +1512,17 @@
                 }
             }
 
-            // 1. Aula Prática & Mão na Massa
-            if (lessonStyle === "pratica") {
-                return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e apresentação da missão prática da aula projetada na TV/quadro branco, contextualizando uma situação real de mercado sobre ${temaClean}.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Na sala especializada do curso técnico e utilizando os netbooks, os alunos realizam uma simulação prática das rotinas corporativas (como elaboração de propostas comerciais, planilhas técnicas de cálculo ou confecção de documentos organizacionais). O professor circula orientando e aplicando a técnica de 'Prática Guiada'.\n\n• Fechamento (5 a 10 min): Validação das entregas práticas, arquivamento/envio das produções e síntese dos procedimentos técnicos realizados.${inclusionText}${eventContext}`,
-                    recursos: `Sala especializada do curso técnico para dinâmicas práticas, netbooks escolares para planilhas e sistemas, TV para instruções, formulários/modelos empresariais e quadro branco${inclusionRecurso}.`,
-                    avaliacao: `Avaliação processual e de desempenho prático, considerando a precisão na execução das tarefas, a organização nos netbooks e a postura profissional.`
-                };
-            }
+            const estrategias =
+                `• Momento Inicial (5 a 10 min): ${pick(v.inicio).replace('{T}', temaClean)}\n\n` +
+                `• Desenvolvimento (Mediação e Prática - 30 a 35 min): ${pick(v.dev).replace('{T}', temaClean)}\n\n` +
+                `• Fechamento (5 a 10 min): ${pick(v.fim).replace('{T}', temaClean)}` +
+                inclusionText + eventContext;
 
-            // 2. Aula Tradicional & Expositiva Estruturada
-            else if (lessonStyle === "tradicional") {
-                return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e ativação prévia com pergunta conceitual projetada na TV/quadro branco para situar a turma em relação a ${temaClean}.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Aula expositiva dialogada pelo professor com apoio da TV e registros no quadro branco. Demonstração detalhada dos conceitos através da 'Modelagem Gradual' (Eu Faço, Nós Fazemos, Você Faz). Em seguida, os alunos realizam individualmente exercícios dirigidos de fixação no caderno/netbooks.\n\n• Fechamento (5 a 10 min): Correção coletiva dos principais pontos na lousa, esclarecimento pontual de dúvidas conceituais e sistematização final.${inclusionText}${eventContext}`,
-                    recursos: `Quadro branco, TV para exibição de esquemas e conceitos teóricos, apostilas, cadernos e folhas de exercícios dirigidos${inclusionRecurso}.`,
-                    avaliacao: `Avaliação formativa e contínua, observando a atenção, a resolução correta dos exercícios dirigidos e a compreensão dos conceitos fundamentais.`
-                };
-            }
-
-            // 3. Aula de Revisão, Fixação & Feedback
-            else if (lessonStyle === "revisao") {
-                return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e aplicação da técnica 'Faça Agora' (Do Now) com uma questão diagnóstica rápida no quadro/TV sobre os tópicos de ${temaClean}.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Aplicação da técnica Lemov 'Ache o Erro' (Find the Mistake) projetada na TV, na qual os alunos identificam e corrigem falhas em cenários organizacionais simulados. Atendimento individualizado pelo professor para esclarecimento de dúvidas pontuais com apoio dos netbooks.\n\n• Fechamento (5 a 10 min): Aplicação de 'Ticket de Saída' (Exit Ticket) de 3 minutos para checagem rápida de retenção e diagnóstico da aprendizagem da turma.${inclusionText}${eventContext}`,
-                    recursos: `Quadro branco, TV para projeção de exercícios diagnósticos, netbooks para consulta de resumos e fichas de avaliação formativa${inclusionRecurso}.`,
-                    avaliacao: `Avaliação diagnóstica e formativa, com foco na superação de dúvidas recorrentes, na identificação de erros conceituais e na evolução individual.`
-                };
-            }
-
-            // 4. Aula Interativa & Metodologias Ativas (Default)
-            else {
-                return {
-                    estrategias: `• Momento Inicial (5 a 10 min): Acolhimento e apresentação de um 'Gancho Inicial' (Hook) na TV com um vídeo/case de mercado relacionado a ${temaClean}, despertando o interesse da turma.\n\n• Desenvolvimento (Mediação e Prática - 30 a 35 min): Explanação dialogada pelo professor com suporte da TV. Em seguida, na sala especializada do curso técnico ou com uso de netbooks, aplicação da técnica 'Vire e Converse' (Turn and Talk) em duplas para debaterem a estratégia e formularem soluções práticas.\n\n• Fechamento (5 a 10 min): Compartilhamento das propostas das duplas, síntese do professor no quadro branco e alinhamento com as práticas reais do mercado (utilizando o auditório quando houver apresentação de projetos).${inclusionText}${eventContext}`,
-                    recursos: `Quadro branco, TV para exibição de cases e campanhas, netbooks para pesquisas e propostas, sala especializada do curso técnico para dinâmicas e auditório para apresentações${inclusionRecurso}.`,
-                    avaliacao: `Avaliação processual baseada na participação ativa nas discussões, na clareza da argumentação técnica durante os debates e na produção em equipe.`
-                };
-            }
+            return {
+                estrategias,
+                recursos: `${v.recursos}${inclusionRecurso}.`,
+                avaliacao: pick(v.aval)
+            };
         }
 
         function selectYear(year) {
@@ -1607,7 +1697,7 @@
                 habStr += `\n\nHabilidades Socioemocionais:\n${Array.from(habSocio).join('\n')}`;
             }
 
-            const pedagogy = buildCoherentDevelopment(currentDiscipline, temaStr, withInclusion, currentLessonStyle, currentDetectedEvent);
+            const pedagogy = buildCoherentDevelopment(currentDiscipline, temaStr, withInclusion, currentLessonStyle, currentDetectedEvent, week);
 
             return {
                 professor: teacher,
@@ -1626,7 +1716,27 @@
             };
         }
 
-        function generatePreview() {
+        function nextWeek() {
+            const sel = document.getElementById('weekSelect');
+            const w = Math.min(28, (parseInt(sel.value, 10) || 1) + 1);
+            sel.value = String(w);
+            // avança os dias em 7 (quando as datas estão preenchidas)
+            ['startDate', 'endDate'].forEach(id => {
+                const inp = document.getElementById(id);
+                if (inp && inp.value) {
+                    const d = new Date(inp.value + 'T12:00:00');
+                    d.setDate(d.getDate() + 7);
+                    inp.value = d.toISOString().slice(0, 10);
+                }
+            });
+            if (typeof onDateRangeChange === 'function') onDateRangeChange();
+            updateLiveSummary();
+            generatePreview();
+        }
+
+        async function generatePreview() {
+            try { await ensureCurriculumLoaded(); }
+            catch (e) { showToast("Não consegui carregar o currículo. Verifique a conexão e tente de novo."); return; }
             const data = getLessonData();
 
             document.getElementById('docTitlePreview').textContent = `Plano de Aula - 2026 - SEMANA ${data.semana}`;
@@ -1699,7 +1809,9 @@
             `;
         }
 
-        function downloadDocument() {
+        async function downloadDocument() {
+            try { await ensureCurriculumLoaded(); }
+            catch (e) { showToast("Não consegui carregar o currículo. Verifique a conexão e tente de novo."); return; }
             const isPreviewVisible = !document.getElementById('previewArea').classList.contains('d-none');
             const data = isPreviewVisible ? getLiveEditedData() : getLessonData();
 
@@ -1742,7 +1854,9 @@
             }
         }
 
-        function downloadBatchDocument() {
+        async function downloadBatchDocument() {
+            try { await ensureCurriculumLoaded(); }
+            catch (e) { showToast("Não consegui carregar o currículo. Verifique a conexão e tente de novo."); return; }
             const cycleVal = document.getElementById('batchCycleSelect').value;
             let startW = 1, endW = 7;
 
@@ -1865,6 +1979,8 @@ ${data.referencias}`;
             populateWeeks();
             selectYear(currentYear);
             selectCourse(currentCourse);
+            // pré-carrega o currículo em segundo plano, sem travar a interface
+            setTimeout(() => { ensureCurriculumLoaded().catch(() => {}); }, 400);
         });
     </script>
 </body>

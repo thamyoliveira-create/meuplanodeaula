@@ -298,6 +298,17 @@ def index():
     return jsonify({"status": "ok", "app": "Gerador de Plano de Aula"})
 
 
+@app.route("/<path:filename>", methods=["GET"])
+def public_asset(filename):
+    """Serve arquivos de public/ (ex.: curriculum_data.js). Em produção a Vercel
+    já faz isso; esta rota cobre o `flask run` local."""
+    pub = (BASE_DIR / "public").resolve()
+    target = (pub / filename).resolve()
+    if target.is_file() and str(target).startswith(str(pub) + os.sep):
+        return send_file(str(target))
+    return ("Not found", 404)
+
+
 @app.route("/api/health", methods=["GET"])
 @app.route("/health", methods=["GET"])
 def health():

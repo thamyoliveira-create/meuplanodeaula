@@ -35,9 +35,9 @@ try:
     from api.curriculum_data import CURRICULUM_DATA
 except Exception:
     try:
-        from curriculum_data import CURRICULUM_DATA
+        from curriculum_data import CURRICULUM_DATA  # execução local a partir de api/
     except Exception:
-        CURRICULUM_DATA = []
+        CURRICULUM_DATA = []  # fallback: get_curriculum_rows() lê os CSVs
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit

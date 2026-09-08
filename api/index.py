@@ -23,9 +23,12 @@ except Exception:  # pragma: no cover - fallback se a lib nao instalar
     Limiter = None
 
 from docx import Document
-from docx.shared import Pt
+from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
+
+# Logo oficial da escola (canto superior esquerdo do plano gerado)
+LOGO_PATH = pathlib.Path(__file__).resolve().parent / "assets" / "logo_dmg.jpg"
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 if str(BASE_DIR) not in sys.path:
@@ -231,12 +234,26 @@ def compile_lesson_data(rows: List[Dict[str, str]], teacher: str, period: str, c
     }
 
 
-def create_exact_school_document(lesson_data: Dict[str, str]) -> Document:
-    """Build exact school template document."""
-    doc = Document()
+def _add_school_header(doc: Document) -> None:
+    """Cabecalho oficial: logo da escola no canto superior esquerdo e identificacao centralizada."""
+    header_tbl = doc.add_table(rows=1, cols=2)
+    header_tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
+    header_tbl.autofit = False
 
-    # Exact School Header matching template.docx
-    p_header = doc.add_paragraph()
+    logo_cell = header_tbl.cell(0, 0)
+    text_cell = header_tbl.cell(0, 1)
+    logo_cell.width = Inches(1.1)
+    text_cell.width = Inches(5.9)
+
+    logo_par = logo_cell.paragraphs[0]
+    logo_par.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    if LOGO_PATH.exists():
+        try:
+            logo_par.add_run().add_picture(str(LOGO_PATH), width=Inches(0.95))
+        except Exception:
+            app.logger.warning("Nao foi possivel inserir a logo: %s", LOGO_PATH)
+
+    p_header = text_cell.paragraphs[0]
     p_header.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r1 = p_header.add_run("GOVERNO DE ESTADO DE SÃO PAULO – SECRETÁRIA DA EDUCAÇÃO\n")
     r1.bold = True
@@ -246,6 +263,14 @@ def create_exact_school_document(lesson_data: Dict[str, str]) -> Document:
     r2.font.size = Pt(9.5)
     r3 = p_header.add_run("RUA EMILIA GALLI, 549 - CENTRO-AMERICO BRASILIENSE - SP. TELEFONE: (16) 33921335\nCEP: 14.820.015 | E-mail: e021830a@educacao.sp.gov.br\n")
     r3.font.size = Pt(8.5)
+
+
+def create_exact_school_document(lesson_data: Dict[str, str]) -> Document:
+    """Build exact school template document."""
+    doc = Document()
+
+    # Exact School Header matching template.docx (com logo no canto superior esquerdo)
+    _add_school_header(doc)
 
     p_title = doc.add_paragraph()
     p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER

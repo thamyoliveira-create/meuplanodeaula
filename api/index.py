@@ -28,7 +28,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
 
 # Logo oficial da escola (canto superior esquerdo do plano gerado)
-LOGO_PATH = pathlib.Path(__file__).resolve().parent / "assets" / "logo_dmg.png"
+LOGO_PATH = pathlib.Path(__file__).resolve().parent / "assets" / "logo_dmg.jpg"
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
 if str(BASE_DIR) not in sys.path:

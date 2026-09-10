@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-bs-theme="light">
+<html lang="pt-BR" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,44 +7,44 @@
     <!-- Google Fonts Manrope & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root {
-            --font-family: 'Karla', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            --heading-font: 'Archivo', var(--font-family);
+            --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --heading-font: "Bricolage Grotesque", var(--font-family);
             
             /* Pousada da Serra Luxury Color Palette */
-            --primary: #176f9f;
-            --primary-light: #2f9bd8;
-            --primary-dark: #06121c;
-            --primary-gradient: linear-gradient(135deg, #176f9f 0%, #2f9bd8 55%, #5bb7e8 100%);
+            --primary: #12C7BE;
+            --primary-light: #5fe0d9;
+            --primary-dark: #0B8B84;
+            --primary-gradient: linear-gradient(135deg, #0B8B84 0%, #12C7BE 55%, #5fe0d9 100%);
             
-            --gold-accent: #2f9bd8;
-            --gold-light: #5bb7e8;
-            --gold-gradient: linear-gradient(135deg, #2f9bd8 0%, #5bb7e8 100%);
+            --gold-accent: #C97E1A;
+            --gold-light: #e0a145;
+            --gold-gradient: linear-gradient(135deg, #C97E1A 0%, #e0a145 100%);
             
             --bg-body: #f4f7f9;
-            --bg-mesh: radial-gradient(at 0% 0%, rgba(47, 155, 216, 0.05) 0px, transparent 50%),
-                       radial-gradient(at 100% 0%, rgba(91, 183, 232, 0.06) 0px, transparent 50%),
-                       radial-gradient(at 50% 100%, rgba(47, 155, 216, 0.03) 0px, transparent 50%);
+            --bg-mesh: radial-gradient(at 0% 0%, rgba(18, 199, 190, 0.05) 0px, transparent 50%),
+                       radial-gradient(at 100% 0%, rgba(18, 199, 190, 0.06) 0px, transparent 50%),
+                       radial-gradient(at 50% 100%, rgba(18, 199, 190, 0.03) 0px, transparent 50%);
             
             --surface: #ffffff;
             --surface-secondary: #eef3f7;
             --surface-hover: #e4edf3;
             --border-color: #d7e1e8;
-            --border-focus: #2f9bd8;
+            --border-focus: #12C7BE;
             
             --text-main: #0b1119;
             --text-muted: #5f7180;
-            --text-gold: #176f9f;
+            --text-gold: #12C7BE;
             
             --shadow-subtle: 0 2px 4px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
             --shadow-card: 0 12px 32px -4px rgba(24, 31, 27, 0.06), 0 4px 12px -2px rgba(24, 31, 27, 0.03);
-            --shadow-glow: 0 8px 24px -4px rgba(47, 155, 216, 0.25);
+            --shadow-glow: 0 8px 24px -4px rgba(18, 199, 190, 0.25);
             
             --radius-sm: 0.5rem;
             --radius-md: 0.85rem;
@@ -53,22 +53,22 @@
         }
 
         [data-bs-theme="dark"] {
-            --bg-body: #0b1119;
-            --bg-mesh: radial-gradient(at 0% 0%, rgba(47, 155, 216, 0.2) 0px, transparent 50%),
-                       radial-gradient(at 100% 0%, rgba(91, 183, 232, 0.1) 0px, transparent 50%);
+            --bg-body: #0A0E0F;
+            --bg-mesh: radial-gradient(at 0% 0%, rgba(18, 199, 190, 0.2) 0px, transparent 50%),
+                       radial-gradient(at 100% 0%, rgba(18, 199, 190, 0.1) 0px, transparent 50%);
             
-            --surface: #111a24;
-            --surface-secondary: #16212d;
-            --surface-hover: #1d2c3a;
-            --border-color: #22303e;
-            --border-focus: #c49746;
+            --surface: #111A1B;
+            --surface-secondary: #16211F;
+            --surface-hover: #1C2B29;
+            --border-color: #1E2A2A;
+            --border-focus: #12C7BE;
             
-            --text-main: #eef3f7;
-            --text-muted: #a9b8c6;
-            --text-gold: #5bb7e8;
+            --text-main: #F2F5F4;
+            --text-muted: #9DB0AD;
+            --text-gold: #12C7BE;
             
             --shadow-card: 0 16px 36px -4px rgba(0, 0, 0, 0.5);
-            --shadow-glow: 0 8px 24px -4px rgba(91, 183, 232, 0.2);
+            --shadow-glow: 0 8px 24px -4px rgba(18, 199, 190, 0.2);
         }
 
         body {
@@ -114,7 +114,7 @@
             align-items: center;
             justify-content: center;
             font-size: 1.3rem;
-            box-shadow: 0 4px 14px rgba(47, 155, 216, 0.2);
+            box-shadow: 0 4px 14px rgba(18, 199, 190, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -145,7 +145,7 @@
             right: 0;
             bottom: 0;
             width: 35%;
-            background: linear-gradient(135deg, transparent 0%, rgba(91, 183, 232, 0.05) 50%, rgba(47, 155, 216, 0.08) 100%);
+            background: linear-gradient(135deg, transparent 0%, rgba(18, 199, 190, 0.05) 50%, rgba(18, 199, 190, 0.08) 100%);
             pointer-events: none;
         }
 
@@ -171,7 +171,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 6px rgba(47, 155, 216, 0.2);
+            box-shadow: 0 2px 6px rgba(18, 199, 190, 0.2);
         }
 
         /* Selection Cards (Year, Course & Style) */
@@ -197,7 +197,7 @@
         .select-card.active {
             border-color: var(--primary);
             background: var(--surface);
-            box-shadow: 0 0 0 3px rgba(47, 155, 216, 0.12), var(--shadow-subtle);
+            box-shadow: 0 0 0 3px rgba(18, 199, 190, 0.12), var(--shadow-subtle);
         }
 
         .select-card.active::after {
@@ -240,7 +240,7 @@
         .style-card.active {
             border-color: var(--primary);
             background: var(--surface);
-            box-shadow: 0 0 0 3px rgba(47, 155, 216, 0.12);
+            box-shadow: 0 0 0 3px rgba(18, 199, 190, 0.12);
         }
 
         .style-card.active::after {
@@ -276,7 +276,7 @@
         .select-card.active .card-icon, .style-card.active .card-icon {
             background: var(--primary-gradient);
             color: #ffffff;
-            box-shadow: 0 4px 10px rgba(47, 155, 216, 0.25);
+            box-shadow: 0 4px 10px rgba(18, 199, 190, 0.25);
         }
 
         /* Discipline Interactive Chips */
@@ -332,7 +332,7 @@
 
         .form-control:focus, .form-select:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(47, 155, 216, 0.12);
+            box-shadow: 0 0 0 4px rgba(18, 199, 190, 0.12);
             outline: none;
             background-color: var(--surface);
             color: var(--text-main);
@@ -361,14 +361,14 @@
         }
 
         .seduc-event-banner.feriado {
-            background: rgba(91, 183, 232, 0.12);
-            border: 1.5px solid rgba(91, 183, 232, 0.35);
+            background: rgba(18, 199, 190, 0.12);
+            border: 1.5px solid rgba(18, 199, 190, 0.35);
             color: #8c6317;
         }
 
         .seduc-event-banner.avaliacao {
-            background: rgba(47, 155, 216, 0.08);
-            border: 1.5px solid rgba(47, 155, 216, 0.25);
+            background: rgba(18, 199, 190, 0.08);
+            border: 1.5px solid rgba(18, 199, 190, 0.25);
             color: #1e3d2b;
         }
 
@@ -379,7 +379,7 @@
         }
 
         [data-bs-theme="dark"] .seduc-event-banner.feriado {
-            background: rgba(91, 183, 232, 0.15);
+            background: rgba(18, 199, 190, 0.15);
             color: #dfb76c;
         }
 
@@ -409,7 +409,7 @@
 
         .btn-main:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 26px -4px rgba(47, 155, 216, 0.35);
+            box-shadow: 0 12px 26px -4px rgba(18, 199, 190, 0.35);
             color: #ffffff;
             background: linear-gradient(135deg, #162c1f 0%, #234632 100%);
         }
@@ -529,7 +529,7 @@
 
         .official-table .field-val:focus {
             background-color: #fefce8;
-            box-shadow: 0 0 0 2px #c49746;
+            box-shadow: 0 0 0 2px #12C7BE;
         }
 
         /* Toast */
@@ -833,7 +833,7 @@
             <!-- Live Week Topic Preview & Carga Horária -->
             <div class="live-preview-pill d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div>
-                    <span class="badge px-2 py-1 rounded-pill small me-1" style="background: rgba(47, 155, 216, 0.12); color: var(--primary);"><i class="bi bi-check2-circle"></i> Conteúdo Localizado</span>
+                    <span class="badge px-2 py-1 rounded-pill small me-1" style="background: rgba(18, 199, 190, 0.12); color: var(--primary);"><i class="bi bi-check2-circle"></i> Conteúdo Localizado</span>
                     <strong class="d-block mt-1" id="weekTopicTitle" style="font-size: 0.95rem;">Carregando tema da semana...</strong>
                     <div class="text-muted small mt-1" id="weekLessonsCount">4 aulas planejadas de 50 min com infraestrutura escolar</div>
                 </div>
@@ -888,7 +888,7 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-3 border-bottom no-print">
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge px-3 py-2 rounded-pill text-white" style="background: var(--primary);"><i class="bi bi-check2-circle me-1"></i> Modelo Oficial EE. Prof. Dinora Marcondes Gomes</span>
-                    <span class="badge border px-2 py-1 rounded-pill small" style="background: rgba(91, 183, 232, 0.15); color: #8c6317;"><i class="bi bi-pencil-square me-1"></i> Edição Direta Habilitada (Clique no texto para alterar)</span>
+                    <span class="badge border px-2 py-1 rounded-pill small" style="background: rgba(18, 199, 190, 0.15); color: #8c6317;"><i class="bi bi-pencil-square me-1"></i> Edição Direta Habilitada (Clique no texto para alterar)</span>
                 </div>
                 <div class="d-flex gap-2">
                     <button class="btn btn-sm btn-outline-secondary px-3 py-2 rounded-3" onclick="copyPlanToClipboard()">
@@ -1385,7 +1385,7 @@
                     <div class="recent-card h-100 d-flex flex-column justify-content-between">
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="badge" style="background: rgba(47, 155, 216, 0.1); color: var(--primary); font-size: 0.7rem;">Semana ${p.semana}</span>
+                                <span class="badge" style="background: rgba(18, 199, 190, 0.1); color: var(--primary); font-size: 0.7rem;">Semana ${p.semana}</span>
                                 <small class="text-muted" style="font-size: 0.7rem;">${p.data_salva}</small>
                             </div>
                             <strong class="d-block small text-truncate" title="${p.disciplina}">${p.disciplina}</strong>

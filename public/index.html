@@ -4,43 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plano de Aula Pro &bull; EE. Prof. Dinora Marcondes Gomes</title>
-    <!-- Google Fonts Manrope & Plus Jakarta Sans -->
+    <meta name="theme-color" content="#1A0F1C">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root {
-            --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            --heading-font: "Bricolage Grotesque", var(--font-family);
+            --font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --heading-font: "Outfit", var(--font-family);
             
             /* Pousada da Serra Luxury Color Palette */
-            --primary: #12C7BE;
-            --primary-light: #5fe0d9;
-            --primary-dark: #0B8B84;
-            --primary-gradient: linear-gradient(135deg, #0B8B84 0%, #12C7BE 55%, #5fe0d9 100%);
+            --primary: #03E39D;
+            --primary-light: #6BF0C6;
+            --primary-dark: #00C286;
+            --primary-gradient: linear-gradient(150deg, #03E39D 0%, #FB58A7 58%, #F4B6DF 100%);
             
-            --gold-accent: #C97E1A;
-            --gold-light: #e0a145;
-            --gold-gradient: linear-gradient(135deg, #C97E1A 0%, #e0a145 100%);
+            --gold-accent: #FB58A7;
+            --gold-light: #FD97C8;
+            --gold-gradient: linear-gradient(135deg, #FB58A7 0%, #F4B6DF 100%);
             
-            --bg-body: #f4f7f9;
+            --bg-body: #FFF5FB;
             --bg-mesh: radial-gradient(at 0% 0%, rgba(18, 199, 190, 0.05) 0px, transparent 50%),
                        radial-gradient(at 100% 0%, rgba(18, 199, 190, 0.06) 0px, transparent 50%),
                        radial-gradient(at 50% 100%, rgba(18, 199, 190, 0.03) 0px, transparent 50%);
             
             --surface: #ffffff;
-            --surface-secondary: #eef3f7;
-            --surface-hover: #e4edf3;
-            --border-color: #d7e1e8;
+            --surface-secondary: #FCE9F5;
+            --surface-hover: #FFE3F1;
+            --border-color: #F4D7E9;
             --border-focus: #12C7BE;
             
-            --text-main: #0b1119;
-            --text-muted: #5f7180;
-            --text-gold: #12C7BE;
+            --text-main: #1A0F1C;
+            --text-muted: #6E5B70;
+            --text-gold: #C01A6E;
             
             --shadow-subtle: 0 2px 4px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
             --shadow-card: 0 12px 32px -4px rgba(24, 31, 27, 0.06), 0 4px 12px -2px rgba(24, 31, 27, 0.03);
@@ -53,19 +54,19 @@
         }
 
         [data-bs-theme="dark"] {
-            --bg-body: #0A0E0F;
+            --bg-body: #1A0F1C;
             --bg-mesh: radial-gradient(at 0% 0%, rgba(18, 199, 190, 0.2) 0px, transparent 50%),
                        radial-gradient(at 100% 0%, rgba(18, 199, 190, 0.1) 0px, transparent 50%);
             
-            --surface: #111A1B;
-            --surface-secondary: #16211F;
-            --surface-hover: #1C2B29;
-            --border-color: #1E2A2A;
+            --surface: #261629;
+            --surface-secondary: #301B34;
+            --surface-hover: #3A2440;
+            --border-color: #3A2440;
             --border-focus: #12C7BE;
             
-            --text-main: #F2F5F4;
-            --text-muted: #9DB0AD;
-            --text-gold: #12C7BE;
+            --text-main: #FFF5FB;
+            --text-muted: #C6B3C7;
+            --text-gold: #03E39D;
             
             --shadow-card: 0 16px 36px -4px rgba(0, 0, 0, 0.5);
             --shadow-glow: 0 8px 24px -4px rgba(18, 199, 190, 0.2);
@@ -101,7 +102,7 @@
         }
 
         [data-bs-theme="dark"] .glass-navbar {
-            background: rgba(20, 30, 24, 0.9);
+            background: rgba(26, 15, 28, 0.9);
         }
 
         .brand-badge {
@@ -559,6 +560,14 @@
             opacity: 1;
         }
 
+        .brand-badge{background:none;border:0;box-shadow:none}
+        .brand-badge img{display:block;width:44px;height:44px}
+        .btn-main,.discipline-chip.active{color:#1A0F1C}
+        .btn-main:hover{color:#1A0F1C;background:var(--primary-gradient);filter:saturate(1.12) brightness(1.04)}
+        :where(button,a,input,select,textarea):focus-visible{outline:2px solid var(--gold-accent);outline-offset:3px}
+        @media (max-width:720px){.brand-school{display:none}.app-card{padding:1.4rem}.hero-banner{padding:1.6rem 1.4rem}}
+        @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
@@ -574,11 +583,11 @@
         <div class="container d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center gap-3">
                 <div class="brand-badge">
-                    <i class="bi bi-mortarboard-fill"></i>
+                    <img src="/marca-animada.svg" alt="" width="120" height="120">
                 </div>
                 <div>
-                    <span class="eyebrow-label d-block">Sistema de Planejamento Docente</span>
-                    <span class="h6 fw-bold mb-0 d-block brand-title">EE. Prof. Dinora Marcondes Gomes</span>
+                    <span class="eyebrow-label d-block">Meu Plano de Aula</span>
+                    <span class="h6 fw-bold mb-0 d-block brand-title brand-school">EE. Prof. Dinora Marcondes Gomes</span>
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2">

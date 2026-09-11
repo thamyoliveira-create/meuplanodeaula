@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1A0F1C">
+<title>Página não encontrada · Meu Plano de Aula</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{--ameixa:#1A0F1C;--papel:#FFF5FB;--menta:#03E39D;--rosa:#FB58A7;--blush:#F4B6DF}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%}body{min-height:100svh;overflow:hidden;background:var(--ameixa);color:var(--papel);font-family:Outfit,Arial,sans-serif}
+body::before,body::after{content:"";position:fixed;width:52vw;height:52vw;border-radius:50%;filter:blur(90px);opacity:.16;pointer-events:none}
+body::before{background:var(--menta);left:-20vw;top:-22vw}body::after{background:var(--rosa);right:-18vw;bottom:-25vw}
+main{position:relative;min-height:100svh;display:grid;place-items:center;padding:32px;isolation:isolate}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,245,251,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,245,251,.045) 1px,transparent 1px);background-size:56px 56px;mask-image:linear-gradient(to bottom,black,transparent 82%);z-index:-1}
+.wrap{width:min(1080px,100%);text-align:center}.brand{width:112px;height:112px;margin:0 auto 10px}
+.code{position:relative;font-size:clamp(10rem,34vw,30rem);font-weight:900;line-height:.72;letter-spacing:-.09em;margin:0;color:transparent;-webkit-text-stroke:1px rgba(255,245,251,.2);user-select:none}
+.code::after{content:"404";position:absolute;inset:0;background:linear-gradient(150deg,var(--menta),var(--rosa) 58%,var(--blush));background-clip:text;-webkit-background-clip:text;color:transparent;clip-path:inset(34% 0 34% 0);animation:slide 5.5s cubic-bezier(.65,0,.35,1) infinite}
+.eyebrow{font:500 .72rem/1.2 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--menta)}
+h1{font-size:clamp(1.8rem,5vw,3.6rem);line-height:1;margin:16px 0 12px;letter-spacing:-.04em}
+p{color:#C6B3C7;font-size:clamp(1rem,2vw,1.18rem);margin:0 auto 28px;max-width:48ch}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 24px;border-radius:999px;font-weight:700;text-decoration:none}
+.btn-primary{background:linear-gradient(150deg,var(--menta),var(--rosa) 58%,var(--blush));color:var(--ameixa)}
+.btn-secondary{border:1px solid #3A2440;color:var(--papel);background:#261629}
+a:focus-visible{outline:2px solid var(--menta);outline-offset:4px}
+@keyframes slide{0%,12%,88%,100%{transform:translateX(2.5%)}42%,58%{transform:none}}
+@media(max-width:600px){main{padding:22px}.brand{width:82px;height:82px}.code{font-size:clamp(9rem,46vw,14rem)}}
+@media(prefers-reduced-motion:reduce){.code::after{animation:none}}
+</style>
+</head>
+<body>
+<main>
+<div class="grid" aria-hidden="true"></div>
+<div class="wrap">
+<img class="brand" src="/marca-animada.svg" width="120" height="120" alt="">
+<div class="code" aria-hidden="true">404</div>
+<span class="eyebrow">Página fora do planejamento</span>
+<h1>Essa página faltou à aula.</h1>
+<p>O endereço pode ter mudado ou não existe. Seu plano continua seguro — volte ao início para seguir de onde parou.</p>
+<div class="actions">
+<a class="btn btn-primary" href="/">Voltar ao Meu Plano de Aula</a>
+<a class="btn btn-secondary" href="javascript:history.back()">Página anterior</a>
+</div>
+</div>
+</main>
+</body>
+</html>
+

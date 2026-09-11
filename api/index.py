@@ -331,6 +331,9 @@ def public_asset(filename):
     target = (pub / filename).resolve()
     if target.is_file() and str(target).startswith(str(pub) + os.sep):
         return send_file(str(target))
+    not_found = pub / "404.html"
+    if not_found.is_file():
+        return send_file(str(not_found)), 404
     return ("Not found", 404)
 
 

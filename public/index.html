@@ -611,11 +611,11 @@
         <div class="hero-banner no-print d-flex align-items-center justify-content-between flex-wrap gap-3">
             <div>
                 <span class="eyebrow-label d-block mb-1">
-                    <i class="bi bi-stars text-warning me-1"></i> Diretoria de Ensino de Araraquara &bull; Cursos Técnicos MTEC
+                    <i class="bi bi-stars text-warning me-1"></i> Currículo Paulista &bull; Educação Básica e EPT
                 </span>
                 <h1 class="h3 fw-bold mb-1">Elabore seus Planos de Aula com Precisão</h1>
                 <p class="text-muted mb-0 small" style="max-width: 600px;">
-                    Alinhamento integral ao currículo SEDUC-SP, com 50 min de aula, metodologias ativas Lemov, detecção de feriados e infraestrutura escolar.
+                    Planos alinhados aos Guias de Aprendizagens Essenciais da SEDUC-SP, com metodologias ativas, inclusão e calendário escolar.
                 </p>
             </div>
             <div>
@@ -628,60 +628,53 @@
         <!-- Form Card -->
         <section class="app-card no-print">
             
-            <!-- Step 1: Ano e Curso Técnico -->
+            <!-- Step 1: Etapa, ano/série e curso técnico quando aplicável -->
             <div class="d-flex align-items-center gap-2 mb-3">
                 <span class="section-step-badge">1</span>
-                <h2 class="h5 fw-bold mb-0">Selecione o Ano e o Curso Técnico</h2>
+                <h2 class="h5 fw-bold mb-0">Selecione a Etapa e o Ano/Série</h2>
+            </div>
+
+            <div class="row g-2 mb-4" id="stageCardsContainer">
+                <div class="col-lg-3 col-6">
+                    <div class="select-card active h-100" id="stageTecnico" onclick="selectStage('tecnico')">
+                        <div class="card-icon mb-2"><i class="bi bi-briefcase-fill"></i></div>
+                        <strong class="d-block">EPT / MTEC</strong>
+                        <small class="text-muted">Cursos técnicos</small>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="select-card h-100" id="stageFundamental1" onclick="selectStage('fundamental_1')">
+                        <div class="card-icon mb-2"><i class="bi bi-1-circle-fill"></i></div>
+                        <strong class="d-block">Anos Iniciais</strong>
+                        <small class="text-muted">1º ao 5º ano</small>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="select-card h-100" id="stageFundamental2" onclick="selectStage('fundamental_2')">
+                        <div class="card-icon mb-2"><i class="bi bi-journal-bookmark-fill"></i></div>
+                        <strong class="d-block">Anos Finais</strong>
+                        <small class="text-muted">6º ao 9º ano</small>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="select-card h-100" id="stageEnsinoMedio" onclick="selectStage('ensino_medio')">
+                        <div class="card-icon mb-2"><i class="bi bi-mortarboard-fill"></i></div>
+                        <strong class="d-block">Ensino Médio</strong>
+                        <small class="text-muted">1ª à 3ª série</small>
+                    </div>
+                </div>
             </div>
 
             <div class="row g-3 mb-4">
-                <!-- Seletor de Ano -->
                 <div class="col-md-6">
-                    <label class="form-label text-muted small"><i class="bi bi-mortarboard me-1 text-primary"></i> Série / Ano do Ensino Médio</label>
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <div class="select-card active d-flex align-items-center gap-3" id="card2Ano" onclick="selectYear('2º Ano (MTEC)')">
-                                <div class="card-icon"><i class="bi bi-mortarboard-fill"></i></div>
-                                <div>
-                                    <strong class="d-block">2º Ano</strong>
-                                    <small class="text-muted" style="font-size: 0.73rem;">3 Disciplinas</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="select-card d-flex align-items-center gap-3" id="card3Ano" onclick="selectYear('3º Ano (MTEC)')">
-                                <div class="card-icon"><i class="bi bi-graph-up-arrow"></i></div>
-                                <div>
-                                    <strong class="d-block">3º Ano</strong>
-                                    <small class="text-muted" style="font-size: 0.73rem;">6 Disciplinas</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <label class="form-label text-muted small"><i class="bi bi-mortarboard me-1 text-primary"></i> Ano / Série</label>
+                    <div class="row g-2" id="yearCardsContainer"></div>
                 </div>
 
-                <!-- Seletor de Curso -->
-                <div class="col-md-6">
+                <div class="col-md-6" id="technicalCourseGroup">
                     <label class="form-label text-muted small"><i class="bi bi-briefcase me-1 text-primary"></i> Habilitação Técnica</label>
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <div class="select-card active d-flex align-items-center gap-3" id="cardAdm" onclick="selectCourse('Administração')">
-                                <div class="card-icon"><i class="bi bi-building"></i></div>
-                                <div>
-                                    <strong class="d-block">Administração</strong>
-                                    <small class="text-muted" style="font-size: 0.73rem;">Técnico ADM</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="select-card d-flex align-items-center gap-3" id="cardVendas" onclick="selectCourse('Vendas')">
-                                <div class="card-icon"><i class="bi bi-cart-check-fill"></i></div>
-                                <div>
-                                    <strong class="d-block">Vendas</strong>
-                                    <small class="text-muted" style="font-size: 0.73rem;">Técnico Vendas</small>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="row g-2" id="technicalCourseCards">
+                        <div class="col-12"><div class="text-muted small py-2">Carregando cursos técnicos...</div></div>
                     </div>
                 </div>
             </div>
@@ -727,7 +720,7 @@
                             <div class="card-icon" style="width: 32px; height: 32px; font-size: 1rem;"><i class="bi bi-tools"></i></div>
                             <strong class="small">Prática</strong>
                         </div>
-                        <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Simulação na sala técnica, netbooks, planilhas e rotinas reais.</small>
+                        <small class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Experimentos, produções, materiais concretos e resolução de desafios.</small>
                     </div>
                 </div>
 
@@ -782,7 +775,16 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label for="weekSelect" class="form-label"><i class="bi bi-calendar-week-fill me-1 text-primary"></i> Semana do Curso</label>
+                    <label for="planPeriodicity" class="form-label"><i class="bi bi-calendar-range-fill me-1 text-primary"></i> Período do Plano</label>
+                    <select class="form-select" id="planPeriodicity" onchange="onPlanPeriodicityChange()">
+                        <option value="1" selected>Semanal — 1 semana</option>
+                        <option value="2">Quinzenal — 2 semanas</option>
+                        <option value="4">Mensal — 4 semanas</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="weekSelect" class="form-label" id="weekSelectLabel"><i class="bi bi-calendar-week-fill me-1 text-primary"></i> Semana Letiva</label>
                     <div class="d-flex gap-2">
                         <select class="form-select" id="weekSelect" onchange="updateLiveSummary()">
                             <!-- Populated dynamically (Semana 1 a 28) -->
@@ -833,7 +835,7 @@
                     </div>
                     <div>
                         <strong class="small d-block"><i class="bi bi-universal-access-circle me-1" style="color: var(--gold-accent);"></i> Incluir Adaptações Curriculares e Acessibilidade (PEI / Ed. Especial)</strong>
-                        <small class="text-muted" style="font-size: 0.78rem;">Insere mediação por pares, materiais com fonte ampliada e flexibilização de tempo na sala técnica.</small>
+                        <small class="text-muted" style="font-size: 0.78rem;">Insere mediação por pares, apoio visual, fonte ampliada e flexibilização de tempo.</small>
                     </div>
                 </div>
                 <span class="badge bg-secondary text-white px-2 py-1 rounded-pill small">Opcional</span>
@@ -1114,6 +1116,7 @@
     <!-- A base completa do currículo (~2 MB) é carregada sob demanda, não bloqueia a página. -->
     <script>
         let _curricPromise = null;
+        let _regularCurricPromise = null;
         function ensureCurriculumLoaded() {
             if (window.CURRICULUM_DATA && Array.isArray(window.CURRICULUM_DATA)) return Promise.resolve();
             if (_curricPromise) return _curricPromise;
@@ -1125,6 +1128,23 @@
                 document.head.appendChild(s);
             });
             return _curricPromise;
+        }
+
+        function ensureRegularCurriculumLoaded() {
+            if (window.REGULAR_CURRICULUM_DATA && Array.isArray(window.REGULAR_CURRICULUM_DATA)) return Promise.resolve();
+            if (_regularCurricPromise) return _regularCurricPromise;
+            _regularCurricPromise = fetch('/regular_curriculum.json')
+                .then(response => {
+                    if (!response.ok) throw new Error('curriculo_regular');
+                    return response.json();
+                })
+                .then(data => { window.REGULAR_CURRICULUM_DATA = data; })
+                .catch(error => { _regularCurricPromise = null; throw error; });
+            return _regularCurricPromise;
+        }
+
+        function ensureActiveCurriculumLoaded() {
+            return currentStage === 'tecnico' ? ensureCurriculumLoaded() : ensureRegularCurriculumLoaded();
         }
     </script>
 
@@ -1151,39 +1171,34 @@
             { start: "2026-11-20", end: "2026-11-20", type: "feriado", title: "Feriado da Consciência Negra", reduction: 1 }
         ];
 
-        const CURRICULUM_MATRIX = {
-            "2º Ano (MTEC)": {
-                "Administração": [
-                    { name: "Introdução à Administração, Legislação e Pessoas", icon: "bi-people-fill", aulas: 4 },
-                    { name: "Matemática Aplicada à Administração", icon: "bi-calculator-fill", aulas: 4 },
-                    { name: "Autoconhecimento e Orientação Profissional", icon: "bi-person-check-fill", aulas: 3 }
-                ],
-                "Vendas": [
-                    { name: "Comportamento, Legislação e Direito do Consumidor", icon: "bi-shield-check", aulas: 4 },
-                    { name: "Comunicação Empresarial e Introdução a Vendas", icon: "bi-chat-quote-fill", aulas: 4 },
-                    { name: "Autoconhecimento e Orientação Profissional", icon: "bi-person-check-fill", aulas: 3 }
-                ]
-            },
-            "3º Ano (MTEC)": {
-                "Administração": [
-                    { name: "Marketing Estratégico", icon: "bi-megaphone-fill", aulas: 4 },
-                    { name: "Comunicação Empresarial", icon: "bi-chat-dots-fill", aulas: 3 },
-                    { name: "Gestão Financeira e Contabilidade", icon: "bi-cash-coin", aulas: 4 },
-                    { name: "Gestão de Operações", icon: "bi-gear-wide-connected", aulas: 4 },
-                    { name: "Empreendedorismo e Desenvolvimento de Negócios", icon: "bi-rocket-takeoff-fill", aulas: 4 },
-                    { name: "Projeto Multidisciplinar", icon: "bi-kanban-fill", aulas: 3 }
-                ],
-                "Vendas": [
-                    { name: "Marketing", icon: "bi-megaphone-fill", aulas: 4 },
-                    { name: "Matemática Básica e Gestão de Investimentos em Vendas", icon: "bi-calculator-fill", aulas: 4 },
-                    { name: "Planejamento de Vendas", icon: "bi-calendar-check-fill", aulas: 4 },
-                    { name: "Processo Comercial, Métodos de Prospecção e Qualificação", icon: "bi-funnel-fill", aulas: 4 },
-                    { name: "Tecnologias Digitais Aplicadas a Vendas", icon: "bi-laptop-fill", aulas: 4 },
-                    { name: "Projeto Multidisciplinar", icon: "bi-kanban-fill", aulas: 3 }
-                ]
-            }
+        const COURSE_ICONS = {
+            'Administração': 'bi-building',
+            'Agronegócio': 'bi-flower1',
+            'Ciência de Dados': 'bi-bar-chart-line-fill',
+            'Desenvolvimento de Sistemas': 'bi-code-slash',
+            'Enfermagem': 'bi-heart-pulse-fill',
+            'Farmácia': 'bi-capsule',
+            'Hospedagem': 'bi-buildings-fill',
+            'Logística': 'bi-truck',
+            'Vendas': 'bi-cart-check-fill'
         };
 
+        const STAGE_CONFIG = {
+            tecnico: { years: ['2º Ano (MTEC)', '3º Ano (MTEC)'], series: false },
+            fundamental_1: { years: ['1', '2', '3', '4', '5'], series: false },
+            fundamental_2: { years: ['6', '7', '8', '9'], series: false },
+            ensino_medio: { years: ['1', '2', '3'], series: true }
+        };
+
+        const SUBJECT_ICONS = {
+            'Língua Portuguesa': 'bi-book-fill', 'Matemática': 'bi-calculator-fill',
+            'Ciências': 'bi-flask-fill', 'Biologia': 'bi-tree-fill', 'Física': 'bi-lightning-charge-fill',
+            'Química': 'bi-beaker-fill', 'História': 'bi-hourglass-split', 'Geografia': 'bi-globe-americas',
+            'Língua Inglesa': 'bi-translate', 'Educação Física': 'bi-activity', 'Arte': 'bi-palette-fill',
+            'Filosofia': 'bi-chat-square-quote-fill', 'Sociologia': 'bi-people-fill'
+        };
+
+        let currentStage = "tecnico";
         let currentYear = "2º Ano (MTEC)";
         let currentCourse = "Administração";
         let currentDiscipline = "Introdução à Administração, Legislação e Pessoas";
@@ -1250,11 +1265,15 @@
         function loadTeacherPreferences() {
             const savedTeacher = localStorage.getItem("doc_teacher_name");
             if (savedTeacher) document.getElementById("teacher").value = savedTeacher;
-            
+
+            const savedStage = localStorage.getItem("doc_saved_stage");
             const savedYear = localStorage.getItem("doc_saved_year");
             const savedCourse = localStorage.getItem("doc_saved_course");
+            const savedPeriodicity = localStorage.getItem("doc_plan_periodicity");
+            if (savedStage && STAGE_CONFIG[savedStage]) currentStage = savedStage;
             if (savedYear) currentYear = savedYear;
             if (savedCourse) currentCourse = savedCourse;
+            if (['1', '2', '4'].includes(savedPeriodicity)) document.getElementById('planPeriodicity').value = savedPeriodicity;
 
             setCurrentWeekDates();
             renderRecentPlans();
@@ -1268,7 +1287,8 @@
             monday.setDate(now.getDate() + diffToMonday);
 
             const friday = new Date(monday);
-            friday.setDate(monday.getDate() + 4);
+            const planWeeks = parseInt(document.getElementById('planPeriodicity').value || '1', 10);
+            friday.setDate(monday.getDate() + (planWeeks * 7 - 3));
 
             const formatDate = d => {
                 const year = d.getFullYear();
@@ -1285,8 +1305,10 @@
         function saveTeacherPreferences() {
             const teacher = document.getElementById("teacher").value;
             localStorage.setItem("doc_teacher_name", teacher);
+            localStorage.setItem("doc_saved_stage", currentStage);
             localStorage.setItem("doc_saved_year", currentYear);
             localStorage.setItem("doc_saved_course", currentCourse);
+            localStorage.setItem("doc_plan_periodicity", document.getElementById('planPeriodicity').value || '1');
         }
 
         // --- Holiday and SEDUC Event Detection ---
@@ -1353,13 +1375,16 @@
         function saveToRecentPlans(data) {
             try {
                 let list = JSON.parse(localStorage.getItem("recent_lesson_plans") || "[]");
-                list = list.filter(p => !(p.semana === data.semana && p.disciplina === data.disciplina && p.ano === currentYear && p.curso === currentCourse));
+                list = list.filter(p => !(p.semana === data.semana && p.disciplina === data.disciplina && p.etapa === currentStage && p.ano === currentYear && p.curso === currentCourse));
                 list.unshift({
                     id: Date.now(),
+                    etapa: currentStage,
                     ano: currentYear,
                     curso: currentCourse,
                     disciplina: data.disciplina,
                     semana: data.semana,
+                    semana_inicio: document.getElementById('weekSelect').value,
+                    periodicidade: document.getElementById('planPeriodicity').value,
                     periodo: data.periodo,
                     turma: data.turma,
                     estilo: currentLessonStyles.join(","),
@@ -1394,14 +1419,14 @@
                     <div class="recent-card h-100 d-flex flex-column justify-content-between">
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="badge" style="background: rgba(18, 199, 190, 0.1); color: var(--primary); font-size: 0.7rem;">Semana ${p.semana}</span>
+                                <span class="badge" style="background: rgba(18, 199, 190, 0.1); color: var(--primary); font-size: 0.7rem;">${String(p.semana).includes(' a ') ? 'Semanas' : 'Semana'} ${p.semana}</span>
                                 <small class="text-muted" style="font-size: 0.7rem;">${p.data_salva}</small>
                             </div>
                             <strong class="d-block small text-truncate" title="${p.disciplina}">${p.disciplina}</strong>
                             <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;">${p.turma} &bull; ${p.periodo}</small>
                         </div>
                         <div class="mt-2 pt-2 border-top d-flex gap-1" style="border-color: var(--border-color);">
-                            <button type="button" class="btn btn-sm btn-outline-dark py-1 px-2 flex-grow-1" style="font-size: 0.75rem; border-color: var(--border-color);" onclick="loadRecentPlan('${p.ano}', '${p.curso}', '${p.disciplina}', '${p.semana}', '${p.estilo || 'interativa'}')">
+                            <button type="button" class="btn btn-sm btn-outline-dark py-1 px-2 flex-grow-1" style="font-size: 0.75rem; border-color: var(--border-color);" onclick="loadRecentPlan('${p.etapa || 'tecnico'}', '${p.ano}', '${p.curso}', '${p.disciplina}', '${p.semana_inicio || p.semana}', '${p.estilo || 'interativa'}', '${p.periodicidade || '1'}')">
                                 <i class="bi bi-arrow-repeat me-1"></i> Abrir
                             </button>
                         </div>
@@ -1411,9 +1436,13 @@
             });
         }
 
-        function loadRecentPlan(year, course, disc, week, style = 'interativa') {
+        async function loadRecentPlan(stage, year, course, disc, week, style = 'interativa', periodicity = '1') {
+            selectStage(stage || 'tecnico');
+            await ensureActiveCurriculumLoaded();
+            document.getElementById('planPeriodicity').value = ['1', '2', '4'].includes(String(periodicity)) ? String(periodicity) : '1';
             selectYear(year);
-            selectCourse(course);
+            if (currentStage === 'tecnico') selectCourse(course);
+            renderDisciplineChips();
             currentLessonStyles = String(style).split(',').map(x => x.trim()).filter(x => PEDAGOGY_VARIANTS[x]);
             if (!currentLessonStyles.length) currentLessonStyles = ['interativa'];
             currentLessonStyles.sort((a, b) => STYLE_ORDER.indexOf(a) - STYLE_ORDER.indexOf(b));
@@ -1423,6 +1452,7 @@
                 c.classList.toggle('active', c.innerText.trim().includes(disc));
             });
             document.getElementById('weekSelect').value = String(week);
+            onPlanPeriodicityChange();
             updateLiveSummary();
             generatePreview();
             showToast(`Plano carregado: Semana ${week} - ${disc}`);
@@ -1610,10 +1640,174 @@
             return { estrategias, recursos, avaliacao };
         }
 
+        function buildRegularDevelopment(tema, withInclusion = false, lessonStyles = ['interativa'], eventInfo = null) {
+            const topic = tema || 'o conteúdo previsto';
+            const variants = {
+                interativa: {
+                    estrategias: `• Momento inicial (5 a 10 min): Levantamento dos conhecimentos prévios com uma pergunta disparadora sobre ${topic}.\n\n• Desenvolvimento (30 a 35 min): Explicação dialogada, leitura orientada e resolução colaborativa de situações-problema em duplas ou pequenos grupos.\n\n• Fechamento (5 a 10 min): Socialização das respostas e síntese coletiva dos conceitos essenciais.`,
+                    recursos: 'Quadro, material didático, TV/projetor e atividades impressas ou digitais',
+                    avaliacao: 'Observação da participação, dos registros e das estratégias utilizadas durante as atividades.'
+                },
+                pratica: {
+                    estrategias: `• Momento inicial (5 a 10 min): Apresentação do desafio prático relacionado a ${topic}.\n\n• Desenvolvimento (30 a 35 min): Investigação, experimento, produção ou resolução com materiais concretos, conforme o componente curricular.\n\n• Fechamento (5 a 10 min): Registro das descobertas e comparação das soluções construídas pela turma.`,
+                    recursos: 'Materiais concretos, instrumentos específicos da disciplina, caderno, quadro e recursos visuais',
+                    avaliacao: 'Avaliação processual da participação, dos procedimentos adotados e da produção realizada.'
+                },
+                laboratorio: {
+                    estrategias: `• Momento inicial (5 a 10 min): Orientação dos objetivos e dos critérios da atividade digital sobre ${topic}.\n\n• Desenvolvimento (30 a 35 min): Pesquisa orientada, simulação ou atividade no AVA, com acompanhamento individual do professor.\n\n• Fechamento (5 a 10 min): Conferência das entregas e retomada das dúvidas mais frequentes.`,
+                    recursos: 'Laboratório de informática ou dispositivos móveis, acesso ao AVA/internet, TV e roteiro de atividade',
+                    avaliacao: 'Acompanhamento da autonomia, da qualidade das respostas e da conclusão da atividade digital.'
+                },
+                tradicional: {
+                    estrategias: `• Momento inicial (5 a 10 min): Retomada do conteúdo anterior e apresentação dos objetivos de ${topic}.\n\n• Desenvolvimento (30 a 35 min): Aula expositiva dialogada, modelagem de exemplos e prática guiada com exercícios graduados.\n\n• Fechamento (5 a 10 min): Correção comentada e sistematização dos principais conceitos.`,
+                    recursos: 'Quadro, caderno, livro didático, TV/projetor e lista de atividades',
+                    avaliacao: 'Verificação formativa por meio dos exercícios, das respostas orais e dos registros no caderno.'
+                },
+                revisao: {
+                    estrategias: `• Momento inicial (5 a 10 min): Questão diagnóstica breve sobre ${topic}.\n\n• Desenvolvimento (30 a 35 min): Revisão por análise de erros, questões-modelo e explicação entre pares.\n\n• Fechamento (5 a 10 min): Ticket de saída para verificar avanços e orientar a retomada seguinte.`,
+                    recursos: 'Quadro, questões diagnósticas, fichas de revisão, caderno e recursos digitais',
+                    avaliacao: 'Comparação entre o diagnóstico inicial e o ticket de saída, com registro das dificuldades persistentes.'
+                }
+            };
+            const styles = (Array.isArray(lessonStyles) ? lessonStyles : [lessonStyles]).filter(style => variants[style]);
+            const selected = styles.length ? styles : ['interativa'];
+            const blocks = selected.map(style => variants[style]);
+            let estrategias = blocks.map((block, index) => selected.length > 1 ? `▸ ${STYLE_LABEL[selected[index]]}\n${block.estrategias}` : block.estrategias).join('\n\n');
+            let recursos = [...new Set(blocks.map(block => block.recursos))].join('; ') + '.';
+            const avaliacao = blocks.map((block, index) => selected.length > 1 ? `${STYLE_LABEL[selected[index]]}: ${block.avaliacao}` : block.avaliacao).join('\n');
+            if (withInclusion) {
+                estrategias += '\n\n• Adaptações e acessibilidade: comandos objetivos e fragmentados, apoio visual, mediação por pares, tempo ampliado e diferentes formas de participação e registro.';
+                recursos += ' Materiais acessíveis, fonte ampliada, apoio visual e tecnologia assistiva quando necessária.';
+            }
+            if (eventInfo) estrategias += `\n\n• Calendário escolar: planejamento ajustado ao período de ${eventInfo.title}.`;
+            return { estrategias, recursos, avaliacao };
+        }
+
+        function getTechnicalCoursesForYear() {
+            if (!Array.isArray(window.CURRICULUM_DATA)) return [];
+            return [...new Set(window.CURRICULUM_DATA
+                .filter(row => row._year === currentYear && row._course && row._course !== 'Comum')
+                .map(row => row._course))]
+                .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+        }
+
+        function technicalComponentIcon(name) {
+            const value = String(name).toLowerCase();
+            if (value.includes('matemática') || value.includes('estatística')) return 'bi-calculator-fill';
+            if (value.includes('programação') || value.includes('dados') || value.includes('inteligência artificial')) return 'bi-code-square';
+            if (value.includes('financeira') || value.includes('contabilidade')) return 'bi-cash-coin';
+            if (value.includes('marketing') || value.includes('comercial') || value.includes('vendas')) return 'bi-megaphone-fill';
+            if (value.includes('enfermagem') || value.includes('socorros')) return 'bi-heart-pulse-fill';
+            if (value.includes('farmácia') || value.includes('biotecnologia')) return 'bi-capsule';
+            if (value.includes('logística') || value.includes('suprimentos')) return 'bi-truck';
+            if (value.includes('projeto')) return 'bi-kanban-fill';
+            return 'bi-journal-text';
+        }
+
+        function getTechnicalComponents() {
+            if (!Array.isArray(window.CURRICULUM_DATA)) return [];
+            const components = new Map();
+            window.CURRICULUM_DATA
+                .filter(row => row._year === currentYear && (row._course === currentCourse || row._course === 'Comum'))
+                .forEach(row => {
+                    const name = String(row['Nome do componente'] || '').trim();
+                    if (!name) return;
+                    const aulas = parseInt(row['Componente de 3 ou 4 aulas semanais?'] || '3', 10) || 3;
+                    if (!components.has(name)) components.set(name, { name, icon: technicalComponentIcon(name), aulas });
+                });
+            return [...components.values()].sort((a, b) => {
+                if (a.name === 'Projeto Multidisciplinar') return 1;
+                if (b.name === 'Projeto Multidisciplinar') return -1;
+                return a.name.localeCompare(b.name, 'pt-BR');
+            });
+        }
+
+        function renderTechnicalCourseCards() {
+            const container = document.getElementById('technicalCourseCards');
+            if (!container) return;
+            const courses = getTechnicalCoursesForYear();
+            container.innerHTML = '';
+            if (!courses.length) {
+                container.innerHTML = '<div class="col-12"><div class="text-muted small py-2">Nenhum curso disponível para esta série.</div></div>';
+                return;
+            }
+            if (!courses.includes(currentCourse)) currentCourse = courses[0];
+            courses.forEach(course => {
+                const col = document.createElement('div');
+                col.className = 'col-12 col-sm-6 col-xl-4';
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.className = `select-card w-100 h-100 border-0 text-start d-flex align-items-center gap-3 ${course === currentCourse ? 'active' : ''}`;
+                card.setAttribute('aria-pressed', course === currentCourse ? 'true' : 'false');
+                card.innerHTML = `<span class="card-icon flex-shrink-0"><i class="bi ${COURSE_ICONS[course] || 'bi-briefcase-fill'}"></i></span><span><strong class="d-block">${course}</strong><small class="text-muted">Curso técnico</small></span>`;
+                card.onclick = () => selectCourse(course);
+                col.appendChild(card);
+                container.appendChild(col);
+            });
+        }
+
+        function selectStage(stage) {
+            if (!STAGE_CONFIG[stage]) return;
+            currentStage = stage;
+            const ids = {
+                tecnico: 'stageTecnico', fundamental_1: 'stageFundamental1',
+                fundamental_2: 'stageFundamental2', ensino_medio: 'stageEnsinoMedio'
+            };
+            Object.entries(ids).forEach(([key, id]) => {
+                document.getElementById(id).classList.toggle('active', key === stage);
+            });
+            document.getElementById('technicalCourseGroup').classList.toggle('d-none', stage !== 'tecnico');
+
+            const availableYears = STAGE_CONFIG[stage].years;
+            if (!availableYears.includes(String(currentYear))) currentYear = availableYears[0];
+            renderYearCards();
+            updateClassroomValue();
+
+            if (stage === 'tecnico') {
+                const badge = document.getElementById('disciplineCountBadge');
+                badge.textContent = 'Carregando currículo...';
+                ensureCurriculumLoaded()
+                    .then(() => {
+                        renderTechnicalCourseCards();
+                        updateClassroomValue();
+                        renderDisciplineChips();
+                    })
+                    .catch(() => { badge.textContent = 'Currículo indisponível'; });
+            } else {
+                const badge = document.getElementById('disciplineCountBadge');
+                badge.textContent = 'Carregando currículo...';
+                ensureRegularCurriculumLoaded()
+                    .then(() => renderDisciplineChips())
+                    .catch(() => { badge.textContent = 'Currículo indisponível'; });
+            }
+            saveTeacherPreferences();
+        }
+
+        function yearLabel(year) {
+            if (currentStage === 'tecnico') return year.replace(' (MTEC)', '');
+            return currentStage === 'ensino_medio' ? `${year}ª Série` : `${year}º Ano`;
+        }
+
+        function renderYearCards() {
+            const container = document.getElementById('yearCardsContainer');
+            container.innerHTML = '';
+            STAGE_CONFIG[currentStage].years.forEach(year => {
+                const col = document.createElement('div');
+                const count = STAGE_CONFIG[currentStage].years.length;
+                col.className = count > 4 ? 'col-4' : 'col-6';
+                col.innerHTML = `<div class="select-card h-100 ${String(currentYear) === String(year) ? 'active' : ''}" data-year="${year}">
+                    <strong class="d-block">${yearLabel(year)}</strong>
+                    <small class="text-muted">Selecionar</small>
+                </div>`;
+                col.querySelector('.select-card').onclick = () => selectYear(year);
+                container.appendChild(col);
+            });
+        }
+
         function selectYear(year) {
-            currentYear = year;
-            document.getElementById('card2Ano').classList.toggle('active', year.includes('2º'));
-            document.getElementById('card3Ano').classList.toggle('active', year.includes('3º'));
+            currentYear = String(year);
+            renderYearCards();
+            if (currentStage === 'tecnico') renderTechnicalCourseCards();
             updateClassroomValue();
             renderDisciplineChips();
             saveTeacherPreferences();
@@ -1621,8 +1815,7 @@
 
         function selectCourse(course) {
             currentCourse = course;
-            document.getElementById('cardAdm').classList.toggle('active', course === 'Administração');
-            document.getElementById('cardVendas').classList.toggle('active', course === 'Vendas');
+            renderTechnicalCourseCards();
             updateClassroomValue();
             renderDisciplineChips();
             saveTeacherPreferences();
@@ -1630,8 +1823,38 @@
 
         function updateClassroomValue() {
             const classroomInput = document.getElementById('classroom');
-            const prefix = currentYear.includes('3º') ? '3º MTEC' : '2º MTEC';
-            classroomInput.value = `${prefix} - ${currentCourse}`;
+            if (currentStage === 'tecnico') {
+                classroomInput.value = `${parseInt(currentYear, 10)}º MTEC - ${currentCourse}`;
+            } else {
+                classroomInput.value = yearLabel(currentYear);
+            }
+        }
+
+        function regularRowsForSelection(targetWeek = null) {
+            if (!Array.isArray(window.REGULAR_CURRICULUM_DATA)) return [];
+            const week = parseInt(targetWeek || document.getElementById('weekSelect').value || '1', 10);
+            const term = Math.min(4, Math.ceil(week / 7));
+            const termWeek = (week - 1) % 7;
+            const termRows = window.REGULAR_CURRICULUM_DATA.filter(row =>
+                row.etapa === currentStage && String(row.ano) === String(currentYear) &&
+                row.disciplina === currentDiscipline && Number(row.bimestre) === term
+            ).sort((a, b) => Number(a.aula) - Number(b.aula));
+            if (!termRows.length) return [];
+            const start = Math.floor(termWeek * termRows.length / 7);
+            let end = Math.floor((termWeek + 1) * termRows.length / 7);
+            if (end <= start) end = start + 1;
+            return termRows.slice(start, end);
+        }
+
+        function regularRowsForPlan(targetWeek = null, forceWeekly = false) {
+            const rows = getSelectedWeeks(targetWeek, forceWeekly).flatMap(week => regularRowsForSelection(String(week)));
+            const seen = new Set();
+            return rows.filter(row => {
+                const key = `${row.etapa}|${row.ano}|${row.disciplina}|${row.bimestre}|${row.aula}`;
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
         }
 
         function renderDisciplineChips() {
@@ -1639,10 +1862,18 @@
             const countBadge = document.getElementById('disciplineCountBadge');
             container.innerHTML = '';
 
-            const list = (CURRICULUM_MATRIX[currentYear] && CURRICULUM_MATRIX[currentYear][currentCourse]) || [];
+            let list = [];
+            if (currentStage === 'tecnico') {
+                list = getTechnicalComponents();
+            } else if (Array.isArray(window.REGULAR_CURRICULUM_DATA)) {
+                const names = [...new Set(window.REGULAR_CURRICULUM_DATA
+                    .filter(row => row.etapa === currentStage && String(row.ano) === String(currentYear))
+                    .map(row => row.disciplina))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+                list = names.map(name => ({ name, icon: SUBJECT_ICONS[name] || 'bi-journal-text', aulas: 0 }));
+            }
             countBadge.textContent = `${list.length} disciplinas disponíveis`;
 
-            if (list.length > 0) {
+            if (list.length > 0 && !list.some(item => item.name === currentDiscipline)) {
                 currentDiscipline = list[0].name;
             }
 
@@ -1668,10 +1899,45 @@
             for (let i = 1; i <= 28; i++) {
                 const opt = document.createElement('option');
                 opt.value = String(i);
-                opt.textContent = `Semana ${i}`;
+                opt.textContent = `Semana ${i} • ${Math.ceil(i / 7)}º bimestre`;
                 weekSelect.appendChild(opt);
             }
             updateLiveSummary();
+        }
+
+        function getSelectedWeeks(targetWeek = null, forceWeekly = false) {
+            const start = Math.max(1, parseInt(targetWeek || document.getElementById('weekSelect').value || '1', 10));
+            const count = forceWeekly ? 1 : parseInt(document.getElementById('planPeriodicity').value || '1', 10);
+            return Array.from({ length: count }, (_, index) => start + index).filter(week => week <= 28);
+        }
+
+        function getPlanPeriodLabel(weeks) {
+            if (weeks.length <= 1) return `Semana ${weeks[0] || 1}`;
+            return `Semanas ${weeks[0]} a ${weeks[weeks.length - 1]}`;
+        }
+
+        function planWeekCaption(value) {
+            return String(value).includes(' a ') ? `SEMANAS ${value}` : `SEMANA ${value}`;
+        }
+
+        function onPlanPeriodicityChange() {
+            const count = parseInt(document.getElementById('planPeriodicity').value || '1', 10);
+            const label = document.getElementById('weekSelectLabel');
+            label.innerHTML = `<i class="bi bi-calendar-week-fill me-1 text-primary"></i> ${count === 1 ? 'Semana Letiva' : 'Semana Inicial'}`;
+            const weekSelect = document.getElementById('weekSelect');
+            const maxStart = 29 - count;
+            if ((parseInt(weekSelect.value, 10) || 1) > maxStart) weekSelect.value = String(maxStart);
+            const startInput = document.getElementById('startDate');
+            const endInput = document.getElementById('endDate');
+            if (startInput.value) {
+                const end = new Date(startInput.value + 'T12:00:00');
+                end.setDate(end.getDate() + (count * 7 - 3));
+                endInput.value = end.toISOString().slice(0, 10);
+                onDateRangeChange();
+            } else {
+                updateLiveSummary();
+            }
+            saveTeacherPreferences();
         }
 
         function onDateRangeChange() {
@@ -1688,7 +1954,8 @@
                 if (startVal === endVal) {
                     periodInput.value = sFormatted;
                 } else {
-                    periodInput.value = `Semana de ${sFormatted} a ${eFormatted}`;
+                    const count = parseInt(document.getElementById('planPeriodicity').value || '1', 10);
+                    periodInput.value = `${count === 1 ? 'Semana' : 'Período'} de ${sFormatted} a ${eFormatted}`;
                 }
             } else if (startVal) {
                 const sParts = startVal.split('-');
@@ -1702,6 +1969,7 @@
 
         function updateLiveSummary() {
             const week = document.getElementById('weekSelect').value || '1';
+            const selectedWeeks = getSelectedWeeks(week);
             const data = getLessonData();
 
             const topicBox = document.getElementById('weekTopicTitle');
@@ -1712,9 +1980,11 @@
             topicBox.innerHTML = `<span class="fw-bold" style="color: var(--primary);">${currentDiscipline}</span> &bull; ${firstLine}`;
             
             // Carga Horária com Ajuste de Feriado
-            const list = (CURRICULUM_MATRIX[currentYear] && CURRICULUM_MATRIX[currentYear][currentCourse]) || [];
+            const list = currentStage === 'tecnico' ? getTechnicalComponents() : [];
             const discItem = list.find(d => d.name === currentDiscipline);
-            const baseAulas = discItem ? discItem.aulas : 4;
+            const regularRows = currentStage === 'tecnico' ? [] : regularRowsForPlan(week);
+            const weeklyAulas = discItem ? discItem.aulas : 4;
+            const baseAulas = currentStage === 'tecnico' ? weeklyAulas * selectedWeeks.length : Math.max(1, regularRows.length);
             const finalAulas = Math.max(1, baseAulas - currentReduction);
             const totalMin = finalAulas * 50;
 
@@ -1728,26 +1998,75 @@
 
             const reductionNote = currentReduction > 0 ? ' (Feriado na semana: -1 aula)' : '';
             const lessonLines = data.conteudo.split('\n').filter(l => l.startsWith('•'));
-            lessonsCount.textContent = `${lessonLines.length || finalAulas} aulas planejadas de 50 min (${currentLessonStyles.map(x => styleLabels[x] || x).join(" + ")})${reductionNote}`;
-            workloadBadge.innerHTML = `<i class="bi bi-clock-history me-1"></i> Carga: ${finalAulas} aulas (${totalMin} min/semana)`;
+            lessonsCount.textContent = `${lessonLines.length || finalAulas} aulas planejadas de 50 min em ${getPlanPeriodLabel(selectedWeeks).toLowerCase()} (${currentLessonStyles.map(x => styleLabels[x] || x).join(" + ")})${reductionNote}`;
+            workloadBadge.innerHTML = `<i class="bi bi-clock-history me-1"></i> Carga total: ${finalAulas} aulas (${totalMin} min)`;
         }
 
-        function getLessonData(targetWeek = null) {
+        function getRegularLessonData(targetWeek = null, forceWeekly = false) {
+            const teacher = document.getElementById('teacher').value.trim() || 'Professor(a)';
+            const classroom = document.getElementById('classroom').value.trim() || yearLabel(currentYear);
+            const week = targetWeek || document.getElementById('weekSelect').value || '1';
+            const selectedWeeks = getSelectedWeeks(week, forceWeekly);
+            const period = document.getElementById('period').value.trim() || 'Semana de Aulas';
+            const withInclusion = document.getElementById('toggleInclusion').checked;
+            const rows = regularRowsForPlan(week, forceWeekly);
+            const terms = [...new Set(selectedWeeks.map(value => Math.min(4, Math.ceil(Number(value) / 7))))];
+            const termLabel = terms.length === 1 ? `${terms[0]}º Bimestre` : `${terms[0]}º ao ${terms[terms.length - 1]}º Bimestre`;
+
+            const titles = [...new Set(rows.map(row => row.titulo).filter(Boolean))];
+            const contents = [...new Set(rows.flatMap(row => row.conteudos || []).filter(Boolean))];
+            const objectives = [...new Set(rows.flatMap(row => row.objetivos || []).filter(Boolean))];
+            const skills = [...new Set(rows.flatMap(row => row.habilidades || []).filter(Boolean))];
+            const essentials = [...new Set(rows.map(row => row.aprendizagem_essencial).filter(Boolean))];
+            const topic = titles.join(' | ') || `${termLabel} — conteúdo não localizado no guia enviado`;
+            const pedagogy = buildRegularDevelopment(topic, withInclusion, currentLessonStyles, currentDetectedEvent);
+
+            let abilitiesText = skills.length
+                ? `Habilidades do Currículo Paulista:\n${skills.map(skill => `• ${skill}`).join('\n')}`
+                : 'Habilidades a definir conforme o currículo da etapa.';
+            if (essentials.length) {
+                abilitiesText += `\n\nAprendizagens Essenciais:\n${essentials.map(item => `• ${item}`).join('\n')}`;
+            }
+
+            return {
+                professor: teacher,
+                disciplina: currentDiscipline,
+                turma: classroom,
+                periodo: period,
+                semana: selectedWeeks.length === 1 ? String(selectedWeeks[0]) : `${selectedWeeks[0]} a ${selectedWeeks[selectedWeeks.length - 1]}`,
+                habilidades: abilitiesText,
+                objetos: contents.length ? contents.map(item => `• ${item}`).join('\n') : 'Objetos de conhecimento não localizados para esta semana.',
+                conteudo: titles.length ? `${termLabel}\n\n${titles.map(title => `• ${title}`).join('\n')}` : `${termLabel}\n\n• Conteúdo não localizado no guia enviado.`,
+                objetivos: objectives.length ? objectives.map(item => `• ${item}`).join('\n') : 'Definir os objetivos de aprendizagem de acordo com o conteúdo selecionado.',
+                estrategias: pedagogy.estrategias,
+                recursos: pedagogy.recursos,
+                avaliacao: pedagogy.avaliacao,
+                referencias: 'Currículo Paulista; Guia de Aprendizagens Essenciais e Escopo-Sequência SEDUC-SP, 2026.'
+            };
+        }
+
+        function getLessonData(targetWeek = null, forceWeekly = false) {
+            if (currentStage !== 'tecnico') return getRegularLessonData(targetWeek, forceWeekly);
             const teacher = document.getElementById('teacher').value.trim() || "Prof. Thamy Oliveira";
             const classroom = document.getElementById('classroom').value.trim() || "2º MTEC - Administração";
             const week = targetWeek || document.getElementById('weekSelect').value || '1';
+            const selectedWeeks = getSelectedWeeks(week, forceWeekly);
             const period = document.getElementById('period').value.trim() || "Semana de Aulas";
             const withInclusion = document.getElementById('toggleInclusion').checked;
 
             let rows = [];
             if (window.CURRICULUM_DATA && Array.isArray(window.CURRICULUM_DATA)) {
                 const dTarget = currentDiscipline.toLowerCase().trim();
-                const wTarget = String(week).trim();
+                const weekTargets = new Set(selectedWeeks.map(value => String(value)));
 
                 rows = window.CURRICULUM_DATA.filter(r => {
                     const rWeek = String(r.Semana || '').trim();
                     const rDisc = String(r['Nome do componente'] || r['Unidade curricular'] || '').toLowerCase().trim();
-                    return rWeek === wTarget && (rDisc.includes(dTarget) || dTarget.includes(rDisc));
+                    const rCourse = String(r._course || '').trim();
+                    return String(r._year || '').trim() === currentYear
+                        && (rCourse === currentCourse || rCourse === 'Comum')
+                        && weekTargets.has(rWeek)
+                        && rDisc === dTarget;
                 });
             }
 
@@ -1775,7 +2094,7 @@
                 if (obj) objetivos.push(`• ${obj.trim()}`);
             });
 
-            const temaStr = Array.from(temas).join(' | ') || `Semana ${week}`;
+            const temaStr = Array.from(temas).join(' | ') || getPlanPeriodLabel(selectedWeeks);
             const conteudoStr = aulasTitles.length ? `Tema: ${temaStr}\n\n` + aulasTitles.join('\n') : `Tema: ${temaStr}`;
             
             let habStr = habTecnicas.size ? `Habilidades Técnicas:\n${Array.from(habTecnicas).join('\n')}` : `Desenvolver as competências técnicas previstas no currículo do curso técnico.`;
@@ -1790,7 +2109,7 @@
                 disciplina: currentDiscipline,
                 turma: classroom,
                 periodo: period,
-                semana: week,
+                semana: selectedWeeks.length === 1 ? String(selectedWeeks[0]) : `${selectedWeeks[0]} a ${selectedWeeks[selectedWeeks.length - 1]}`,
                 habilidades: habStr,
                 objetos: objConhecimento.size ? Array.from(objConhecimento).join('\n') : "Conceitos fundamentais e aplicados da disciplina.",
                 conteudo: conteudoStr,
@@ -1804,14 +2123,15 @@
 
         function nextWeek() {
             const sel = document.getElementById('weekSelect');
-            const w = Math.min(28, (parseInt(sel.value, 10) || 1) + 1);
+            const planWeeks = parseInt(document.getElementById('planPeriodicity').value || '1', 10);
+            const w = Math.min(29 - planWeeks, (parseInt(sel.value, 10) || 1) + planWeeks);
             sel.value = String(w);
-            // avança os dias em 7 (quando as datas estão preenchidas)
+            // avança o período completo selecionado
             ['startDate', 'endDate'].forEach(id => {
                 const inp = document.getElementById(id);
                 if (inp && inp.value) {
                     const d = new Date(inp.value + 'T12:00:00');
-                    d.setDate(d.getDate() + 7);
+                    d.setDate(d.getDate() + planWeeks * 7);
                     inp.value = d.toISOString().slice(0, 10);
                 }
             });
@@ -1821,11 +2141,11 @@
         }
 
         async function generatePreview() {
-            try { await ensureCurriculumLoaded(); }
+            try { await ensureActiveCurriculumLoaded(); }
             catch (e) { showToast("Não consegui carregar o currículo. Verifique a conexão e tente de novo."); return; }
             const data = getLessonData();
 
-            document.getElementById('docTitlePreview').textContent = `Plano de Aula - 2026 - SEMANA ${data.semana}`;
+            document.getElementById('docTitlePreview').textContent = `Plano de Aula - 2026 - ${planWeekCaption(data.semana)}`;
             document.getElementById('prevTeacher').innerText = data.professor;
             document.getElementById('prevDiscipline').innerText = data.disciplina;
             document.getElementById('prevClassroom').innerText = data.turma;
@@ -1833,7 +2153,7 @@
             document.getElementById('prevHabilidades').innerText = data.habilidades;
             document.getElementById('prevObjetos').innerText = data.objetos;
             document.getElementById('prevConteudo').innerText = data.conteudo;
-            document.getElementById('prevObjetivos').innerText = data.objetos;
+            document.getElementById('prevObjetivos').innerText = data.objetivos;
             document.getElementById('prevEstrategias').innerText = data.estrategias;
             document.getElementById('prevRecursos').innerText = data.recursos;
             document.getElementById('prevAvaliacao').innerText = data.avaliacao;
@@ -1852,7 +2172,7 @@
                 disciplina: document.getElementById('prevDiscipline').innerText.trim() || currentDiscipline,
                 turma: document.getElementById('prevClassroom').innerText.trim() || document.getElementById('classroom').value,
                 periodo: document.getElementById('prevPeriod').innerText.trim() || document.getElementById('period').value,
-                semana: document.getElementById('weekSelect').value,
+                semana: (() => { const weeks = getSelectedWeeks(); return weeks.length === 1 ? String(weeks[0]) : `${weeks[0]} a ${weeks[weeks.length - 1]}`; })(),
                 habilidades: document.getElementById('prevHabilidades').innerText.trim(),
                 objetos: document.getElementById('prevObjetos').innerText.trim(),
                 conteudo: document.getElementById('prevConteudo').innerText.trim(),
@@ -1878,7 +2198,7 @@
                         <h6 style="margin: 2px 0; font-size: 9.5pt; font-weight: bold;">DIRETORIA DE ENSINO-REGIÃO DE ARARAQUARA</h6>
                         <h6 style="margin: 2px 0; font-size: 9.5pt; font-weight: bold;">EE. PROF.DINORA MARCODES GOMES</h6>
                         <p style="font-size: 8.5pt; margin: 2px 0;">RUA EMILIA GALLI, 549 - CENTRO-AMERICO BRASILIENSE - SP. TELEFONE: (16) 33921335 CEP: 14.820.015 | E-mail: e021830a@educacao.sp.gov.br</p>
-                        <h4 style="margin: 6px 0; font-size: 11.5pt; font-weight: bold;">Plano de Aula - 2026 - SEMANA ${data.semana}</h4>
+                        <h4 style="margin: 6px 0; font-size: 11.5pt; font-weight: bold;">Plano de Aula - 2026 - ${planWeekCaption(data.semana)}</h4>
                     </td>
                 </tr>
             </table>
@@ -1901,7 +2221,7 @@
         }
 
         async function downloadDocument() {
-            try { await ensureCurriculumLoaded(); }
+            try { await ensureActiveCurriculumLoaded(); }
             catch (e) { showToast("Não consegui carregar o currículo. Verifique a conexão e tente de novo."); return; }
             const isPreviewVisible = !document.getElementById('previewArea').classList.contains('d-none');
             const data = isPreviewVisible ? getLiveEditedData() : getLessonData();
@@ -1914,13 +2234,13 @@
                 const docBody = createWordHtmlForData(data);
                 const fullDoc = `
                 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                <head><meta charset='utf-8'><title>Plano de Aula - Semana ${data.semana}</title></head>
+                <head><meta charset='utf-8'><title>Plano de Aula - ${planWeekCaption(data.semana)}</title></head>
                 <body style="font-family: Calibri, Arial, sans-serif;">${docBody}</body></html>
                 `;
 
                 const blob = new Blob(['\ufeff', fullDoc], { type: 'application/msword' });
                 const cleanDisc = data.disciplina.replace(/[^a-zA-Z0-9]/g, '_');
-                const filename = `Plano_de_Aula_Semana_${data.semana}_${cleanDisc}.doc`;
+                const filename = `Plano_de_Aula_${planWeekCaption(data.semana).replace(/\s+/g, '_')}_${cleanDisc}.doc`;
 
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
@@ -1946,7 +2266,7 @@
         }
 
         async function downloadBatchDocument() {
-            try { await ensureCurriculumLoaded(); }
+            try { await ensureActiveCurriculumLoaded(); }
             catch (e) { showToast("Não consegui carregar o currículo. Verifique a conexão e tente de novo."); return; }
             const cycleVal = document.getElementById('batchCycleSelect').value;
             let startW = 1, endW = 7;
@@ -1962,7 +2282,7 @@
 
             let fullBody = "";
             for (let w = startW; w <= endW; w++) {
-                const wData = getLessonData(String(w));
+                const wData = getLessonData(String(w), true);
                 fullBody += createWordHtmlForData(wData);
                 if (w < endW) {
                     fullBody += `<br clear="all" style="page-break-before:always;" /><br/>`;
@@ -2000,7 +2320,7 @@
 DIRETORIA DE ENSINO-REGIÃO DE ARARAQUARA
 EE. PROF.DINORA MARCODES GOMES
 RUA EMILIA GALLI, 549 - CENTRO-AMERICO BRASILIENSE - SP. TELEFONE: (16) 33921335 CEP: 14.820.015 E-mail: e021830a@educacao.sp.gov.br
-Plano de Aula - 2026 - SEMANA ${data.semana}
+Plano de Aula - 2026 - ${planWeekCaption(data.semana)}
 
 Professor : ${data.professor}
 Componente curricular : ${data.disciplina}
@@ -2043,7 +2363,7 @@ ${data.referencias}`;
             const isPreviewVisible = !document.getElementById('previewArea').classList.contains('d-none');
             const data = isPreviewVisible ? getLiveEditedData() : getLessonData();
 
-            const msg = `*EE. PROF. DINORA MARCONDES GOMES*\n*PLANO DE AULA 2026 - SEMANA ${data.semana}*\n\n*Professor(a):* ${data.professor}\n*Componente:* ${data.disciplina}\n*Turma:* ${data.turma}\n*Período:* ${data.periodo}\n\n*Conteúdo:*\n${data.conteudo}\n\n*Estratégias (50 min):*\n${data.estrategias}\n\n*Recursos:* ${data.recursos}`;
+            const msg = `*EE. PROF. DINORA MARCONDES GOMES*\n*PLANO DE AULA 2026 - ${planWeekCaption(data.semana)}*\n\n*Professor(a):* ${data.professor}\n*Componente:* ${data.disciplina}\n*Turma:* ${data.turma}\n*Período:* ${data.periodo}\n\n*Conteúdo:*\n${data.conteudo}\n\n*Estratégias (50 min):*\n${data.estrategias}\n\n*Recursos:* ${data.recursos}`;
             const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
             window.open(url, '_blank');
         }
@@ -2052,8 +2372,8 @@ ${data.referencias}`;
             const isPreviewVisible = !document.getElementById('previewArea').classList.contains('d-none');
             const data = isPreviewVisible ? getLiveEditedData() : getLessonData();
 
-            const subject = encodeURIComponent(`Plano de Aula - Semana ${data.semana} - ${data.disciplina} - ${data.turma}`);
-            const body = encodeURIComponent(`GOVERNO DO ESTADO DE SÃO PAULO – SECRETARIA DA EDUCAÇÃO\nEE. PROF. DINORA MARCONDES GOMES\n\nPLANO DE AULA - 2026 - SEMANA ${data.semana}\n\nProfessor(a): ${data.professor}\nComponente: ${data.disciplina}\nTurma: ${data.turma}\nPeríodo: ${data.periodo}\n\n5. HABILIDADES:\n${data.habilidades}\n\n7. CONTEÚDO:\n${data.conteudo}\n\n8. OBJETIVOS:\n${data.objetivos}\n\n9. ESTRATÉGIAS (50 min):\n${data.estrategias}\n\n10. RECURSOS:\n${data.recursos}\n\n11. AVALIAÇÃO:\n${data.avaliacao}`);
+            const subject = encodeURIComponent(`Plano de Aula - ${planWeekCaption(data.semana)} - ${data.disciplina} - ${data.turma}`);
+            const body = encodeURIComponent(`GOVERNO DO ESTADO DE SÃO PAULO – SECRETARIA DA EDUCAÇÃO\nEE. PROF. DINORA MARCONDES GOMES\n\nPLANO DE AULA - 2026 - ${planWeekCaption(data.semana)}\n\nProfessor(a): ${data.professor}\nComponente: ${data.disciplina}\nTurma: ${data.turma}\nPeríodo: ${data.periodo}\n\n5. HABILIDADES:\n${data.habilidades}\n\n7. CONTEÚDO:\n${data.conteudo}\n\n8. OBJETIVOS:\n${data.objetivos}\n\n9. ESTRATÉGIAS (50 min):\n${data.estrategias}\n\n10. RECURSOS:\n${data.recursos}\n\n11. AVALIAÇÃO:\n${data.avaliacao}`);
             window.location.href = `mailto:?subject=${subject}&body=${body}`;
         }
 
@@ -2068,10 +2388,10 @@ ${data.referencias}`;
             initThemeMode();
             loadTeacherPreferences();
             populateWeeks();
-            selectYear(currentYear);
-            selectCourse(currentCourse);
+            onPlanPeriodicityChange();
+            selectStage(currentStage);
             // pré-carrega o currículo em segundo plano, sem travar a interface
-            setTimeout(() => { ensureCurriculumLoaded().catch(() => {}); }, 400);
+            setTimeout(() => { ensureActiveCurriculumLoaded().catch(() => {}); }, 400);
         });
     </script>
 </body>

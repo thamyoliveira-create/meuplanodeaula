@@ -600,6 +600,10 @@
                     <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
                     <span id="themeLabel">Modo Escuro</span>
                 </button>
+                <!-- Minha Escola -->
+                <button type="button" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1 fw-bold small" style="border-color: var(--border-color);" onclick="requireAuth(openSchoolModal)">
+                    <i class="bi bi-mortarboard-fill me-1"></i> <span>Minha Escola</span>
+                </button>
                 <!-- Conta / Login -->
                 <button type="button" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1 fw-bold small" style="border-color: var(--border-color);" id="authBtn" onclick="onAuthButtonClick()">
                     <i class="bi bi-person-circle me-1"></i> <span id="authBtnLabel">Entrar</span>
@@ -607,6 +611,32 @@
             </div>
         </div>
     </nav>
+
+    <!-- Modal: Dados da Escola (por usuário logado) -->
+    <div class="modal fade no-print" id="schoolModal" tabindex="-1" aria-labelledby="schoolModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg); background: var(--surface);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark" id="schoolModalLabel"><i class="bi bi-mortarboard-fill me-2" style="color: var(--gold-accent);"></i> Dados da sua escola</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small">Esses dados aparecem no cabeçalho dos planos gerados e ficam salvos só na sua conta — cada professor(a) vê e edita apenas os próprios dados.</p>
+                    <label class="form-label small fw-bold">Linha 1 (governo/secretaria)</label>
+                    <input type="text" class="form-control mb-2" id="schoolLine1">
+                    <label class="form-label small fw-bold">Linha 2 (diretoria de ensino)</label>
+                    <input type="text" class="form-control mb-2" id="schoolLine2">
+                    <label class="form-label small fw-bold">Nome da escola</label>
+                    <input type="text" class="form-control mb-2" id="schoolName">
+                    <label class="form-label small fw-bold">Endereço / contato</label>
+                    <textarea class="form-control mb-3" id="schoolAddress" rows="2"></textarea>
+                    <button type="button" class="btn-main w-100" onclick="saveSchoolProfile()" id="schoolSaveBtn">
+                        <i class="bi bi-check2-circle me-1"></i> Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal: Login por Link Mágico (Supabase) -->
     <div class="modal fade no-print" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
@@ -961,10 +991,10 @@
             <div class="text-center mb-3" style="position: relative;">
                 <img id="previewLogo" src="/logo_dmg.jpg" alt="Logo EE. Prof. Dinora Marcondes Gomes"
                      style="position: absolute; left: 0; top: 0; width: 68px; height: auto;">
-                <h6 class="fw-bold mb-1" style="font-size: 0.95rem;">GOVERNO DE ESTADO DE SÃO PAULO – SECRETÁRIA DA EDUCAÇÃO</h6>
-                <h6 class="fw-bold mb-1" style="font-size: 0.9rem;">DIRETORIA DE ENSINO-REGIÃO DE ARARAQUARA</h6>
-                <h6 class="fw-bold mb-1" style="font-size: 0.9rem;">EE. PROF.DINORA MARCODES GOMES</h6>
-                <p class="text-muted small mb-2" style="font-size: 0.8rem;">RUA EMILIA GALLI, 549 - CENTRO-AMERICO BRASILIENSE - SP. TELEFONE: (16) 33921335 | CEP: 14.820.015 | E-mail: e021830a@educacao.sp.gov.br</p>
+                <h6 class="fw-bold mb-1" style="font-size: 0.95rem;" id="previewSchoolLine1">GOVERNO DE ESTADO DE SÃO PAULO – SECRETÁRIA DA EDUCAÇÃO</h6>
+                <h6 class="fw-bold mb-1" style="font-size: 0.9rem;" id="previewSchoolLine2">DIRETORIA DE ENSINO-REGIÃO DE ARARAQUARA</h6>
+                <h6 class="fw-bold mb-1" style="font-size: 0.9rem;" id="previewSchoolName">EE. PROF.DINORA MARCODES GOMES</h6>
+                <p class="text-muted small mb-2" style="font-size: 0.8rem;" id="previewSchoolAddress">RUA EMILIA GALLI, 549 - CENTRO-AMERICO BRASILIENSE - SP. TELEFONE: (16) 33921335 | CEP: 14.820.015 | E-mail: e021830a@educacao.sp.gov.br</p>
                 <h5 class="fw-bold text-dark mt-2" id="docTitlePreview">Plano de Aula - 2026 - SEMANA 1</h5>
             </div>
 
@@ -1233,17 +1263,27 @@
         }
 
         supabaseClient.auth.onAuthStateChange((_event, session) => {
+            const previousUserId = _authSession && _authSession.user ? _authSession.user.id : null;
             _authSession = session;
             updateAuthUI();
             if (session) {
                 const modalEl = document.getElementById('authModal');
                 const modal = bootstrap.Modal.getInstance(modalEl);
                 if (modal) modal.hide();
+                // Se trocou de conta (ou logou pela primeira vez), recarrega os dados
+                // salvos (nome do professor, escola, planos recentes) SÓ desse usuário.
+                if (session.user.id !== previousUserId) {
+                    loadOrCreateSchoolProfile().then(() => {
+                        loadTeacherPreferences();
+                    });
+                }
                 if (_pendingAfterLogin) {
                     const cb = _pendingAfterLogin;
                     _pendingAfterLogin = null;
                     cb();
                 }
+            } else {
+                _schoolProfile = null;
             }
         });
 
@@ -1260,6 +1300,97 @@
             if (isLoggedIn()) { action(); return; }
             _pendingAfterLogin = action;
             openAuthModal();
+        }
+
+        // --- Dados isolados por usuário (evita que uma pessoa veja/sobrescreva
+        // os dados de outra no mesmo navegador, e permite cada comprador ter a
+        // identidade da própria escola no cabeçalho do plano) ---
+
+        function lsKey(base) {
+            const uid = _authSession && _authSession.user ? _authSession.user.id : 'anon';
+            return `${uid}:${base}`;
+        }
+
+        const DEFAULT_SCHOOL_PROFILE = {
+            school_line1: 'GOVERNO DE ESTADO DE SÃO PAULO – SECRETÁRIA DA EDUCAÇÃO',
+            school_line2: 'DIRETORIA DE ENSINO-REGIÃO DE ARARAQUARA',
+            school_name: 'EE. PROF.DINORA MARCODES GOMES',
+            school_address: 'RUA EMILIA GALLI, 549 - CENTRO-AMERICO BRASILIENSE - SP. TELEFONE: (16) 33921335 | CEP: 14.820.015 | E-mail: e021830a@educacao.sp.gov.br',
+        };
+
+        let _schoolProfile = null;
+
+        function getSchoolProfile() {
+            return _schoolProfile || DEFAULT_SCHOOL_PROFILE;
+        }
+
+        async function loadOrCreateSchoolProfile() {
+            if (!_authSession || !_authSession.user) { _schoolProfile = null; return; }
+            const userId = _authSession.user.id;
+            const { data, error } = await supabaseClient
+                .from('user_profiles')
+                .select('*')
+                .eq('user_id', userId)
+                .maybeSingle();
+            if (error) {
+                console.error('Erro ao carregar perfil da escola', error);
+                _schoolProfile = null;
+                return;
+            }
+            if (data) {
+                _schoolProfile = data;
+                return;
+            }
+            // Primeiro login: cria a linha do perfil dessa pessoa com os valores padrão.
+            const { data: created, error: insertError } = await supabaseClient
+                .from('user_profiles')
+                .insert({ user_id: userId, email: _authSession.user.email, ...DEFAULT_SCHOOL_PROFILE })
+                .select('*')
+                .single();
+            _schoolProfile = insertError ? null : created;
+        }
+
+        function openSchoolModal() {
+            const p = getSchoolProfile();
+            document.getElementById('schoolLine1').value = p.school_line1 || '';
+            document.getElementById('schoolLine2').value = p.school_line2 || '';
+            document.getElementById('schoolName').value = p.school_name || '';
+            document.getElementById('schoolAddress').value = p.school_address || '';
+            const modal = new bootstrap.Modal(document.getElementById('schoolModal'));
+            modal.show();
+        }
+
+        async function saveSchoolProfile() {
+            if (!_authSession || !_authSession.user) { requireAuth(openSchoolModal); return; }
+            const payload = {
+                school_line1: document.getElementById('schoolLine1').value.trim() || DEFAULT_SCHOOL_PROFILE.school_line1,
+                school_line2: document.getElementById('schoolLine2').value.trim() || DEFAULT_SCHOOL_PROFILE.school_line2,
+                school_name: document.getElementById('schoolName').value.trim() || DEFAULT_SCHOOL_PROFILE.school_name,
+                school_address: document.getElementById('schoolAddress').value.trim() || DEFAULT_SCHOOL_PROFILE.school_address,
+                updated_at: new Date().toISOString(),
+            };
+            const btn = document.getElementById('schoolSaveBtn');
+            const original = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Salvando...';
+            const { data, error } = await supabaseClient
+                .from('user_profiles')
+                .update(payload)
+                .eq('user_id', _authSession.user.id)
+                .select('*')
+                .single();
+            btn.disabled = false;
+            btn.innerHTML = original;
+            if (error) {
+                showToast('Não consegui salvar os dados da escola. Tente de novo.');
+                return;
+            }
+            _schoolProfile = data;
+            bootstrap.Modal.getInstance(document.getElementById('schoolModal')).hide();
+            if (typeof generatePreview === 'function' && !document.getElementById('previewArea').classList.contains('d-none')) {
+                generatePreview();
+            }
+            showToast('Dados da escola atualizados.');
         }
     </script>
 
@@ -1444,13 +1575,13 @@
 
         // --- Preferences & LocalStorage ---
         function loadTeacherPreferences() {
-            const savedTeacher = localStorage.getItem("doc_teacher_name");
+            const savedTeacher = localStorage.getItem(lsKey("doc_teacher_name"));
             if (savedTeacher) document.getElementById("teacher").value = savedTeacher;
 
-            const savedStage = localStorage.getItem("doc_saved_stage");
-            const savedYear = localStorage.getItem("doc_saved_year");
-            const savedCourse = localStorage.getItem("doc_saved_course");
-            const savedPeriodicity = localStorage.getItem("doc_plan_periodicity");
+            const savedStage = localStorage.getItem(lsKey("doc_saved_stage"));
+            const savedYear = localStorage.getItem(lsKey("doc_saved_year"));
+            const savedCourse = localStorage.getItem(lsKey("doc_saved_course"));
+            const savedPeriodicity = localStorage.getItem(lsKey("doc_plan_periodicity"));
             if (savedStage && STAGE_CONFIG[savedStage]) currentStage = savedStage;
             if (savedYear) currentYear = savedYear;
             if (savedCourse) currentCourse = savedCourse;
@@ -1485,11 +1616,11 @@
 
         function saveTeacherPreferences() {
             const teacher = document.getElementById("teacher").value;
-            localStorage.setItem("doc_teacher_name", teacher);
-            localStorage.setItem("doc_saved_stage", currentStage);
-            localStorage.setItem("doc_saved_year", currentYear);
-            localStorage.setItem("doc_saved_course", currentCourse);
-            localStorage.setItem("doc_plan_periodicity", document.getElementById('planPeriodicity').value || '1');
+            localStorage.setItem(lsKey("doc_teacher_name"), teacher);
+            localStorage.setItem(lsKey("doc_saved_stage"), currentStage);
+            localStorage.setItem(lsKey("doc_saved_year"), currentYear);
+            localStorage.setItem(lsKey("doc_saved_course"), currentCourse);
+            localStorage.setItem(lsKey("doc_plan_periodicity"), document.getElementById('planPeriodicity').value || '1');
         }
 
         // --- Holiday and SEDUC Event Detection ---
@@ -1555,7 +1686,7 @@
         // --- Recent Plans History ---
         function saveToRecentPlans(data) {
             try {
-                let list = JSON.parse(localStorage.getItem("recent_lesson_plans") || "[]");
+                let list = JSON.parse(localStorage.getItem(lsKey("recent_lesson_plans")) || "[]");
                 list = list.filter(p => !(p.semana === data.semana && p.disciplina === data.disciplina && p.etapa === currentStage && p.ano === currentYear && p.curso === currentCourse));
                 list.unshift({
                     id: Date.now(),
@@ -1572,7 +1703,7 @@
                     data_salva: new Date().toLocaleDateString('pt-BR')
                 });
                 if (list.length > 8) list = list.slice(0, 8);
-                localStorage.setItem("recent_lesson_plans", JSON.stringify(list));
+                localStorage.setItem(lsKey("recent_lesson_plans"), JSON.stringify(list));
                 renderRecentPlans();
             } catch (e) {
                 console.error("Erro ao salvar histórico:", e);
@@ -1581,7 +1712,7 @@
 
         function renderRecentPlans() {
             const container = document.getElementById("recentPlansContainer");
-            const list = JSON.parse(localStorage.getItem("recent_lesson_plans") || "[]");
+            const list = JSON.parse(localStorage.getItem(lsKey("recent_lesson_plans")) || "[]");
 
             if (!list.length) {
                 container.innerHTML = `
@@ -1640,7 +1771,7 @@
         }
 
         function clearRecentPlans() {
-            localStorage.removeItem("recent_lesson_plans");
+            localStorage.removeItem(lsKey("recent_lesson_plans"));
             renderRecentPlans();
             showToast("Histórico de planos limpo!");
         }
@@ -2385,6 +2516,12 @@
             catch (e) { handleCurriculumError(e, generatePreview); return; }
             const data = getLessonData();
 
+            const school = getSchoolProfile();
+            document.getElementById('previewSchoolLine1').textContent = school.school_line1;
+            document.getElementById('previewSchoolLine2').textContent = school.school_line2;
+            document.getElementById('previewSchoolName').textContent = school.school_name;
+            document.getElementById('previewSchoolAddress').textContent = school.school_address;
+
             document.getElementById('docTitlePreview').textContent = `Plano de Aula - 2026 - ${planWeekCaption(data.semana)}`;
             document.getElementById('prevTeacher').innerText = data.professor;
             document.getElementById('prevDiscipline').innerText = data.disciplina;
@@ -2430,17 +2567,18 @@
         // SCHOOL_LOGO_DATA_URI vem de /logo_data.js (logo da escola em base64).
 
         function createWordHtmlForData(data) {
+            const school = getSchoolProfile();
             return `
             <table class="header-table" style="width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 20px;">
                 <tr>
                     <td style="padding: 4px; border: none; width: 80px; vertical-align: top;">
-                        <img src="${SCHOOL_LOGO_DATA_URI}" alt="Logo EE. Prof. Dinora Marcondes Gomes" style="width: 72px; height: auto;">
+                        <img src="${SCHOOL_LOGO_DATA_URI}" alt="Logo da escola" style="width: 72px; height: auto;">
                     </td>
                     <td style="padding: 4px; border: none;">
-                        <h6 style="margin: 2px 0; font-size: 10pt; font-weight: bold;">GOVERNO DE ESTADO DE SÃO PAULO – SECRETÁRIA DA EDUCAÇÃO</h6>
-                        <h6 style="margin: 2px 0; font-size: 9.5pt; font-weight: bold;">DIRETORIA DE ENSINO-REGIÃO DE ARARAQUARA</h6>
-                        <h6 style="margin: 2px 0; font-size: 9.5pt; font-weight: bold;">EE. PROF.DINORA MARCODES GOMES</h6>
-                        <p style="font-size: 8.5pt; margin: 2px 0;">RUA EMILIA GALLI, 549 - CENTRO-AMERICO BRASILIENSE - SP. TELEFONE: (16) 33921335 CEP: 14.820.015 | E-mail: e021830a@educacao.sp.gov.br</p>
+                        <h6 style="margin: 2px 0; font-size: 10pt; font-weight: bold;">${school.school_line1}</h6>
+                        <h6 style="margin: 2px 0; font-size: 9.5pt; font-weight: bold;">${school.school_line2}</h6>
+                        <h6 style="margin: 2px 0; font-size: 9.5pt; font-weight: bold;">${school.school_name}</h6>
+                        <p style="font-size: 8.5pt; margin: 2px 0;">${school.school_address}</p>
                         <h4 style="margin: 6px 0; font-size: 11.5pt; font-weight: bold;">Plano de Aula - 2026 - ${planWeekCaption(data.semana)}</h4>
                     </td>
                 </tr>
@@ -2559,11 +2697,12 @@
         function copyPlanToClipboard() {
             const isPreviewVisible = !document.getElementById('previewArea').classList.contains('d-none');
             const data = isPreviewVisible ? getLiveEditedData() : getLessonData();
+            const school = getSchoolProfile();
 
-            const textToCopy = `GOVERNO DE ESTADO DE SÃO PAULO – SECRETÁRIA DA EDUCAÇÃO
-DIRETORIA DE ENSINO-REGIÃO DE ARARAQUARA
-EE. PROF.DINORA MARCODES GOMES
-RUA EMILIA GALLI, 549 - CENTRO-AMERICO BRASILIENSE - SP. TELEFONE: (16) 33921335 CEP: 14.820.015 E-mail: e021830a@educacao.sp.gov.br
+            const textToCopy = `${school.school_line1}
+${school.school_line2}
+${school.school_name}
+${school.school_address}
 Plano de Aula - 2026 - ${planWeekCaption(data.semana)}
 
 Professor : ${data.professor}
@@ -2607,7 +2746,8 @@ ${data.referencias}${data.observacoes ? `\n\n13 . Observações do Professor :\n
             const isPreviewVisible = !document.getElementById('previewArea').classList.contains('d-none');
             const data = isPreviewVisible ? getLiveEditedData() : getLessonData();
 
-            const msg = `*EE. PROF. DINORA MARCONDES GOMES*\n*PLANO DE AULA 2026 - ${planWeekCaption(data.semana)}*\n\n*Professor(a):* ${data.professor}\n*Componente:* ${data.disciplina}\n*Turma:* ${data.turma}\n*Período:* ${data.periodo}\n\n*Conteúdo:*\n${data.conteudo}\n\n*Estratégias (50 min):*\n${data.estrategias}\n\n*Recursos:* ${data.recursos}`;
+            const school = getSchoolProfile();
+            const msg = `*${school.school_name}*\n*PLANO DE AULA 2026 - ${planWeekCaption(data.semana)}*\n\n*Professor(a):* ${data.professor}\n*Componente:* ${data.disciplina}\n*Turma:* ${data.turma}\n*Período:* ${data.periodo}\n\n*Conteúdo:*\n${data.conteudo}\n\n*Estratégias (50 min):*\n${data.estrategias}\n\n*Recursos:* ${data.recursos}`;
             const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
             window.open(url, '_blank');
         }
@@ -2616,8 +2756,9 @@ ${data.referencias}${data.observacoes ? `\n\n13 . Observações do Professor :\n
             const isPreviewVisible = !document.getElementById('previewArea').classList.contains('d-none');
             const data = isPreviewVisible ? getLiveEditedData() : getLessonData();
 
+            const school = getSchoolProfile();
             const subject = encodeURIComponent(`Plano de Aula - ${planWeekCaption(data.semana)} - ${data.disciplina} - ${data.turma}`);
-            const body = encodeURIComponent(`GOVERNO DO ESTADO DE SÃO PAULO – SECRETARIA DA EDUCAÇÃO\nEE. PROF. DINORA MARCONDES GOMES\n\nPLANO DE AULA - 2026 - ${planWeekCaption(data.semana)}\n\nProfessor(a): ${data.professor}\nComponente: ${data.disciplina}\nTurma: ${data.turma}\nPeríodo: ${data.periodo}\n\n5. HABILIDADES:\n${data.habilidades}\n\n7. CONTEÚDO:\n${data.conteudo}\n\n8. OBJETIVOS:\n${data.objetivos}\n\n9. ESTRATÉGIAS (50 min):\n${data.estrategias}\n\n10. RECURSOS:\n${data.recursos}\n\n11. AVALIAÇÃO:\n${data.avaliacao}`);
+            const body = encodeURIComponent(`${school.school_line1}\n${school.school_name}\n\nPLANO DE AULA - 2026 - ${planWeekCaption(data.semana)}\n\nProfessor(a): ${data.professor}\nComponente: ${data.disciplina}\nTurma: ${data.turma}\nPeríodo: ${data.periodo}\n\n5. HABILIDADES:\n${data.habilidades}\n\n7. CONTEÚDO:\n${data.conteudo}\n\n8. OBJETIVOS:\n${data.objetivos}\n\n9. ESTRATÉGIAS (50 min):\n${data.estrategias}\n\n10. RECURSOS:\n${data.recursos}\n\n11. AVALIAÇÃO:\n${data.avaliacao}`);
             window.location.href = `mailto:?subject=${subject}&body=${body}`;
         }
 
@@ -2628,8 +2769,13 @@ ${data.referencias}${data.observacoes ? `\n\n13 . Observações do Professor :\n
             setTimeout(() => toast.classList.remove('show'), 3500);
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             initThemeMode();
+            // Espera a sessão (e o perfil da escola, se já estiver logado) antes de
+            // carregar preferências salvas, para não misturar dados de contas diferentes
+            // no mesmo navegador.
+            await getAuthToken();
+            await loadOrCreateSchoolProfile();
             loadTeacherPreferences();
             populateWeeks();
             onPlanPeriodicityChange();

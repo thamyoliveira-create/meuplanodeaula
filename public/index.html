@@ -1998,7 +1998,8 @@
 
             const reductionNote = currentReduction > 0 ? ' (Feriado na semana: -1 aula)' : '';
             const lessonLines = data.conteudo.split('\n').filter(l => l.startsWith('•'));
-            lessonsCount.textContent = `${lessonLines.length || finalAulas} aulas planejadas de 50 min em ${getPlanPeriodLabel(selectedWeeks).toLowerCase()} (${currentLessonStyles.map(x => styleLabels[x] || x).join(" + ")})${reductionNote}`;
+            const planningUnit = currentStage === 'tecnico' ? 'aulas planejadas' : 'planos individualizados por aula';
+            lessonsCount.textContent = `${lessonLines.length || finalAulas} ${planningUnit} de 50 min em ${getPlanPeriodLabel(selectedWeeks).toLowerCase()} (${currentLessonStyles.map(x => styleLabels[x] || x).join(" + ")})${reductionNote}`;
             workloadBadge.innerHTML = `<i class="bi bi-clock-history me-1"></i> Carga total: ${finalAulas} aulas (${totalMin} min)`;
         }
 
@@ -2013,20 +2014,48 @@
             const terms = [...new Set(selectedWeeks.map(value => Math.min(4, Math.ceil(Number(value) / 7))))];
             const termLabel = terms.length === 1 ? `${terms[0]}º Bimestre` : `${terms[0]}º ao ${terms[terms.length - 1]}º Bimestre`;
 
-            const titles = [...new Set(rows.map(row => row.titulo).filter(Boolean))];
-            const contents = [...new Set(rows.flatMap(row => row.conteudos || []).filter(Boolean))];
-            const objectives = [...new Set(rows.flatMap(row => row.objetivos || []).filter(Boolean))];
-            const skills = [...new Set(rows.flatMap(row => row.habilidades || []).filter(Boolean))];
-            const essentials = [...new Set(rows.map(row => row.aprendizagem_essencial).filter(Boolean))];
-            const topic = titles.join(' | ') || `${termLabel} — conteúdo não localizado no guia enviado`;
-            const pedagogy = buildRegularDevelopment(topic, withInclusion, currentLessonStyles, currentDetectedEvent);
+            const selectedStyles = currentLessonStyles.length ? currentLessonStyles : ['interativa'];
+            const lessonPlans = rows.map((row, index) => {
+                const title = row.titulo || 'Conteúdo previsto no guia curricular';
+                const heading = `Aula ${row.aula || index + 1} — ${title}`;
+                const pedagogy = buildRegularDevelopment(
+                    title,
+                    withInclusion,
+                    [selectedStyles[index % selectedStyles.length]],
+                    currentDetectedEvent
+                );
+                return { row, heading, pedagogy };
+            });
 
-            let abilitiesText = skills.length
-                ? `Habilidades do Currículo Paulista:\n${skills.map(skill => `• ${skill}`).join('\n')}`
+            const sectionText = (selector, fallback) => lessonPlans.length
+                ? lessonPlans.map(({ row, heading }) => {
+                    const items = selector(row).filter(Boolean);
+                    return `${heading}\n${items.length ? items.map(item => `• ${item}`).join('\n') : fallback}`;
+                }).join('\n\n')
+                : fallback;
+
+            const abilitiesText = lessonPlans.length
+                ? lessonPlans.map(({ row, heading }) => {
+                    const skills = (row.habilidades || []).filter(Boolean);
+                    const skillText = skills.length
+                        ? `Habilidades do Currículo Paulista:\n${skills.map(skill => `• ${skill}`).join('\n')}`
+                        : 'Habilidades a definir conforme o currículo da etapa.';
+                    const essentialText = row.aprendizagem_essencial
+                        ? `\nAprendizagem essencial:\n• ${row.aprendizagem_essencial}`
+                        : '';
+                    return `${heading}\n${skillText}${essentialText}`;
+                }).join('\n\n')
                 : 'Habilidades a definir conforme o currículo da etapa.';
-            if (essentials.length) {
-                abilitiesText += `\n\nAprendizagens Essenciais:\n${essentials.map(item => `• ${item}`).join('\n')}`;
-            }
+
+            const strategiesText = lessonPlans.length
+                ? lessonPlans.map(({ heading, pedagogy }) => `${heading}\n${pedagogy.estrategias}`).join('\n\n')
+                : 'Definir as estratégias de acordo com o conteúdo selecionado.';
+            const resourcesText = lessonPlans.length
+                ? lessonPlans.map(({ heading, pedagogy }) => `${heading}\n• ${pedagogy.recursos}`).join('\n\n')
+                : 'Definir os recursos de acordo com o conteúdo selecionado.';
+            const assessmentText = lessonPlans.length
+                ? lessonPlans.map(({ heading, pedagogy }) => `${heading}\n• ${pedagogy.avaliacao}`).join('\n\n')
+                : 'Definir a avaliação de acordo com o conteúdo selecionado.';
 
             return {
                 professor: teacher,
@@ -2035,12 +2064,12 @@
                 periodo: period,
                 semana: selectedWeeks.length === 1 ? String(selectedWeeks[0]) : `${selectedWeeks[0]} a ${selectedWeeks[selectedWeeks.length - 1]}`,
                 habilidades: abilitiesText,
-                objetos: contents.length ? contents.map(item => `• ${item}`).join('\n') : 'Objetos de conhecimento não localizados para esta semana.',
-                conteudo: titles.length ? `${termLabel}\n\n${titles.map(title => `• ${title}`).join('\n')}` : `${termLabel}\n\n• Conteúdo não localizado no guia enviado.`,
-                objetivos: objectives.length ? objectives.map(item => `• ${item}`).join('\n') : 'Definir os objetivos de aprendizagem de acordo com o conteúdo selecionado.',
-                estrategias: pedagogy.estrategias,
-                recursos: pedagogy.recursos,
-                avaliacao: pedagogy.avaliacao,
+                objetos: sectionText(row => row.conteudos || [], '• Objetos de conhecimento não localizados para esta aula.'),
+                conteudo: lessonPlans.length ? `${termLabel}\n\n${lessonPlans.map(({ heading }) => heading).join('\n\n')}` : `${termLabel}\n\n• Conteúdo não localizado no guia enviado.`,
+                objetivos: sectionText(row => row.objetivos || [], '• Definir os objetivos de aprendizagem desta aula.'),
+                estrategias: strategiesText,
+                recursos: resourcesText,
+                avaliacao: assessmentText,
                 referencias: 'Currículo Paulista; Guia de Aprendizagens Essenciais e Escopo-Sequência SEDUC-SP, 2026.'
             };
         }

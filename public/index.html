@@ -1282,6 +1282,11 @@
                 err.code = 'login_necessario';
                 throw err;
             }
+            if (response.status === 403) {
+                const err = new Error('acesso_nao_liberado');
+                err.code = 'acesso_nao_liberado';
+                throw err;
+            }
             if (!response.ok) throw new Error('curriculo');
             return response.json();
         }
@@ -1314,6 +1319,10 @@
         function handleCurriculumError(e, retryFn) {
             if (e && e.code === 'login_necessario') {
                 requireAuth(retryFn);
+                return;
+            }
+            if (e && e.code === 'acesso_nao_liberado') {
+                showToast("Seu login funcionou, mas seu acesso ainda não foi liberado. Fale com a gente para liberar.");
                 return;
             }
             showToast("Não consegui carregar o currículo. Verifique a conexão e tente de novo.");
@@ -1944,13 +1953,13 @@
                         updateClassroomValue();
                         renderDisciplineChips();
                     })
-                    .catch(e => { badge.textContent = e && e.code === 'login_necessario' ? 'Entre para carregar o currículo' : 'Currículo indisponível'; });
+                    .catch(e => { badge.textContent = e && e.code === 'login_necessario' ? 'Entre para carregar o currículo' : (e && e.code === 'acesso_nao_liberado' ? 'Acesso ainda não liberado' : 'Currículo indisponível'); });
             } else {
                 const badge = document.getElementById('disciplineCountBadge');
                 badge.textContent = 'Carregando currículo...';
                 ensureRegularCurriculumLoaded()
                     .then(() => renderDisciplineChips())
-                    .catch(e => { badge.textContent = e && e.code === 'login_necessario' ? 'Entre para carregar o currículo' : 'Currículo indisponível'; });
+                    .catch(e => { badge.textContent = e && e.code === 'login_necessario' ? 'Entre para carregar o currículo' : (e && e.code === 'acesso_nao_liberado' ? 'Acesso ainda não liberado' : 'Currículo indisponível'); });
             }
             saveTeacherPreferences();
         }

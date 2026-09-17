@@ -11,6 +11,9 @@ import os
 import csv
 import pathlib
 import sys
+import json
+import urllib.request
+import urllib.error
 from typing import Union, List, Dict, Any
 
 import logging
@@ -46,6 +49,41 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
 
 logging.basicConfig(level=logging.INFO)
+
+# --- Autenticação (Supabase) para proteger o currículo completo ---
+# A URL/anon key são públicas por design (usadas no frontend também); a
+# proteção real é: sem um token de sessão válido, o backend não libera os
+# dados do currículo (api/curriculum/*).
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://vvorfmojhqzixazlhgox.supabase.co")
+SUPABASE_ANON_KEY = os.environ.get(
+    "SUPABASE_ANON_KEY",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2b3JmbW9qaHF6aXhhemxoZ294Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2MzAwNDMsImV4cCI6MjEwNTIwNjA0M30.Q7dmPMpiXRiQfAzAdoBB1mcGrLvzu7KgJNyNbhuyFqk",
+)
+DATA_DIR = BASE_DIR / "data"
+
+
+def _verify_supabase_token(token: str) -> bool:
+    """Confirma junto ao Supabase que o token de acesso pertence a um usuário logado."""
+    if not token:
+        return False
+    req = urllib.request.Request(
+        f"{SUPABASE_URL}/auth/v1/user",
+        headers={"Authorization": f"Bearer {token}", "apikey": SUPABASE_ANON_KEY},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=6) as resp:
+            return resp.status == 200
+    except urllib.error.HTTPError:
+        return False
+    except Exception:
+        app.logger.exception("Falha ao validar token Supabase")
+        return False
+
+
+def _require_auth() -> bool:
+    auth_header = request.headers.get("Authorization", "")
+    token = auth_header.split(" ", 1)[1].strip() if auth_header.lower().startswith("bearer ") else ""
+    return _verify_supabase_token(token)
 
 
 def _client_ip() -> str:
@@ -341,6 +379,28 @@ def public_asset(filename):
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok", "app": "Gerador de Plano de Aula", "rows": len(get_curriculum_rows())})
+
+
+@app.route("/api/curriculum/tecnico", methods=["GET"])
+@limiter.limit("30 per minute")
+def curriculum_tecnico():
+    if not _require_auth():
+        return jsonify({"error": "login_necessario"}), 401
+    path = DATA_DIR / "curriculum_data.json"
+    if not path.exists():
+        return jsonify({"error": "curriculo_indisponivel"}), 404
+    return send_file(str(path), mimetype="application/json")
+
+
+@app.route("/api/curriculum/regular", methods=["GET"])
+@limiter.limit("30 per minute")
+def curriculum_regular():
+    if not _require_auth():
+        return jsonify({"error": "login_necessario"}), 401
+    path = DATA_DIR / "regular_curriculum.json"
+    if not path.exists():
+        return jsonify({"error": "curriculo_indisponivel"}), 404
+    return send_file(str(path), mimetype="application/json")
 
 
 @app.route("/api/preview-plan", methods=["POST"])

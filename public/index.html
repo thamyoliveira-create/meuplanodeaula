@@ -587,7 +587,7 @@
                 </div>
                 <div>
                     <span class="eyebrow-label d-block">Meu Plano de Aula</span>
-                    <span class="h6 fw-bold mb-0 d-block brand-title brand-school">EE. Prof. Dinora Marcondes Gomes</span>
+                    <span class="h6 fw-bold mb-0 d-block brand-title">Planos de aula alinhados ao Currículo Paulista</span>
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2">
@@ -630,6 +630,19 @@
                     <input type="text" class="form-control mb-2" id="schoolName">
                     <label class="form-label small fw-bold">Endereço / contato</label>
                     <textarea class="form-control mb-3" id="schoolAddress" rows="2"></textarea>
+
+                    <label class="form-label small fw-bold">Logo da escola</label>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <img id="schoolLogoPreview" src="" alt="Logo da escola" class="d-none" style="width: 56px; height: 56px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border-color); background: #fff;">
+                        <div class="flex-grow-1">
+                            <input type="file" class="form-control form-control-sm" id="schoolLogoInput" accept="image/png,image/jpeg,image/webp,image/svg+xml" onchange="onSchoolLogoSelected(event)">
+                            <small class="text-muted" style="font-size: 0.75rem;">PNG, JPG, WEBP ou SVG, até 800 KB. Aparece no lugar da logo padrão nos planos gerados.</small>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="schoolLogoRemoveBtn" onclick="removeSchoolLogo()" style="display:none;" title="Remover logo">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </div>
+
                     <button type="button" class="btn-main w-100" onclick="saveSchoolProfile()" id="schoolSaveBtn">
                         <i class="bi bi-check2-circle me-1"></i> Salvar
                     </button>
@@ -1350,14 +1363,74 @@
             _schoolProfile = insertError ? null : created;
         }
 
+        let _pendingLogoDataUri = undefined;
+        const MAX_LOGO_BYTES = 800 * 1024;
+
         function openSchoolModal() {
             const p = getSchoolProfile();
             document.getElementById('schoolLine1').value = p.school_line1 || '';
             document.getElementById('schoolLine2').value = p.school_line2 || '';
             document.getElementById('schoolName').value = p.school_name || '';
             document.getElementById('schoolAddress').value = p.school_address || '';
+
+            _pendingLogoDataUri = undefined;
+            const logoInput = document.getElementById('schoolLogoInput');
+            const logoPreview = document.getElementById('schoolLogoPreview');
+            const logoRemoveBtn = document.getElementById('schoolLogoRemoveBtn');
+            if (logoInput) logoInput.value = '';
+            if (p.logo_data_uri) {
+                logoPreview.src = p.logo_data_uri;
+                logoPreview.classList.remove('d-none');
+                logoRemoveBtn.style.display = '';
+            } else {
+                logoPreview.src = '';
+                logoPreview.classList.add('d-none');
+                logoRemoveBtn.style.display = 'none';
+            }
+
             const modal = new bootstrap.Modal(document.getElementById('schoolModal'));
             modal.show();
+        }
+
+        function onSchoolLogoSelected(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            const allowedTypes = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'];
+            if (!allowedTypes.includes(file.type)) {
+                showToast('Formato não suportado. Use PNG, JPG, WEBP ou SVG.');
+                event.target.value = '';
+                return;
+            }
+            if (file.size > MAX_LOGO_BYTES) {
+                showToast('A imagem precisa ter até 800 KB.');
+                event.target.value = '';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+                _pendingLogoDataUri = reader.result;
+                const logoPreview = document.getElementById('schoolLogoPreview');
+                logoPreview.src = _pendingLogoDataUri;
+                logoPreview.classList.remove('d-none');
+                document.getElementById('schoolLogoRemoveBtn').style.display = '';
+            };
+            reader.onerror = () => { showToast('Não consegui ler essa imagem. Tente outra.'); };
+            reader.readAsDataURL(file);
+        }
+
+        function removeSchoolLogo() {
+            _pendingLogoDataUri = null;
+            const logoInput = document.getElementById('schoolLogoInput');
+            const logoPreview = document.getElementById('schoolLogoPreview');
+            if (logoInput) logoInput.value = '';
+            logoPreview.src = '';
+            logoPreview.classList.add('d-none');
+            document.getElementById('schoolLogoRemoveBtn').style.display = 'none';
+        }
+
+        function getSchoolLogoDataUri() {
+            const p = getSchoolProfile();
+            return (p && p.logo_data_uri) || SCHOOL_LOGO_DATA_URI;
         }
 
         async function saveSchoolProfile() {
@@ -1369,6 +1442,9 @@
                 school_address: document.getElementById('schoolAddress').value.trim() || DEFAULT_SCHOOL_PROFILE.school_address,
                 updated_at: new Date().toISOString(),
             };
+            if (_pendingLogoDataUri !== undefined) {
+                payload.logo_data_uri = _pendingLogoDataUri;
+            }
             const btn = document.getElementById('schoolSaveBtn');
             const original = btn.innerHTML;
             btn.disabled = true;
@@ -1386,6 +1462,7 @@
                 return;
             }
             _schoolProfile = data;
+            _pendingLogoDataUri = undefined;
             bootstrap.Modal.getInstance(document.getElementById('schoolModal')).hide();
             if (typeof generatePreview === 'function' && !document.getElementById('previewArea').classList.contains('d-none')) {
                 generatePreview();
@@ -2521,6 +2598,8 @@
             document.getElementById('previewSchoolLine2').textContent = school.school_line2;
             document.getElementById('previewSchoolName').textContent = school.school_name;
             document.getElementById('previewSchoolAddress').textContent = school.school_address;
+            const previewLogoEl = document.getElementById('previewLogo');
+            if (previewLogoEl) previewLogoEl.src = getSchoolLogoDataUri();
 
             document.getElementById('docTitlePreview').textContent = `Plano de Aula - 2026 - ${planWeekCaption(data.semana)}`;
             document.getElementById('prevTeacher').innerText = data.professor;
@@ -2572,7 +2651,7 @@
             <table class="header-table" style="width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 20px;">
                 <tr>
                     <td style="padding: 4px; border: none; width: 80px; vertical-align: top;">
-                        <img src="${SCHOOL_LOGO_DATA_URI}" alt="Logo da escola" style="width: 72px; height: auto;">
+                        <img src="${getSchoolLogoDataUri()}" alt="Logo da escola" style="width: 72px; height: auto;">
                     </td>
                     <td style="padding: 4px; border: none;">
                         <h6 style="margin: 2px 0; font-size: 10pt; font-weight: bold;">${school.school_line1}</h6>

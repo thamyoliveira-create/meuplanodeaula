@@ -600,9 +600,40 @@
                     <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
                     <span id="themeLabel">Modo Escuro</span>
                 </button>
+                <!-- Conta / Login -->
+                <button type="button" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1 fw-bold small" style="border-color: var(--border-color);" id="authBtn" onclick="onAuthButtonClick()">
+                    <i class="bi bi-person-circle me-1"></i> <span id="authBtnLabel">Entrar</span>
+                </button>
             </div>
         </div>
     </nav>
+
+    <!-- Modal: Login por Link Mágico (Supabase) -->
+    <div class="modal fade no-print" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius-lg); background: var(--surface);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark" id="authModalLabel"><i class="bi bi-envelope-paper-heart-fill me-2" style="color: var(--gold-accent);"></i> Entrar para gerar seu plano</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small">Digite seu e-mail e enviaremos um link de acesso. Você não precisa criar senha.</p>
+                    <div id="authFormStep">
+                        <label for="authEmail" class="form-label small fw-bold">E-mail</label>
+                        <input type="email" class="form-control mb-3" id="authEmail" placeholder="seuemail@exemplo.com">
+                        <button type="button" class="btn-main w-100" onclick="sendMagicLink()" id="authSendBtn">
+                            <i class="bi bi-send-fill me-1"></i> Enviar link mágico
+                        </button>
+                    </div>
+                    <div id="authSentStep" class="d-none text-center py-2">
+                        <i class="bi bi-check-circle-fill fs-2" style="color: var(--primary);"></i>
+                        <p class="mt-2 mb-0 small">Link enviado! Confira seu e-mail (e a caixa de spam) e clique no link para entrar.</p>
+                    </div>
+                    <div id="authErrorMsg" class="text-danger small mt-2 d-none"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Container -->
     <main class="container my-4 mb-5" style="max-width: 960px;">
@@ -855,6 +886,21 @@
                 </div>
             </div>
 
+            <!-- Lista clara das aulas incluídas na semana/período selecionado -->
+            <div class="week-lessons-box mt-2 mb-3 p-3" style="background: var(--surface-alt, rgba(0,0,0,0.03)); border: 1px solid var(--border-color); border-radius: var(--radius-md, 10px);">
+                <strong class="small d-block mb-2"><i class="bi bi-list-check me-1" style="color: var(--gold-accent);"></i> Aulas incluídas neste plano</strong>
+                <ul class="mb-0 ps-3 small" id="weekLessonsList" style="line-height: 1.6;">
+                    <li class="text-muted">Selecione a semana para ver as aulas.</li>
+                </ul>
+            </div>
+
+            <!-- Observações do Professor / Dados adicionais para o plano -->
+            <div class="mb-3">
+                <label for="teacherNotes" class="form-label"><i class="bi bi-chat-left-text-fill me-1 text-primary"></i> Observações do Professor (opcional)</label>
+                <textarea class="form-control" id="teacherNotes" rows="3" placeholder="Ex: turma com dificuldade em leitura, focar em exemplos práticos, retomar o conteúdo da semana anterior..." oninput="updateLiveSummary()"></textarea>
+                <small class="text-muted" style="font-size: 0.78rem;">O que você escrever aqui é incorporado ao plano gerado (Conteúdo, Estratégias e uma seção própria de Observações).</small>
+            </div>
+
             <!-- Action Buttons -->
             <div class="d-flex flex-wrap align-items-center gap-2 mt-4 pt-3 border-top" style="border-color: var(--border-color);">
                 <button type="button" class="btn-main flex-grow-1" id="btnDownload" onclick="downloadDocument()">
@@ -982,6 +1028,12 @@
                     <td>
                         <div class="field-label mb-1">12 . Referências :</div>
                         <div class="field-val" id="prevReferencias" contenteditable="true">-</div>
+                    </td>
+                </tr>
+                <tr id="prevObservacoesRow">
+                    <td>
+                        <div class="field-label mb-1">13 . Observações do Professor :</div>
+                        <div class="field-val" id="prevObservacoes" contenteditable="true">-</div>
                     </td>
                 </tr>
             </table>
@@ -1112,32 +1164,141 @@
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/logo_data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
-    <!-- A base completa do currículo (~2 MB) é carregada sob demanda, não bloqueia a página. -->
+    <script>
+        // --- Autenticação (Supabase, login por link mágico) ---
+        // A URL e a chave "anon"/publishable são públicas por design; quem protege
+        // de fato os dados é a checagem do token feita no backend (api/index.py)
+        // antes de liberar o currículo completo.
+        const SUPABASE_URL = 'https://vvorfmojhqzixazlhgox.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2b3JmbW9qaHF6aXhhemxoZ294Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2MzAwNDMsImV4cCI6MjEwNTIwNjA0M30.Q7dmPMpiXRiQfAzAdoBB1mcGrLvzu7KgJNyNbhuyFqk';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let _authSession = null;
+        let _pendingAfterLogin = null; // callback a rodar assim que o login for confirmado
+
+        function isLoggedIn() {
+            return !!_authSession;
+        }
+
+        function updateAuthUI() {
+            const label = document.getElementById('authBtnLabel');
+            if (!label) return;
+            label.textContent = _authSession ? (_authSession.user.email || 'Sair') : 'Entrar';
+        }
+
+        function onAuthButtonClick() {
+            if (_authSession) {
+                supabaseClient.auth.signOut();
+                return;
+            }
+            openAuthModal();
+        }
+
+        function openAuthModal() {
+            document.getElementById('authFormStep').classList.remove('d-none');
+            document.getElementById('authSentStep').classList.add('d-none');
+            document.getElementById('authErrorMsg').classList.add('d-none');
+            const modal = new bootstrap.Modal(document.getElementById('authModal'));
+            modal.show();
+        }
+
+        async function sendMagicLink() {
+            const emailInput = document.getElementById('authEmail');
+            const errorBox = document.getElementById('authErrorMsg');
+            const email = emailInput.value.trim();
+            errorBox.classList.add('d-none');
+            if (!email || !email.includes('@')) {
+                errorBox.textContent = 'Digite um e-mail válido.';
+                errorBox.classList.remove('d-none');
+                return;
+            }
+            const btn = document.getElementById('authSendBtn');
+            const original = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Enviando...';
+            const { error } = await supabaseClient.auth.signInWithOtp({
+                email,
+                options: { emailRedirectTo: window.location.origin + window.location.pathname }
+            });
+            btn.disabled = false;
+            btn.innerHTML = original;
+            if (error) {
+                errorBox.textContent = 'Não foi possível enviar o link agora. Tente novamente em instantes.';
+                errorBox.classList.remove('d-none');
+                return;
+            }
+            document.getElementById('authFormStep').classList.add('d-none');
+            document.getElementById('authSentStep').classList.remove('d-none');
+        }
+
+        supabaseClient.auth.onAuthStateChange((_event, session) => {
+            _authSession = session;
+            updateAuthUI();
+            if (session) {
+                const modalEl = document.getElementById('authModal');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+                if (_pendingAfterLogin) {
+                    const cb = _pendingAfterLogin;
+                    _pendingAfterLogin = null;
+                    cb();
+                }
+            }
+        });
+
+        async function getAuthToken() {
+            const { data } = await supabaseClient.auth.getSession();
+            _authSession = data.session;
+            updateAuthUI();
+            return data.session ? data.session.access_token : null;
+        }
+
+        // Garante que o usuário está logado antes de continuar; se não estiver,
+        // abre o modal de login e re-executa a ação assim que o login for concluído.
+        function requireAuth(action) {
+            if (isLoggedIn()) { action(); return; }
+            _pendingAfterLogin = action;
+            openAuthModal();
+        }
+    </script>
+
+    <!-- A base completa do currículo (~2 MB) é carregada sob demanda, e exige login,
+         não bloqueia a página. -->
     <script>
         let _curricPromise = null;
         let _regularCurricPromise = null;
+
+        async function fetchProtectedCurriculum(endpoint) {
+            const token = await getAuthToken();
+            if (!token) {
+                const err = new Error('login_necessario');
+                err.code = 'login_necessario';
+                throw err;
+            }
+            const response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
+            if (response.status === 401) {
+                const err = new Error('login_necessario');
+                err.code = 'login_necessario';
+                throw err;
+            }
+            if (!response.ok) throw new Error('curriculo');
+            return response.json();
+        }
+
         function ensureCurriculumLoaded() {
             if (window.CURRICULUM_DATA && Array.isArray(window.CURRICULUM_DATA)) return Promise.resolve();
             if (_curricPromise) return _curricPromise;
-            _curricPromise = new Promise((resolve, reject) => {
-                const s = document.createElement('script');
-                s.src = '/curriculum_data.js';
-                s.onload = () => resolve();
-                s.onerror = () => { _curricPromise = null; reject(new Error('curriculo')); };
-                document.head.appendChild(s);
-            });
+            _curricPromise = fetchProtectedCurriculum('/api/curriculum/tecnico')
+                .then(data => { window.CURRICULUM_DATA = data; })
+                .catch(error => { _curricPromise = null; throw error; });
             return _curricPromise;
         }
 
         function ensureRegularCurriculumLoaded() {
             if (window.REGULAR_CURRICULUM_DATA && Array.isArray(window.REGULAR_CURRICULUM_DATA)) return Promise.resolve();
             if (_regularCurricPromise) return _regularCurricPromise;
-            _regularCurricPromise = fetch('/regular_curriculum.json')
-                .then(response => {
-                    if (!response.ok) throw new Error('curriculo_regular');
-                    return response.json();
-                })
+            _regularCurricPromise = fetchProtectedCurriculum('/api/curriculum/regular')
                 .then(data => { window.REGULAR_CURRICULUM_DATA = data; })
                 .catch(error => { _regularCurricPromise = null; throw error; });
             return _regularCurricPromise;
@@ -1145,6 +1306,17 @@
 
         function ensureActiveCurriculumLoaded() {
             return currentStage === 'tecnico' ? ensureCurriculumLoaded() : ensureRegularCurriculumLoaded();
+        }
+
+        // Chame dentro de um catch(e) de ensureActiveCurriculumLoaded(): se o motivo
+        // foi falta de login, abre o modal e refaz "retryFn" assim que logar; senão,
+        // mostra o erro de conexão normal.
+        function handleCurriculumError(e, retryFn) {
+            if (e && e.code === 'login_necessario') {
+                requireAuth(retryFn);
+                return;
+            }
+            showToast("Não consegui carregar o currículo. Verifique a conexão e tente de novo.");
         }
     </script>
 
@@ -1772,13 +1944,13 @@
                         updateClassroomValue();
                         renderDisciplineChips();
                     })
-                    .catch(() => { badge.textContent = 'Currículo indisponível'; });
+                    .catch(e => { badge.textContent = e && e.code === 'login_necessario' ? 'Entre para carregar o currículo' : 'Currículo indisponível'; });
             } else {
                 const badge = document.getElementById('disciplineCountBadge');
                 badge.textContent = 'Carregando currículo...';
                 ensureRegularCurriculumLoaded()
                     .then(() => renderDisciplineChips())
-                    .catch(() => { badge.textContent = 'Currículo indisponível'; });
+                    .catch(e => { badge.textContent = e && e.code === 'login_necessario' ? 'Entre para carregar o currículo' : 'Currículo indisponível'; });
             }
             saveTeacherPreferences();
         }
@@ -2001,6 +2173,36 @@
             const planningUnit = currentStage === 'tecnico' ? 'aulas planejadas' : 'planos individualizados por aula';
             lessonsCount.textContent = `${lessonLines.length || finalAulas} ${planningUnit} de 50 min em ${getPlanPeriodLabel(selectedWeeks).toLowerCase()} (${currentLessonStyles.map(x => styleLabels[x] || x).join(" + ")})${reductionNote}`;
             workloadBadge.innerHTML = `<i class="bi bi-clock-history me-1"></i> Carga total: ${finalAulas} aulas (${totalMin} min)`;
+
+            renderWeekLessonsList(lessonLines);
+        }
+
+        function getTeacherNotes() {
+            const el = document.getElementById('teacherNotes');
+            return el ? el.value.trim() : '';
+        }
+
+        function renderWeekLessonsList(lessonLines) {
+            const list = document.getElementById('weekLessonsList');
+            if (!list) return;
+            if (!lessonLines || !lessonLines.length) {
+                list.innerHTML = '<li class="text-muted">Nenhuma aula localizada para esta semana/período ainda.</li>';
+                return;
+            }
+            list.innerHTML = lessonLines.map(line => `<li>${line.replace(/^•\s*/, '')}</li>`).join('');
+        }
+
+        // Incorpora as observações do professor ao objeto de dados do plano (conteúdo, estratégias e seção própria)
+        function applyTeacherNotes(data) {
+            const notes = getTeacherNotes();
+            if (!notes) {
+                data.observacoes = '';
+                return data;
+            }
+            data.observacoes = notes;
+            data.conteudo = `${data.conteudo}\n\nObservações do professor consideradas: ${notes}`;
+            data.estrategias = `${data.estrategias}\n\n• Orientação do professor para esta turma: ${notes}`;
+            return data;
         }
 
         function getRegularLessonData(targetWeek = null, forceWeekly = false) {
@@ -2057,7 +2259,7 @@
                 ? lessonPlans.map(({ heading, pedagogy }) => `${heading}\n• ${pedagogy.avaliacao}`).join('\n\n')
                 : 'Definir a avaliação de acordo com o conteúdo selecionado.';
 
-            return {
+            return applyTeacherNotes({
                 professor: teacher,
                 disciplina: currentDiscipline,
                 turma: classroom,
@@ -2071,7 +2273,7 @@
                 recursos: resourcesText,
                 avaliacao: assessmentText,
                 referencias: 'Currículo Paulista; Guia de Aprendizagens Essenciais e Escopo-Sequência SEDUC-SP, 2026.'
-            };
+            });
         }
 
         function getLessonData(targetWeek = null, forceWeekly = false) {
@@ -2133,7 +2335,7 @@
 
             const pedagogy = buildCoherentDevelopment(currentDiscipline, temaStr, withInclusion, currentLessonStyles, currentDetectedEvent, week);
 
-            return {
+            return applyTeacherNotes({
                 professor: teacher,
                 disciplina: currentDiscipline,
                 turma: classroom,
@@ -2147,7 +2349,7 @@
                 recursos: pedagogy.recursos,
                 avaliacao: pedagogy.avaliacao,
                 referencias: "Currículo Paulista / Diretrizes Curriculares da Educação Profissional Técnica - SEDUC-SP."
-            };
+            });
         }
 
         function nextWeek() {
@@ -2171,7 +2373,7 @@
 
         async function generatePreview() {
             try { await ensureActiveCurriculumLoaded(); }
-            catch (e) { showToast("Não consegui carregar o currículo. Verifique a conexão e tente de novo."); return; }
+            catch (e) { handleCurriculumError(e, generatePreview); return; }
             const data = getLessonData();
 
             document.getElementById('docTitlePreview').textContent = `Plano de Aula - 2026 - ${planWeekCaption(data.semana)}`;
@@ -2187,6 +2389,8 @@
             document.getElementById('prevRecursos').innerText = data.recursos;
             document.getElementById('prevAvaliacao').innerText = data.avaliacao;
             document.getElementById('prevReferencias').innerText = data.referencias;
+            document.getElementById('prevObservacoes').innerText = data.observacoes || '-';
+            document.getElementById('prevObservacoesRow').style.display = data.observacoes ? '' : 'none';
 
             const prevArea = document.getElementById('previewArea');
             prevArea.classList.remove('d-none');
@@ -2210,6 +2414,7 @@
                 recursos: document.getElementById('prevRecursos').innerText.trim(),
                 avaliacao: document.getElementById('prevAvaliacao').innerText.trim(),
                 referencias: document.getElementById('prevReferencias').innerText.trim(),
+                observacoes: (() => { const t = document.getElementById('prevObservacoes').innerText.trim(); return t === '-' ? '' : t; })(),
             };
         }
 
@@ -2245,13 +2450,14 @@
                 <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">1 0 . Recursos didáticos :</span><div style="white-space: pre-line; margin-top: 4px;">${data.recursos}</div></td></tr>
                 <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">1 1 . Critérios de Avaliação :</span><div style="white-space: pre-line; margin-top: 4px;">${data.avaliacao}</div></td></tr>
                 <tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">12 . Referências :</span><div style="white-space: pre-line; margin-top: 4px;">${data.referencias}</div></td></tr>
+                ${data.observacoes ? `<tr><td style="border: 1px solid #000; padding: 8px 10px; font-size: 10.5pt;"><span style="font-weight: bold;">13 . Observações do Professor :</span><div style="white-space: pre-line; margin-top: 4px;">${data.observacoes}</div></td></tr>` : ''}
             </table>
             `;
         }
 
         async function downloadDocument() {
             try { await ensureActiveCurriculumLoaded(); }
-            catch (e) { showToast("Não consegui carregar o currículo. Verifique a conexão e tente de novo."); return; }
+            catch (e) { handleCurriculumError(e, downloadDocument); return; }
             const isPreviewVisible = !document.getElementById('previewArea').classList.contains('d-none');
             const data = isPreviewVisible ? getLiveEditedData() : getLessonData();
 
@@ -2296,7 +2502,7 @@
 
         async function downloadBatchDocument() {
             try { await ensureActiveCurriculumLoaded(); }
-            catch (e) { showToast("Não consegui carregar o currículo. Verifique a conexão e tente de novo."); return; }
+            catch (e) { handleCurriculumError(e, downloadBatchDocument); return; }
             const cycleVal = document.getElementById('batchCycleSelect').value;
             let startW = 1, endW = 7;
 
@@ -2378,7 +2584,7 @@ ${data.recursos}
 ${data.avaliacao}
 
 12 . Referências :
-${data.referencias}`;
+${data.referencias}${data.observacoes ? `\n\n13 . Observações do Professor :\n${data.observacoes}` : ''}`;
 
             navigator.clipboard.writeText(textToCopy).then(() => {
                 saveToRecentPlans(data);

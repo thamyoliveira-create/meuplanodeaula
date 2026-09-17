@@ -1283,6 +1283,12 @@
                 const modalEl = document.getElementById('authModal');
                 const modal = bootstrap.Modal.getInstance(modalEl);
                 if (modal) modal.hide();
+                // Login novo (não é sessão restaurada ao abrir a página): encerra
+                // qualquer outra sessão aberta dessa mesma conta, para que login e
+                // senha/link não fiquem sendo usados por duas pessoas ao mesmo tempo.
+                if (_event === 'SIGNED_IN') {
+                    supabaseClient.auth.signOut({ scope: 'others' }).catch(() => {});
+                }
                 // Se trocou de conta (ou logou pela primeira vez), recarrega os dados
                 // salvos (nome do professor, escola, planos recentes) SÓ desse usuário.
                 if (session.user.id !== previousUserId) {

@@ -14,6 +14,7 @@ import sys
 import json
 import urllib.request
 import urllib.error
+import urllib.parse
 from typing import Union, List, Dict, Any
 
 import logging
@@ -62,28 +63,64 @@ SUPABASE_ANON_KEY = os.environ.get(
 DATA_DIR = BASE_DIR / "data"
 
 
-def _verify_supabase_token(token: str) -> bool:
-    """Confirma junto ao Supabase que o token de acesso pertence a um usuário logado."""
+def _get_supabase_email(token: str) -> Union[str, None]:
+    """Confirma junto ao Supabase que o token pertence a um usuário logado e devolve o e-mail dele."""
     if not token:
-        return False
+        return None
     req = urllib.request.Request(
         f"{SUPABASE_URL}/auth/v1/user",
         headers={"Authorization": f"Bearer {token}", "apikey": SUPABASE_ANON_KEY},
     )
     try:
         with urllib.request.urlopen(req, timeout=6) as resp:
-            return resp.status == 200
+            if resp.status != 200:
+                return None
+            payload = json.loads(resp.read().decode("utf-8"))
+            return (payload.get("email") or "").strip().lower() or None
+    except urllib.error.HTTPError:
+        return None
+    except Exception:
+        app.logger.exception("Falha ao validar token Supabase")
+        return None
+
+
+def _is_email_authorized(token: str, email: str) -> bool:
+    """Checa na tabela authorized_users (RLS: só a própria linha do usuário) se o acesso
+    já foi liberado manualmente por você após o pagamento."""
+    if not email:
+        return False
+    url = (
+        f"{SUPABASE_URL}/rest/v1/authorized_users"
+        f"?select=active&email=eq.{urllib.parse.quote(email)}"
+    )
+    req = urllib.request.Request(
+        url,
+        headers={"Authorization": f"Bearer {token}", "apikey": SUPABASE_ANON_KEY},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=6) as resp:
+            if resp.status != 200:
+                return False
+            rows = json.loads(resp.read().decode("utf-8"))
+            return bool(rows) and bool(rows[0].get("active"))
     except urllib.error.HTTPError:
         return False
     except Exception:
-        app.logger.exception("Falha ao validar token Supabase")
+        app.logger.exception("Falha ao checar liberação de acesso")
         return False
 
 
-def _require_auth() -> bool:
+def _auth_status() -> str:
+    """Retorna 'ok', 'login_necessario' (sem token/token inválido) ou
+    'acesso_nao_liberado' (logado, mas ainda não autorizado a usar o currículo)."""
     auth_header = request.headers.get("Authorization", "")
     token = auth_header.split(" ", 1)[1].strip() if auth_header.lower().startswith("bearer ") else ""
-    return _verify_supabase_token(token)
+    email = _get_supabase_email(token)
+    if not email:
+        return "login_necessario"
+    if not _is_email_authorized(token, email):
+        return "acesso_nao_liberado"
+    return "ok"
 
 
 def _client_ip() -> str:
@@ -384,8 +421,9 @@ def health():
 @app.route("/api/curriculum/tecnico", methods=["GET"])
 @limiter.limit("30 per minute")
 def curriculum_tecnico():
-    if not _require_auth():
-        return jsonify({"error": "login_necessario"}), 401
+    status = _auth_status()
+    if status != "ok":
+        return jsonify({"error": status}), 401 if status == "login_necessario" else 403
     path = DATA_DIR / "curriculum_data.json"
     if not path.exists():
         return jsonify({"error": "curriculo_indisponivel"}), 404
@@ -395,8 +433,9 @@ def curriculum_tecnico():
 @app.route("/api/curriculum/regular", methods=["GET"])
 @limiter.limit("30 per minute")
 def curriculum_regular():
-    if not _require_auth():
-        return jsonify({"error": "login_necessario"}), 401
+    status = _auth_status()
+    if status != "ok":
+        return jsonify({"error": status}), 401 if status == "login_necessario" else 403
     path = DATA_DIR / "regular_curriculum.json"
     if not path.exists():
         return jsonify({"error": "curriculo_indisponivel"}), 404

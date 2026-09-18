@@ -1493,6 +1493,7 @@
     <script>
         let _curricPromise = null;
         let _regularCurricPromise = null;
+        let _regularCurriculumError = null;
 
         async function fetchProtectedCurriculum(endpoint) {
             const token = await getAuthToken();
@@ -1526,11 +1527,23 @@
         }
 
         function ensureRegularCurriculumLoaded() {
-            if (window.REGULAR_CURRICULUM_DATA && Array.isArray(window.REGULAR_CURRICULUM_DATA)) return Promise.resolve();
+            if (window.REGULAR_CURRICULUM_DATA && Array.isArray(window.REGULAR_CURRICULUM_DATA)) {
+                _regularCurriculumError = null;
+                return Promise.resolve();
+            }
             if (_regularCurricPromise) return _regularCurricPromise;
+            _regularCurriculumError = null;
             _regularCurricPromise = fetchProtectedCurriculum('/curriculum/regular')
-                .then(data => { window.REGULAR_CURRICULUM_DATA = data; })
-                .catch(error => { _regularCurricPromise = null; throw error; });
+                .then(data => {
+                    window.REGULAR_CURRICULUM_DATA = data;
+                    _regularCurriculumError = null;
+                })
+                .catch(error => {
+                    _regularCurriculumError = error;
+                    _regularCurricPromise = null;
+                    if (typeof buildAulaChecklist === 'function') buildAulaChecklist();
+                    throw error;
+                });
             return _regularCurricPromise;
         }
 
@@ -1542,6 +1555,7 @@
             if (!isLoggedIn()) return;
             _curricPromise = null;
             _regularCurricPromise = null;
+            _regularCurriculumError = null;
             try {
                 await ensureActiveCurriculumLoaded();
                 if (currentStage === 'tecnico') {
@@ -2372,9 +2386,17 @@
                 const msg = document.createElement('div');
                 msg.className = 'text-muted small text-center py-2';
                 if (!Array.isArray(window.REGULAR_CURRICULUM_DATA)) {
-                    msg.textContent = (typeof isLoggedIn === 'function' && isLoggedIn())
-                        ? 'Seu acesso ainda não foi liberado para carregar o currículo.'
-                        : 'Entre (login) para carregar o currículo e ver as aulas.';
+                    if (_regularCurricPromise) {
+                        msg.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> Carregando as aulas liberadas...';
+                    } else if (_regularCurriculumError && _regularCurriculumError.code === 'acesso_nao_liberado') {
+                        msg.textContent = 'Seu login está ativo, mas este e-mail ainda não consta como liberado.';
+                    } else if (_regularCurriculumError && _regularCurriculumError.code !== 'login_necessario') {
+                        msg.textContent = 'Não foi possível carregar as aulas agora. Atualize a página e tente novamente.';
+                    } else if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                        msg.textContent = 'Preparando o carregamento das aulas...';
+                    } else {
+                        msg.textContent = 'Entre (login) para carregar o currículo e ver as aulas.';
+                    }
                 } else {
                     msg.textContent = 'Nenhuma aula encontrada para esta disciplina/ano ainda.';
                 }

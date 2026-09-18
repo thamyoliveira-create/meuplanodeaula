@@ -103,7 +103,8 @@ def _is_email_authorized(token: str, email: str) -> bool:
                 return False
             rows = json.loads(resp.read().decode("utf-8"))
             return bool(rows) and bool(rows[0].get("active"))
-    except urllib.error.HTTPError:
+    except urllib.error.HTTPError as exc:
+        app.logger.warning("Supabase recusou a checagem da liberação: HTTP %s", exc.code)
         return False
     except Exception:
         app.logger.exception("Falha ao checar liberação de acesso")

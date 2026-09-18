@@ -851,9 +851,9 @@
                 <div class="col-md-6">
                     <label for="planPeriodicity" class="form-label"><i class="bi bi-calendar-range-fill me-1 text-primary"></i> Período do Plano</label>
                     <select class="form-select" id="planPeriodicity" onchange="onPlanPeriodicityChange()">
-                        <option value="1" selected>Semanal — 1 semana</option>
-                        <option value="2">Quinzenal — 2 semanas</option>
-                        <option value="4">Mensal — 4 semanas</option>
+                        <option value="1" selected id="periodOpt1">Semanal — 1 semana</option>
+                        <option value="2" id="periodOpt2">Quinzenal — 2 semanas</option>
+                        <option value="4" id="periodOpt4">Mensal — 4 semanas</option>
                     </select>
                 </div>
 
@@ -1814,7 +1814,7 @@
                     <div class="recent-card h-100 d-flex flex-column justify-content-between">
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="badge" style="background: rgba(18, 199, 190, 0.1); color: var(--primary); font-size: 0.7rem;">${String(p.semana).includes(' a ') ? 'Semanas' : 'Semana'} ${p.semana}</span>
+                                <span class="badge" style="background: rgba(18, 199, 190, 0.1); color: var(--primary); font-size: 0.7rem;">${(p.etapa || 'tecnico') === 'tecnico' ? (String(p.semana).includes(' a ') ? 'Semanas' : 'Semana') : (String(p.semana).includes(' a ') ? 'Aulas' : 'Aula')} ${p.semana}</span>
                                 <small class="text-muted" style="font-size: 0.7rem;">${p.data_salva}</small>
                             </div>
                             <strong class="d-block small text-truncate" title="${p.disciplina}">${p.disciplina}</strong>
@@ -1846,11 +1846,12 @@
             document.querySelectorAll('.discipline-chip').forEach(c => {
                 c.classList.toggle('active', c.innerText.trim().includes(disc));
             });
+            populateWeeks();
             document.getElementById('weekSelect').value = String(week);
             onPlanPeriodicityChange();
             updateLiveSummary();
             generatePreview();
-            showToast(`Plano carregado: Semana ${week} - ${disc}`);
+            showToast(`Plano carregado: ${currentStage === 'tecnico' ? 'Semana' : 'Aula'} ${week} - ${disc}`);
         }
 
         function clearRecentPlans() {
@@ -2157,6 +2158,7 @@
             if (!availableYears.includes(String(currentYear))) currentYear = availableYears[0];
             renderYearCards();
             updateClassroomValue();
+            updatePeriodicityLabels();
 
             if (stage === 'tecnico') {
                 const badge = document.getElementById('disciplineCountBadge');
@@ -2225,31 +2227,32 @@
             }
         }
 
-        function regularRowsForSelection(targetWeek = null) {
+        function getRegularTermRows(bimestre) {
             if (!Array.isArray(window.REGULAR_CURRICULUM_DATA)) return [];
-            const week = parseInt(targetWeek || document.getElementById('weekSelect').value || '1', 10);
-            const term = Math.min(4, Math.ceil(week / 7));
-            const termWeek = (week - 1) % 7;
-            const termRows = window.REGULAR_CURRICULUM_DATA.filter(row =>
+            return window.REGULAR_CURRICULUM_DATA.filter(row =>
                 row.etapa === currentStage && String(row.ano) === String(currentYear) &&
-                row.disciplina === currentDiscipline && Number(row.bimestre) === term
+                row.disciplina === currentDiscipline && Number(row.bimestre) === bimestre
             ).sort((a, b) => Number(a.aula) - Number(b.aula));
-            if (!termRows.length) return [];
-            const start = Math.floor(termWeek * termRows.length / 7);
-            let end = Math.floor((termWeek + 1) * termRows.length / 7);
-            if (end <= start) end = start + 1;
-            return termRows.slice(start, end);
         }
 
-        function regularRowsForPlan(targetWeek = null, forceWeekly = false) {
-            const rows = getSelectedWeeks(targetWeek, forceWeekly).flatMap(week => regularRowsForSelection(String(week)));
-            const seen = new Set();
-            return rows.filter(row => {
-                const key = `${row.etapa}|${row.ano}|${row.disciplina}|${row.bimestre}|${row.aula}`;
-                if (seen.has(key)) return false;
-                seen.add(key);
-                return true;
-            });
+        // targetValue no formato "bimestre:aula" (ex: "2:5"), como vem do seletor de Aula.
+        function regularRowsForPlan(targetValue = null, forceWeekly = false) {
+            const raw = targetValue || document.getElementById('weekSelect').value || '1:1';
+            const [bimStr, aulaStr] = String(raw).split(':');
+            const bimestre = parseInt(bimStr, 10) || 1;
+            const startAula = parseInt(aulaStr, 10) || 1;
+            const count = forceWeekly ? 1 : parseInt(document.getElementById('planPeriodicity').value || '1', 10);
+            const termRows = getRegularTermRows(bimestre);
+            const startIndex = termRows.findIndex(row => Number(row.aula) === startAula);
+            if (startIndex === -1) return [];
+            return termRows.slice(startIndex, startIndex + count);
+        }
+
+        function regularAulaLabel(rows, raw) {
+            if (rows && rows.length) {
+                return rows.length === 1 ? String(rows[0].aula) : `${rows[0].aula} a ${rows[rows.length - 1].aula}`;
+            }
+            return String(raw || '').split(':')[1] || '1';
         }
 
         function renderDisciplineChips() {
@@ -2280,24 +2283,64 @@
                     document.querySelectorAll('.discipline-chip').forEach(c => c.classList.remove('active'));
                     chip.classList.add('active');
                     currentDiscipline = item.name;
+                    populateWeeks();
                     updateLiveSummary();
                 };
                 container.appendChild(chip);
             });
 
+            populateWeeks();
             updateLiveSummary();
         }
 
         function populateWeeks() {
             const weekSelect = document.getElementById('weekSelect');
+            const previousValue = weekSelect.value;
             weekSelect.innerHTML = '';
-            for (let i = 1; i <= 28; i++) {
-                const opt = document.createElement('option');
-                opt.value = String(i);
-                opt.textContent = `Semana ${i} • ${Math.ceil(i / 7)}º bimestre`;
-                weekSelect.appendChild(opt);
+            if (currentStage === 'tecnico') {
+                for (let i = 1; i <= 28; i++) {
+                    const opt = document.createElement('option');
+                    opt.value = String(i);
+                    opt.textContent = `Semana ${i} • ${Math.ceil(i / 7)}º bimestre`;
+                    weekSelect.appendChild(opt);
+                }
+            } else {
+                for (let bimestre = 1; bimestre <= 4; bimestre++) {
+                    const rows = getRegularTermRows(bimestre);
+                    if (!rows.length) continue;
+                    const group = document.createElement('optgroup');
+                    group.label = `${bimestre}º Bimestre`;
+                    rows.forEach(row => {
+                        const opt = document.createElement('option');
+                        opt.value = `${bimestre}:${row.aula}`;
+                        const title = (row.titulo || '').length > 46 ? `${row.titulo.slice(0, 46)}…` : (row.titulo || '');
+                        opt.textContent = `Aula ${row.aula} — ${title}`;
+                        group.appendChild(opt);
+                    });
+                    weekSelect.appendChild(group);
+                }
             }
-            updateLiveSummary();
+            if (previousValue && [...weekSelect.options].some(opt => opt.value === previousValue)) {
+                weekSelect.value = previousValue;
+            }
+            updatePeriodicityLabels();
+        }
+
+        function updatePeriodicityLabels() {
+            const isRegular = currentStage !== 'tecnico';
+            const opt1 = document.getElementById('periodOpt1');
+            const opt2 = document.getElementById('periodOpt2');
+            const opt4 = document.getElementById('periodOpt4');
+            if (opt1) opt1.textContent = isRegular ? '1 aula' : 'Semanal — 1 semana';
+            if (opt2) opt2.textContent = isRegular ? '2 aulas' : 'Quinzenal — 2 semanas';
+            if (opt4) opt4.textContent = isRegular ? '4 aulas' : 'Mensal — 4 semanas';
+            const label = document.getElementById('weekSelectLabel');
+            if (label) {
+                const count = parseInt(document.getElementById('planPeriodicity').value || '1', 10);
+                label.innerHTML = isRegular
+                    ? `<i class="bi bi-journal-bookmark-fill me-1 text-primary"></i> ${count === 1 ? 'Aula' : 'Aula Inicial'}`
+                    : `<i class="bi bi-calendar-week-fill me-1 text-primary"></i> ${count === 1 ? 'Semana Letiva' : 'Semana Inicial'}`;
+            }
         }
 
         function getSelectedWeeks(targetWeek = null, forceWeekly = false) {
@@ -2312,16 +2355,20 @@
         }
 
         function planWeekCaption(value) {
-            return String(value).includes(' a ') ? `SEMANAS ${value}` : `SEMANA ${value}`;
+            if (currentStage === 'tecnico') {
+                return String(value).includes(' a ') ? `SEMANAS ${value}` : `SEMANA ${value}`;
+            }
+            return String(value).includes(' a ') ? `AULAS ${value}` : `AULA ${value}`;
         }
 
         function onPlanPeriodicityChange() {
             const count = parseInt(document.getElementById('planPeriodicity').value || '1', 10);
-            const label = document.getElementById('weekSelectLabel');
-            label.innerHTML = `<i class="bi bi-calendar-week-fill me-1 text-primary"></i> ${count === 1 ? 'Semana Letiva' : 'Semana Inicial'}`;
+            updatePeriodicityLabels();
             const weekSelect = document.getElementById('weekSelect');
-            const maxStart = 29 - count;
-            if ((parseInt(weekSelect.value, 10) || 1) > maxStart) weekSelect.value = String(maxStart);
+            if (currentStage === 'tecnico') {
+                const maxStart = 29 - count;
+                if ((parseInt(weekSelect.value, 10) || 1) > maxStart) weekSelect.value = String(maxStart);
+            }
             const startInput = document.getElementById('startDate');
             const endInput = document.getElementById('endDate');
             if (startInput.value) {
@@ -2364,16 +2411,16 @@
 
         function updateLiveSummary() {
             const week = document.getElementById('weekSelect').value || '1';
-            const selectedWeeks = getSelectedWeeks(week);
+            const selectedWeeks = currentStage === 'tecnico' ? getSelectedWeeks(week) : [];
             const data = getLessonData();
 
             const topicBox = document.getElementById('weekTopicTitle');
             const lessonsCount = document.getElementById('weekLessonsCount');
             const workloadBadge = document.getElementById('workloadBadge');
-            
-            const firstLine = data.conteudo.split('\n')[0] || `Semana ${week}`;
+
+            const firstLine = data.conteudo.split('\n')[0] || (currentStage === 'tecnico' ? `Semana ${week}` : `Aula ${regularAulaLabel([], week)}`);
             topicBox.innerHTML = `<span class="fw-bold" style="color: var(--primary);">${currentDiscipline}</span> &bull; ${firstLine}`;
-            
+
             // Carga Horária com Ajuste de Feriado
             const list = currentStage === 'tecnico' ? getTechnicalComponents() : [];
             const discItem = list.find(d => d.name === currentDiscipline);
@@ -2394,7 +2441,10 @@
             const reductionNote = currentReduction > 0 ? ' (Feriado na semana: -1 aula)' : '';
             const lessonLines = data.conteudo.split('\n').filter(l => l.startsWith('•'));
             const planningUnit = currentStage === 'tecnico' ? 'aulas planejadas' : 'planos individualizados por aula';
-            lessonsCount.textContent = `${lessonLines.length || finalAulas} ${planningUnit} de 50 min em ${getPlanPeriodLabel(selectedWeeks).toLowerCase()} (${currentLessonStyles.map(x => styleLabels[x] || x).join(" + ")})${reductionNote}`;
+            const periodLabel = currentStage === 'tecnico'
+                ? getPlanPeriodLabel(selectedWeeks).toLowerCase()
+                : (regularRows.length > 1 ? `aulas ${regularRows[0].aula} a ${regularRows[regularRows.length - 1].aula}` : `aula ${regularAulaLabel(regularRows, week)}`);
+            lessonsCount.textContent = `${lessonLines.length || finalAulas} ${planningUnit} de 50 min em ${periodLabel} (${currentLessonStyles.map(x => styleLabels[x] || x).join(" + ")})${reductionNote}`;
             workloadBadge.innerHTML = `<i class="bi bi-clock-history me-1"></i> Carga total: ${finalAulas} aulas (${totalMin} min)`;
 
             renderWeekLessonsList(lessonLines);
@@ -2431,13 +2481,12 @@
         function getRegularLessonData(targetWeek = null, forceWeekly = false) {
             const teacher = document.getElementById('teacher').value.trim() || 'Professor(a)';
             const classroom = document.getElementById('classroom').value.trim() || yearLabel(currentYear);
-            const week = targetWeek || document.getElementById('weekSelect').value || '1';
-            const selectedWeeks = getSelectedWeeks(week, forceWeekly);
-            const period = document.getElementById('period').value.trim() || 'Semana de Aulas';
+            const raw = targetWeek || document.getElementById('weekSelect').value || '1:1';
+            const period = document.getElementById('period').value.trim() || 'Aula(s) do Currículo';
             const withInclusion = document.getElementById('toggleInclusion').checked;
-            const rows = regularRowsForPlan(week, forceWeekly);
-            const terms = [...new Set(selectedWeeks.map(value => Math.min(4, Math.ceil(Number(value) / 7))))];
-            const termLabel = terms.length === 1 ? `${terms[0]}º Bimestre` : `${terms[0]}º ao ${terms[terms.length - 1]}º Bimestre`;
+            const rows = regularRowsForPlan(raw, forceWeekly);
+            const bimestre = rows.length ? rows[0].bimestre : (parseInt(String(raw).split(':')[0], 10) || 1);
+            const termLabel = `${bimestre}º Bimestre`;
 
             const selectedStyles = currentLessonStyles.length ? currentLessonStyles : ['interativa'];
             const lessonPlans = rows.map((row, index) => {
@@ -2487,7 +2536,7 @@
                 disciplina: currentDiscipline,
                 turma: classroom,
                 periodo: period,
-                semana: selectedWeeks.length === 1 ? String(selectedWeeks[0]) : `${selectedWeeks[0]} a ${selectedWeeks[selectedWeeks.length - 1]}`,
+                semana: regularAulaLabel(rows, raw),
                 habilidades: abilitiesText,
                 objetos: sectionText(row => row.conteudos || [], '• Objetos de conhecimento não localizados para esta aula.'),
                 conteudo: lessonPlans.length ? `${termLabel}\n\n${lessonPlans.map(({ heading }) => heading).join('\n\n')}` : `${termLabel}\n\n• Conteúdo não localizado no guia enviado.`,
@@ -2578,18 +2627,24 @@
         function nextWeek() {
             const sel = document.getElementById('weekSelect');
             const planWeeks = parseInt(document.getElementById('planPeriodicity').value || '1', 10);
-            const w = Math.min(29 - planWeeks, (parseInt(sel.value, 10) || 1) + planWeeks);
-            sel.value = String(w);
-            // avança o período completo selecionado
-            ['startDate', 'endDate'].forEach(id => {
-                const inp = document.getElementById(id);
-                if (inp && inp.value) {
-                    const d = new Date(inp.value + 'T12:00:00');
-                    d.setDate(d.getDate() + planWeeks * 7);
-                    inp.value = d.toISOString().slice(0, 10);
-                }
-            });
-            if (typeof onDateRangeChange === 'function') onDateRangeChange();
+            if (currentStage === 'tecnico') {
+                const w = Math.min(29 - planWeeks, (parseInt(sel.value, 10) || 1) + planWeeks);
+                sel.value = String(w);
+                // avança o período completo selecionado
+                ['startDate', 'endDate'].forEach(id => {
+                    const inp = document.getElementById(id);
+                    if (inp && inp.value) {
+                        const d = new Date(inp.value + 'T12:00:00');
+                        d.setDate(d.getDate() + planWeeks * 7);
+                        inp.value = d.toISOString().slice(0, 10);
+                    }
+                });
+                if (typeof onDateRangeChange === 'function') onDateRangeChange();
+            } else {
+                // avança para a(s) próxima(s) aula(s) na lista (pode cruzar bimestres)
+                const maxIndex = sel.options.length - 1;
+                sel.selectedIndex = Math.min(maxIndex, sel.selectedIndex + planWeeks);
+            }
             updateLiveSummary();
             generatePreview();
         }
@@ -2636,7 +2691,14 @@
                 disciplina: document.getElementById('prevDiscipline').innerText.trim() || currentDiscipline,
                 turma: document.getElementById('prevClassroom').innerText.trim() || document.getElementById('classroom').value,
                 periodo: document.getElementById('prevPeriod').innerText.trim() || document.getElementById('period').value,
-                semana: (() => { const weeks = getSelectedWeeks(); return weeks.length === 1 ? String(weeks[0]) : `${weeks[0]} a ${weeks[weeks.length - 1]}`; })(),
+                semana: (() => {
+                    if (currentStage === 'tecnico') {
+                        const weeks = getSelectedWeeks();
+                        return weeks.length === 1 ? String(weeks[0]) : `${weeks[0]} a ${weeks[weeks.length - 1]}`;
+                    }
+                    const raw = document.getElementById('weekSelect').value || '1:1';
+                    return regularAulaLabel(regularRowsForPlan(raw), raw);
+                })(),
                 habilidades: document.getElementById('prevHabilidades').innerText.trim(),
                 objetos: document.getElementById('prevObjetos').innerText.trim(),
                 conteudo: document.getElementById('prevConteudo').innerText.trim(),

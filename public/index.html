@@ -565,7 +565,7 @@
         .btn-main,.discipline-chip.active{color:#1A0F1C}
         .btn-main:hover{color:#1A0F1C;background:var(--primary-gradient);filter:saturate(1.12) brightness(1.04)}
         :where(button,a,input,select,textarea):focus-visible{outline:2px solid var(--gold-accent);outline-offset:3px}
-        @media (max-width:720px){.brand-school{display:none}.app-card{padding:1.4rem}.hero-banner{padding:1.6rem 1.4rem}}
+        @media (max-width:720px){.brand-school{display:none}.app-card{padding:1.4rem}.hero-banner{padding:1.6rem 1.4rem}.glass-navbar .container{flex-wrap:wrap}.glass-navbar .container>div:last-child{width:100%;overflow-x:auto;padding-bottom:3px}}
         @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
         @media print {
@@ -591,6 +591,10 @@
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2">
+                <!-- Planos e assinatura -->
+                <a href="/planos.html" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1 fw-bold small" style="border-color: var(--border-color); text-decoration: none;">
+                    <i class="bi bi-gem me-1" style="color: var(--gold-accent);"></i> <span>Planos</span>
+                </a>
                 <!-- SEDUC Calendar Guide Button -->
                 <button type="button" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1 fw-bold small" data-bs-toggle="modal" data-bs-target="#seducCalendarModal" style="border-color: var(--border-color);">
                     <i class="bi bi-calendar-check me-1 text-success"></i> <span>Calendário SEDUC 2026</span>
@@ -1291,31 +1295,34 @@
                 const modalEl = document.getElementById('authModal');
                 const modal = bootstrap.Modal.getInstance(modalEl);
                 if (modal) modal.hide();
-                // Login novo (não é sessão restaurada ao abrir a página): encerra
-                // qualquer outra sessão aberta dessa mesma conta, para que login e
-                // senha/link não fiquem sendo usados por duas pessoas ao mesmo tempo.
-                if (_event === 'SIGNED_IN') {
-                    supabaseClient.auth.signOut({ scope: 'others' }).catch(() => {});
-                }
-                // Se trocou de conta (ou logou pela primeira vez), recarrega os dados
-                // salvos (nome do professor, escola, planos recentes) SÓ desse usuário.
-                if (session.user.id !== previousUserId) {
-                    loadOrCreateSchoolProfile().then(() => {
-                        loadTeacherPreferences();
-                    });
-                }
-                if (_pendingAfterLogin) {
-                    const cb = _pendingAfterLogin;
-                    _pendingAfterLogin = null;
-                    cb();
-                }
+                const userChanged = session.user.id !== previousUserId;
+                const pendingAfterLogin = _pendingAfterLogin;
+                _pendingAfterLogin = null;
+
+                // Chamadas ao Supabase dentro de onAuthStateChange podem bloquear o
+                // cliente. Inicia todas as operações somente após o callback terminar.
+                setTimeout(() => {
+                    if (_event === 'SIGNED_IN') {
+                        supabaseClient.auth.signOut({ scope: 'others' }).catch(() => {});
+                    }
+                    if (userChanged) {
+                        loadOrCreateSchoolProfile().then(() => loadTeacherPreferences());
+                    }
+                    if (pendingAfterLogin) pendingAfterLogin();
+                    if (_event === 'SIGNED_IN' && typeof refreshCurriculumAfterAccessChange === 'function') {
+                        refreshCurriculumAfterAccessChange();
+                    }
+                }, 0);
             } else {
                 _schoolProfile = null;
             }
         });
 
-        async function getAuthToken() {
-            const { data } = await supabaseClient.auth.getSession();
+        async function getAuthToken(forceRefresh = false) {
+            const result = forceRefresh
+                ? await supabaseClient.auth.refreshSession()
+                : await supabaseClient.auth.getSession();
+            const { data } = result;
             _authSession = data.session;
             updateAuthUI();
             return data.session ? data.session.access_token : null;
@@ -1490,15 +1497,20 @@
     <script>
         let _curricPromise = null;
         let _regularCurricPromise = null;
+        let _regularCurriculumError = null;
 
         async function fetchProtectedCurriculum(endpoint) {
-            const token = await getAuthToken();
+            let token = await getAuthToken();
             if (!token) {
                 const err = new Error('login_necessario');
                 err.code = 'login_necessario';
                 throw err;
             }
-            const response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
+            let response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
+            if (response.status === 401) {
+                token = await getAuthToken(true);
+                if (token) response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
+            }
             if (response.status === 401) {
                 const err = new Error('login_necessario');
                 err.code = 'login_necessario';
@@ -1516,24 +1528,69 @@
         function ensureCurriculumLoaded() {
             if (window.CURRICULUM_DATA && Array.isArray(window.CURRICULUM_DATA)) return Promise.resolve();
             if (_curricPromise) return _curricPromise;
-            _curricPromise = fetchProtectedCurriculum('/api/curriculum/tecnico')
+            _curricPromise = fetchProtectedCurriculum('/curriculum/tecnico')
                 .then(data => { window.CURRICULUM_DATA = data; })
                 .catch(error => { _curricPromise = null; throw error; });
             return _curricPromise;
         }
 
         function ensureRegularCurriculumLoaded() {
-            if (window.REGULAR_CURRICULUM_DATA && Array.isArray(window.REGULAR_CURRICULUM_DATA)) return Promise.resolve();
+            if (window.REGULAR_CURRICULUM_DATA && Array.isArray(window.REGULAR_CURRICULUM_DATA)) {
+                _regularCurriculumError = null;
+                return Promise.resolve();
+            }
             if (_regularCurricPromise) return _regularCurricPromise;
-            _regularCurricPromise = fetchProtectedCurriculum('/api/curriculum/regular')
-                .then(data => { window.REGULAR_CURRICULUM_DATA = data; })
-                .catch(error => { _regularCurricPromise = null; throw error; });
+            _regularCurriculumError = null;
+            _regularCurricPromise = fetchProtectedCurriculum('/curriculum/regular')
+                .then(data => {
+                    window.REGULAR_CURRICULUM_DATA = data;
+                    _regularCurriculumError = null;
+                })
+                .catch(error => {
+                    _regularCurriculumError = error;
+                    _regularCurricPromise = null;
+                    if (typeof buildAulaChecklist === 'function') buildAulaChecklist();
+                    throw error;
+                });
             return _regularCurricPromise;
         }
 
         function ensureActiveCurriculumLoaded() {
             return currentStage === 'tecnico' ? ensureCurriculumLoaded() : ensureRegularCurriculumLoaded();
         }
+
+        async function refreshCurriculumAfterAccessChange() {
+            if (!isLoggedIn()) return;
+            _curricPromise = null;
+            _regularCurricPromise = null;
+            _regularCurriculumError = null;
+            try {
+                await ensureActiveCurriculumLoaded();
+                if (currentStage === 'tecnico') {
+                    renderTechnicalCourseCards();
+                    updateClassroomValue();
+                }
+                renderDisciplineChips();
+                populateWeeks();
+                updateLiveSummary();
+            } catch (error) {
+                const badge = document.getElementById('disciplineCountBadge');
+                if (badge) {
+                    if (error && error.code === 'acesso_nao_liberado') {
+                        badge.innerHTML = '<a href="/planos.html" class="text-decoration-none">Acesso vitalício por R$ 69,90</a>';
+                    } else {
+                        badge.textContent = 'Currículo indisponível';
+                    }
+                }
+            }
+        }
+
+        window.addEventListener('focus', () => {
+            const curriculumMissing = currentStage === 'tecnico'
+                ? !Array.isArray(window.CURRICULUM_DATA)
+                : !Array.isArray(window.REGULAR_CURRICULUM_DATA);
+            if (isLoggedIn() && curriculumMissing) refreshCurriculumAfterAccessChange();
+        });
 
         // Chame dentro de um catch(e) de ensureActiveCurriculumLoaded(): se o motivo
         // foi falta de login, abre o modal e refaz "retryFn" assim que logar; senão,
@@ -1544,7 +1601,7 @@
                 return;
             }
             if (e && e.code === 'acesso_nao_liberado') {
-                showToast("Seu login funcionou, mas seu acesso ainda não foi liberado. Fale com a gente para liberar.");
+                window.location.href = '/planos.html';
                 return;
             }
             showToast("Não consegui carregar o currículo. Verifique a conexão e tente de novo.");
@@ -2195,13 +2252,19 @@
                         updateClassroomValue();
                         renderDisciplineChips();
                     })
-                    .catch(e => { badge.textContent = e && e.code === 'login_necessario' ? 'Entre para carregar o currículo' : (e && e.code === 'acesso_nao_liberado' ? 'Acesso ainda não liberado' : 'Currículo indisponível'); });
+                    .catch(e => {
+                        if (e && e.code === 'acesso_nao_liberado') badge.innerHTML = '<a href="/planos.html" class="text-decoration-none">Ver acesso vitalício · R$ 69,90</a>';
+                        else badge.textContent = e && e.code === 'login_necessario' ? 'Entre para carregar o currículo' : 'Currículo indisponível';
+                    });
             } else {
                 const badge = document.getElementById('disciplineCountBadge');
                 badge.textContent = 'Carregando currículo...';
                 ensureRegularCurriculumLoaded()
                     .then(() => renderDisciplineChips())
-                    .catch(e => { badge.textContent = e && e.code === 'login_necessario' ? 'Entre para carregar o currículo' : (e && e.code === 'acesso_nao_liberado' ? 'Acesso ainda não liberado' : 'Currículo indisponível'); });
+                    .catch(e => {
+                        if (e && e.code === 'acesso_nao_liberado') badge.innerHTML = '<a href="/planos.html" class="text-decoration-none">Ver acesso vitalício · R$ 69,90</a>';
+                        else badge.textContent = e && e.code === 'login_necessario' ? 'Entre para carregar o currículo' : 'Currículo indisponível';
+                    });
             }
             saveTeacherPreferences();
         }
@@ -2350,9 +2413,17 @@
                 const msg = document.createElement('div');
                 msg.className = 'text-muted small text-center py-2';
                 if (!Array.isArray(window.REGULAR_CURRICULUM_DATA)) {
-                    msg.textContent = (typeof isLoggedIn === 'function' && isLoggedIn())
-                        ? 'Seu acesso ainda não foi liberado para carregar o currículo.'
-                        : 'Entre (login) para carregar o currículo e ver as aulas.';
+                    if (_regularCurricPromise) {
+                        msg.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> Carregando as aulas liberadas...';
+                    } else if (_regularCurriculumError && _regularCurriculumError.code === 'acesso_nao_liberado') {
+                        msg.innerHTML = 'Seu login está ativo, mas o acesso ainda não foi liberado. <a href="/planos.html">Ver acesso vitalício por R$ 69,90</a>.';
+                    } else if (_regularCurriculumError && _regularCurriculumError.code !== 'login_necessario') {
+                        msg.textContent = 'Não foi possível carregar as aulas agora. Atualize a página e tente novamente.';
+                    } else if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                        msg.textContent = 'Preparando o carregamento das aulas...';
+                    } else {
+                        msg.textContent = 'Entre (login) para carregar o currículo e ver as aulas.';
+                    }
                 } else {
                     msg.textContent = 'Nenhuma aula encontrada para esta disciplina/ano ainda.';
                 }

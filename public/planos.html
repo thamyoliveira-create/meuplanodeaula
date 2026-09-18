@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Acesso vitalício ao Meu Plano de Aula por R$ 69,90.">
+    <title>Planos · Meu Plano de Aula</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root{
+            --ink:#211421;--muted:#6f626f;--paper:#fffdfd;--line:#ecdce7;
+            --plum:#83245f;--pink:#d72f84;--mint:#13d7a1;--gold:#f6c75d;
+            --gradient:linear-gradient(135deg,#9b2d72 0%,#ef4f9d 58%,#31dcb3 100%);
+        }
+        *{box-sizing:border-box}
+        body{margin:0;color:var(--ink);font-family:"DM Sans",sans-serif;background:
+            radial-gradient(circle at 7% 10%,rgba(239,79,157,.16),transparent 28rem),
+            radial-gradient(circle at 92% 14%,rgba(49,220,179,.15),transparent 25rem),#fbf7fa;min-height:100vh}
+        a{color:inherit}
+        .shell{width:min(1120px,calc(100% - 32px));margin:auto}
+        header{padding:24px 0;display:flex;align-items:center;justify-content:space-between;gap:20px}
+        .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+        .brand img{width:48px;height:48px}
+        .brand strong{font-family:"Outfit",sans-serif;font-size:1.05rem}
+        .brand small{display:block;color:var(--muted)}
+        .back{border:1px solid var(--line);background:rgba(255,255,255,.76);padding:10px 16px;border-radius:999px;text-decoration:none;font-weight:700}
+        main{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.72fr);gap:48px;align-items:center;padding:56px 0 72px}
+        .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--plum);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:.76rem}
+        h1{font:800 clamp(2.5rem,6vw,5.6rem)/.96 "Outfit",sans-serif;letter-spacing:-.055em;margin:18px 0 22px;max-width:760px}
+        .gradient-text{background:var(--gradient);-webkit-background-clip:text;background-clip:text;color:transparent}
+        .lead{font-size:clamp(1rem,2vw,1.18rem);line-height:1.65;color:var(--muted);max-width:650px}
+        .proof{display:flex;flex-wrap:wrap;gap:14px 24px;margin-top:30px;color:#514451;font-weight:600;font-size:.93rem}
+        .proof i,.features i{color:#0caf83}
+        .card{position:relative;background:rgba(255,255,255,.9);border:1px solid rgba(131,36,95,.15);border-radius:32px;padding:34px;box-shadow:0 28px 80px rgba(86,26,65,.16);overflow:hidden}
+        .card::before{content:"";position:absolute;inset:0 0 auto;height:7px;background:var(--gradient)}
+        .tag{display:inline-flex;gap:7px;align-items:center;background:#fff0f7;color:var(--plum);border-radius:999px;padding:7px 11px;font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+        .plan-title{font:800 1.65rem "Outfit",sans-serif;margin:20px 0 4px}
+        .price{font:800 4.15rem/1 "Outfit",sans-serif;letter-spacing:-.06em;margin:15px 0 6px}
+        .price sup{font-size:1.25rem;vertical-align:top;margin-right:4px;letter-spacing:0}
+        .once{color:var(--muted);margin:0 0 24px}
+        .features{list-style:none;padding:0;margin:0 0 28px;display:grid;gap:13px}
+        .features li{display:grid;grid-template-columns:22px 1fr;gap:9px;line-height:1.4}
+        .cta{width:100%;border:0;border-radius:16px;padding:16px 20px;background:var(--gradient);color:#251422;font:800 1rem "DM Sans",sans-serif;cursor:pointer;box-shadow:0 12px 30px rgba(215,47,132,.2);transition:transform .2s ease,filter .2s ease}
+        .cta:hover{transform:translateY(-2px);filter:saturate(1.08)}
+        .payment-note{text-align:center;color:var(--muted);font-size:.78rem;margin:12px 0 0}
+        .pending{display:none;margin-top:14px;padding:12px 14px;border-radius:14px;background:#fff8df;border:1px solid #f3d77d;color:#6c5414;font-size:.86rem;line-height:1.4}
+        .existing{text-align:center;margin-top:18px;font-size:.88rem}.existing a{font-weight:800;color:var(--plum)}
+        footer{text-align:center;color:var(--muted);font-size:.8rem;padding:12px 0 32px}
+        :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+        @media(max-width:840px){main{grid-template-columns:1fr;padding-top:28px}.intro{text-align:center}.lead{margin-inline:auto}.proof{justify-content:center}.card{width:min(500px,100%);margin:auto}}
+        @media(max-width:520px){.shell{width:min(100% - 22px,1120px)}header{padding:16px 0}.brand small{display:none}.back span{display:none}main{gap:28px}.card{padding:28px 22px;border-radius:24px}.price{font-size:3.55rem}}
+        @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <header>
+            <a class="brand" href="/" aria-label="Voltar ao Meu Plano de Aula">
+                <img src="/marca-animada.svg" alt="">
+                <span><strong>Meu Plano de Aula</strong><small>Planejamento docente em menos tempo</small></span>
+            </a>
+            <a class="back" href="/"><i class="bi bi-arrow-left me-1"></i> <span>Voltar ao gerador</span></a>
+        </header>
+
+        <main>
+            <section class="intro" aria-labelledby="pageTitle">
+                <span class="eyebrow"><i class="bi bi-stars"></i> condição de lançamento</span>
+                <h1 id="pageTitle">Planeje o ano inteiro com <span class="gradient-text">um único acesso.</span></h1>
+                <p class="lead">Crie planos alinhados ao Currículo Paulista para a Educação Básica e EPT, com organização por aula ou semana, metodologias e adaptações pedagógicas.</p>
+                <div class="proof" aria-label="Benefícios principais">
+                    <span><i class="bi bi-check-circle-fill me-1"></i> Sem mensalidade</span>
+                    <span><i class="bi bi-check-circle-fill me-1"></i> Atualizações incluídas</span>
+                    <span><i class="bi bi-check-circle-fill me-1"></i> Acesso individual</span>
+                </div>
+            </section>
+
+            <section class="card" aria-labelledby="planTitle">
+                <span class="tag"><i class="bi bi-gem"></i> melhor condição</span>
+                <h2 class="plan-title" id="planTitle">Acesso Vitalício</h2>
+                <div class="price"><sup>R$</sup>69,90</div>
+                <p class="once">Pagamento único. Sem renovação automática.</p>
+                <ul class="features">
+                    <li><i class="bi bi-check2-circle"></i><span>Ensino Fundamental — Anos Iniciais e Finais</span></li>
+                    <li><i class="bi bi-check2-circle"></i><span>Ensino Médio e cursos EPT/MTEC disponíveis</span></li>
+                    <li><i class="bi bi-check2-circle"></i><span>Planos do regular organizados por aula</span></li>
+                    <li><i class="bi bi-check2-circle"></i><span>Planos EPT por semana, quinzena ou mês</span></li>
+                    <li><i class="bi bi-check2-circle"></i><span>Adaptação pedagógica e exportação do plano</span></li>
+                </ul>
+                <button class="cta" type="button" onclick="showPaymentPending()"><i class="bi bi-credit-card-2-front-fill me-1"></i> Assinar pelo Mercado Pago</button>
+                <p class="payment-note"><i class="bi bi-shield-check"></i> Pagamento processado com segurança pelo Mercado Pago</p>
+                <div class="pending" id="paymentPending" role="status">O link de pagamento está sendo conectado. Esta oferta já está reservada por <strong>R$ 69,90</strong>; volte em breve para concluir pelo Mercado Pago.</div>
+                <p class="existing">Já comprou ou recebeu acesso? <a href="/">Entrar na plataforma</a></p>
+            </section>
+        </main>
+        <footer>Meu Plano de Aula · Ferramenta exclusiva para professores</footer>
+    </div>
+    <script>
+        function showPaymentPending(){
+            const note=document.getElementById('paymentPending');
+            note.style.display='block';
+            note.scrollIntoView({behavior:'smooth',block:'nearest'});
+        }
+    </script>
+</body>
+</html>

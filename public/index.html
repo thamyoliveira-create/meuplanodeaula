@@ -2334,6 +2334,19 @@
                 const firstInput = container.querySelector(`input[value="${firstKey}"]`);
                 if (firstInput) firstInput.checked = true;
             }
+            // Caixa vazia: avisa o motivo em vez de deixar em branco (parece quebrado sem isso).
+            if (!validKeys.size) {
+                const msg = document.createElement('div');
+                msg.className = 'text-muted small text-center py-2';
+                if (!Array.isArray(window.REGULAR_CURRICULUM_DATA)) {
+                    msg.textContent = (typeof isLoggedIn === 'function' && isLoggedIn())
+                        ? 'Seu acesso ainda não foi liberado para carregar o currículo.'
+                        : 'Entre (login) para carregar o currículo e ver as aulas.';
+                } else {
+                    msg.textContent = 'Nenhuma aula encontrada para esta disciplina/ano ainda.';
+                }
+                container.appendChild(msg);
+            }
         }
 
         function renderDisciplineChips() {

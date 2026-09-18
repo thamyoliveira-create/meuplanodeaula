@@ -52,13 +52,14 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB limit
 logging.basicConfig(level=logging.INFO)
 
 # --- Autenticação (Supabase) para proteger o currículo completo ---
-# A URL/anon key são públicas por design (usadas no frontend também); a
-# proteção real é: sem um token de sessão válido, o backend não libera os
-# dados do currículo (api/curriculum/*).
-SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://vvorfmojhqzixazlhgox.supabase.co")
-SUPABASE_ANON_KEY = os.environ.get(
-    "SUPABASE_ANON_KEY",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2b3JmbW9qaHF6aXhhemxoZ294Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2MzAwNDMsImV4cCI6MjEwNTIwNjA0M30.Q7dmPMpiXRiQfAzAdoBB1mcGrLvzu7KgJNyNbhuyFqk",
+# URL e chave anon são configuração pública e precisam ser exatamente as mesmas
+# usadas pelo navegador. Não aceitamos sobrescrita por variáveis antigas da
+# Vercel, pois validar um token em outro projeto sempre resulta em falso 401.
+SUPABASE_URL = "https://vvorfmojhqzixazlhgox.supabase.co"
+SUPABASE_ANON_KEY = (
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+    "eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2b3JmbW9qaHF6aXhhemxoZ294Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2MzAwNDMsImV4cCI6MjEwNTIwNjA0M30."
+    "Q7dmPMpiXRiQfAzAdoBB1mcGrLvzu7KgJNyNbhuyFqk"
 )
 DATA_DIR = BASE_DIR / "data"
 
@@ -77,7 +78,8 @@ def _get_supabase_email(token: str) -> Union[str, None]:
                 return None
             payload = json.loads(resp.read().decode("utf-8"))
             return (payload.get("email") or "").strip().lower() or None
-    except urllib.error.HTTPError:
+    except urllib.error.HTTPError as exc:
+        app.logger.warning("Supabase recusou o token de sessão: HTTP %s", exc.code)
         return None
     except Exception:
         app.logger.exception("Falha ao validar token Supabase")

@@ -1315,11 +1315,13 @@
             }
         });
 
-        async function getAuthToken() {
-            // A sessão em memória é atualizada pelo listener, inclusive em TOKEN_REFRESHED.
-            // Evita uma chamada redundante a getSession() logo após o login.
-            if (_authSession && _authSession.access_token) return _authSession.access_token;
-            const { data } = await supabaseClient.auth.getSession();
+        async function getAuthToken(forceRefresh = false) {
+            // Esta função roda fora de onAuthStateChange, portanto getSession() pode
+            // renovar com segurança um token salvo que já venceu ou está perto de vencer.
+            let result = forceRefresh
+                ? await supabaseClient.auth.refreshSession()
+                : await supabaseClient.auth.getSession();
+            const { data } = result;
             _authSession = data.session;
             updateAuthUI();
             return data.session ? data.session.access_token : null;
@@ -1497,13 +1499,21 @@
         let _regularCurriculumError = null;
 
         async function fetchProtectedCurriculum(endpoint) {
-            const token = await getAuthToken();
+            let token = await getAuthToken();
             if (!token) {
                 const err = new Error('login_necessario');
                 err.code = 'login_necessario';
                 throw err;
             }
-            const response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
+            let response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
+            // A interface pode ter restaurado uma sessão antiga do navegador. Se o
+            // servidor rejeitar o token, força uma renovação e tenta apenas mais uma vez.
+            if (response.status === 401) {
+                token = await getAuthToken(true);
+                if (token) {
+                    response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
+                }
+            }
             if (response.status === 401) {
                 const err = new Error('login_necessario');
                 err.code = 'login_necessario';

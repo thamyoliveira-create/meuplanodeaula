@@ -1309,6 +1309,9 @@
                     _pendingAfterLogin = null;
                     cb();
                 }
+                if (_event === 'SIGNED_IN' && typeof refreshCurriculumAfterAccessChange === 'function') {
+                    setTimeout(() => refreshCurriculumAfterAccessChange(), 0);
+                }
             } else {
                 _schoolProfile = null;
             }
@@ -1516,7 +1519,7 @@
         function ensureCurriculumLoaded() {
             if (window.CURRICULUM_DATA && Array.isArray(window.CURRICULUM_DATA)) return Promise.resolve();
             if (_curricPromise) return _curricPromise;
-            _curricPromise = fetchProtectedCurriculum('/api/curriculum/tecnico')
+            _curricPromise = fetchProtectedCurriculum('/curriculum/tecnico')
                 .then(data => { window.CURRICULUM_DATA = data; })
                 .catch(error => { _curricPromise = null; throw error; });
             return _curricPromise;
@@ -1525,7 +1528,7 @@
         function ensureRegularCurriculumLoaded() {
             if (window.REGULAR_CURRICULUM_DATA && Array.isArray(window.REGULAR_CURRICULUM_DATA)) return Promise.resolve();
             if (_regularCurricPromise) return _regularCurricPromise;
-            _regularCurricPromise = fetchProtectedCurriculum('/api/curriculum/regular')
+            _regularCurricPromise = fetchProtectedCurriculum('/curriculum/regular')
                 .then(data => { window.REGULAR_CURRICULUM_DATA = data; })
                 .catch(error => { _regularCurricPromise = null; throw error; });
             return _regularCurricPromise;
@@ -1534,6 +1537,36 @@
         function ensureActiveCurriculumLoaded() {
             return currentStage === 'tecnico' ? ensureCurriculumLoaded() : ensureRegularCurriculumLoaded();
         }
+
+        async function refreshCurriculumAfterAccessChange() {
+            if (!isLoggedIn()) return;
+            _curricPromise = null;
+            _regularCurricPromise = null;
+            try {
+                await ensureActiveCurriculumLoaded();
+                if (currentStage === 'tecnico') {
+                    renderTechnicalCourseCards();
+                    updateClassroomValue();
+                }
+                renderDisciplineChips();
+                populateWeeks();
+                updateLiveSummary();
+            } catch (error) {
+                const badge = document.getElementById('disciplineCountBadge');
+                if (badge) {
+                    badge.textContent = error && error.code === 'acesso_nao_liberado'
+                        ? 'Acesso ainda não liberado'
+                        : 'Currículo indisponível';
+                }
+            }
+        }
+
+        window.addEventListener('focus', () => {
+            const curriculumMissing = currentStage === 'tecnico'
+                ? !Array.isArray(window.CURRICULUM_DATA)
+                : !Array.isArray(window.REGULAR_CURRICULUM_DATA);
+            if (isLoggedIn() && curriculumMissing) refreshCurriculumAfterAccessChange();
+        });
 
         // Chame dentro de um catch(e) de ensureActiveCurriculumLoaded(): se o motivo
         // foi falta de login, abre o modal e refaz "retryFn" assim que logar; senão,

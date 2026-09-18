@@ -419,6 +419,7 @@ def health():
 
 
 @app.route("/api/curriculum/tecnico", methods=["GET"])
+@app.route("/curriculum/tecnico", methods=["GET"])
 @limiter.limit("30 per minute")
 def curriculum_tecnico():
     status = _auth_status()
@@ -431,6 +432,7 @@ def curriculum_tecnico():
 
 
 @app.route("/api/curriculum/regular", methods=["GET"])
+@app.route("/curriculum/regular", methods=["GET"])
 @limiter.limit("30 per minute")
 def curriculum_regular():
     status = _auth_status()

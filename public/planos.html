@@ -43,10 +43,9 @@
         .once{color:var(--muted);margin:0 0 24px}
         .features{list-style:none;padding:0;margin:0 0 28px;display:grid;gap:13px}
         .features li{display:grid;grid-template-columns:22px 1fr;gap:9px;line-height:1.4}
-        .cta{width:100%;border:0;border-radius:16px;padding:16px 20px;background:var(--gradient);color:#251422;font:800 1rem "DM Sans",sans-serif;cursor:pointer;box-shadow:0 12px 30px rgba(215,47,132,.2);transition:transform .2s ease,filter .2s ease}
+        .cta{display:block;width:100%;border:0;border-radius:16px;padding:16px 20px;background:var(--gradient);color:#251422;font:800 1rem "DM Sans",sans-serif;cursor:pointer;text-align:center;text-decoration:none;box-shadow:0 12px 30px rgba(215,47,132,.2);transition:transform .2s ease,filter .2s ease}
         .cta:hover{transform:translateY(-2px);filter:saturate(1.08)}
         .payment-note{text-align:center;color:var(--muted);font-size:.78rem;margin:12px 0 0}
-        .pending{display:none;margin-top:14px;padding:12px 14px;border-radius:14px;background:#fff8df;border:1px solid #f3d77d;color:#6c5414;font-size:.86rem;line-height:1.4}
         .existing{text-align:center;margin-top:18px;font-size:.88rem}.existing a{font-weight:800;color:var(--plum)}
         footer{text-align:center;color:var(--muted);font-size:.8rem;padding:12px 0 32px}
         :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
@@ -89,20 +88,12 @@
                     <li><i class="bi bi-check2-circle"></i><span>Planos EPT por semana, quinzena ou mês</span></li>
                     <li><i class="bi bi-check2-circle"></i><span>Adaptação pedagógica e exportação do plano</span></li>
                 </ul>
-                <button class="cta" type="button" onclick="showPaymentPending()"><i class="bi bi-credit-card-2-front-fill me-1"></i> Assinar pelo Mercado Pago</button>
+                <a class="cta" href="https://mpago.la/2V66S27" target="_blank" rel="noopener noreferrer"><i class="bi bi-credit-card-2-front-fill me-1"></i> Assinar pelo Mercado Pago</a>
                 <p class="payment-note"><i class="bi bi-shield-check"></i> Pagamento processado com segurança pelo Mercado Pago</p>
-                <div class="pending" id="paymentPending" role="status">O link de pagamento está sendo conectado. Esta oferta já está reservada por <strong>R$ 69,90</strong>; volte em breve para concluir pelo Mercado Pago.</div>
                 <p class="existing">Já comprou ou recebeu acesso? <a href="/">Entrar na plataforma</a></p>
             </section>
         </main>
         <footer>Meu Plano de Aula · Ferramenta exclusiva para professores</footer>
     </div>
-    <script>
-        function showPaymentPending(){
-            const note=document.getElementById('paymentPending');
-            note.style.display='block';
-            note.scrollIntoView({behavior:'smooth',block:'nearest'});
-        }
-    </script>
 </body>
 </html>

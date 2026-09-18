@@ -1291,33 +1291,34 @@
                 const modalEl = document.getElementById('authModal');
                 const modal = bootstrap.Modal.getInstance(modalEl);
                 if (modal) modal.hide();
-                // Login novo (não é sessão restaurada ao abrir a página): encerra
-                // qualquer outra sessão aberta dessa mesma conta, para que login e
-                // senha/link não fiquem sendo usados por duas pessoas ao mesmo tempo.
-                if (_event === 'SIGNED_IN') {
-                    supabaseClient.auth.signOut({ scope: 'others' }).catch(() => {});
-                }
-                // Se trocou de conta (ou logou pela primeira vez), recarrega os dados
-                // salvos (nome do professor, escola, planos recentes) SÓ desse usuário.
-                if (session.user.id !== previousUserId) {
-                    loadOrCreateSchoolProfile().then(() => {
-                        loadTeacherPreferences();
-                    });
-                }
-                if (_pendingAfterLogin) {
-                    const cb = _pendingAfterLogin;
-                    _pendingAfterLogin = null;
-                    cb();
-                }
-                if (_event === 'SIGNED_IN' && typeof refreshCurriculumAfterAccessChange === 'function') {
-                    setTimeout(() => refreshCurriculumAfterAccessChange(), 0);
-                }
+                const userChanged = session.user.id !== previousUserId;
+                const pendingAfterLogin = _pendingAfterLogin;
+                _pendingAfterLogin = null;
+
+                // O Supabase pode bloquear chamadas feitas de dentro do callback de
+                // onAuthStateChange. Toda operação assíncrona é iniciada somente após
+                // o callback terminar; assim getSession() e o currículo não ficam presos.
+                setTimeout(() => {
+                    if (_event === 'SIGNED_IN') {
+                        supabaseClient.auth.signOut({ scope: 'others' }).catch(() => {});
+                    }
+                    if (userChanged) {
+                        loadOrCreateSchoolProfile().then(() => loadTeacherPreferences());
+                    }
+                    if (pendingAfterLogin) pendingAfterLogin();
+                    if (_event === 'SIGNED_IN' && typeof refreshCurriculumAfterAccessChange === 'function') {
+                        refreshCurriculumAfterAccessChange();
+                    }
+                }, 0);
             } else {
                 _schoolProfile = null;
             }
         });
 
         async function getAuthToken() {
+            // A sessão em memória é atualizada pelo listener, inclusive em TOKEN_REFRESHED.
+            // Evita uma chamada redundante a getSession() logo após o login.
+            if (_authSession && _authSession.access_token) return _authSession.access_token;
             const { data } = await supabaseClient.auth.getSession();
             _authSession = data.session;
             updateAuthUI();
